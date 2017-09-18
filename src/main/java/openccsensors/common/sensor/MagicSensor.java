@@ -1,6 +1,7 @@
 package openccsensors.common.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -26,9 +27,9 @@ public class MagicSensor extends TileSensor implements ISensor, IRequiresIconLoa
 	}
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
 		TileEntity tile = (TileEntity) obj;
-		HashMap response = super.getDetails(tile, sensorPos);
+		HashMap<String, Object> response = super.getDetails(tile, sensorPos);
 		if (Mods.TC) {
 			response.put("Aspects", MagicUtils.getMapOfAspects(world, obj, additional));
 		}

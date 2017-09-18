@@ -21,9 +21,9 @@ public class RecipeUtils {
 				"rpr",
 				"rrr",
 				"aaa",
-				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('a'), new ItemStack((Item) Item.itemRegistry.getObject("paper")),
-				Character.valueOf('p'), input
+				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				'a', new ItemStack((Item) Item.itemRegistry.getObject("paper")),
+				'p', input
 			}
 		));
 
@@ -43,9 +43,9 @@ public class RecipeUtils {
 			new Object[]{
 				"aca",
 				" m ",
-				Character.valueOf('a'), OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1),
-				Character.valueOf('c'), input,
-				Character.valueOf('m'), OpenCCSensors.Items.signalAmplifier.newItemStack(1)
+				'a', OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1),
+				'c', input,
+				'm', OpenCCSensors.Items.signalAmplifier.newItemStack(1)
 			}
 		));
 	}
@@ -57,10 +57,10 @@ public class RecipeUtils {
 				" a ",
 				"aca",
 				"mpm",
-				Character.valueOf('a'), OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1),
-				Character.valueOf('c'), input,
-				Character.valueOf('m'), OpenCCSensors.Items.signalAmplifier.newItemStack(1),
-				Character.valueOf('p'), OpenCCSensors.Items.advancedAmplifier.newItemStack(1)
+				'a', OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1),
+				'c', input,
+				'm', OpenCCSensors.Items.signalAmplifier.newItemStack(1),
+				'p', OpenCCSensors.Items.advancedAmplifier.newItemStack(1)
 			}
 		));
 	}
@@ -72,9 +72,9 @@ public class RecipeUtils {
 				"ooo",
 				"ror",
 				"sss",
-				Character.valueOf('o'), new ItemStack((Block) Block.blockRegistry.getObject("obsidian")),
-				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('s'), new ItemStack((Block) Block.blockRegistry.getObject("stone"))
+				'o', new ItemStack((Block) Block.blockRegistry.getObject("obsidian")),
+				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				's', new ItemStack((Block) Block.blockRegistry.getObject("stone"))
 			}
 		));
 	}
@@ -84,9 +84,9 @@ public class RecipeUtils {
 			new ItemStack(OpenCCSensors.Blocks.gaugeBlock),
 			new Object[]{
 				"grm",
-				Character.valueOf('g'), new ItemStack((Block) Block.blockRegistry.getObject("glass_pane")),
-				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('m'), new ItemStack(getMonitor(), 1, 2)
+				'g', new ItemStack((Block) Block.blockRegistry.getObject("glass_pane")),
+				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				'm', new ItemStack(getMonitor(), 1, 2)
 			}
 		));
 	}
@@ -121,10 +121,10 @@ public class RecipeUtils {
 				"   ",
 				"cpc",
 				"rir",
-				Character.valueOf('c'), new ItemStack((Item) Item.itemRegistry.getObject("comparator")),
-				Character.valueOf('p'), proxCard,
-				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('i'), new ItemStack((Block) Block.blockRegistry.getObject("iron_block")),
+				'c', new ItemStack((Item) Item.itemRegistry.getObject("comparator")),
+				'p', proxCard,
+				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				'i', new ItemStack((Block) Block.blockRegistry.getObject("iron_block")),
 			}
 		));
 	}

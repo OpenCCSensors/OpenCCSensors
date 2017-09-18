@@ -1,6 +1,7 @@
 package openccsensors.common.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.block.*;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -46,16 +47,15 @@ public class CropSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
 
-		HashMap response = new HashMap();
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		if (obj instanceof CropTarget) {
 
 			CropTarget target = (CropTarget) obj;
 
-			HashMap position = new HashMap();
-
+			HashMap<String, Integer> position = new HashMap<String, Integer>();
 			position.put("X", target.X - sensorPos.posX);
 			position.put("Y", target.Y - sensorPos.posY);
 			position.put("Z", target.Z - sensorPos.posZ);
@@ -115,18 +115,18 @@ public class CropSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public HashMap getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map<String, Object> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
 
-		HashMap targets = new HashMap();
+		HashMap<String, Object> targets = new HashMap<String, Object>();
 		int distance = (int) tier.getMultiplier();
 
 		for (int x = -distance; x <= distance; x++) {
 			for (int y = -distance; y <= distance; y++) {
 				for (int z = -distance; z <= distance; z++) {
 
-					int tileX = x + (int) location.posX;
-					int tileY = y + (int) location.posY;
-					int tileZ = z + (int) location.posZ;
+					int tileX = x + location.posX;
+					int tileY = y + location.posY;
+					int tileZ = z + location.posZ;
 
 					String name = String.format("%s,%s,%s", x, y, z);
 

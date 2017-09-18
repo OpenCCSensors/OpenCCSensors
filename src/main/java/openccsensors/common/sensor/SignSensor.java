@@ -1,6 +1,7 @@
 package openccsensors.common.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -18,20 +19,20 @@ public class SignSensor extends TileSensor implements ISensor, IRequiresIconLoad
 	private IIcon icon;
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
 
 		TileEntitySign sign = (TileEntitySign) obj;
-		HashMap response = super.getDetails(sign, sensorPos);
+		HashMap<String, Object> response = super.getDetails(sign, sensorPos);
 		if (additional) {
 
-			String signText = "";
+			StringBuilder signText = new StringBuilder();
 			for (int i = 0; i < sign.signText.length; i++) {
-				signText = signText + sign.signText[i];
+				signText.append(sign.signText[i]);
 				if (i < 3 && !sign.signText[i].equals("")) {
-					signText = signText + " ";
+					signText.append(" ");
 				}
 			}
-			response.put("Text", signText.trim());
+			response.put("Text", signText.toString().trim());
 		}
 
 		return response;

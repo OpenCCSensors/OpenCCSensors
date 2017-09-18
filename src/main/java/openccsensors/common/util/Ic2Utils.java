@@ -1,5 +1,6 @@
 package openccsensors.common.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,13 +51,12 @@ public class Ic2Utils {
 			);
 	}
 
-	public static HashMap getMachineDetails(World world, Object obj, boolean additional) {
-
-		HashMap response = new HashMap();
-
+	public static Map<String, Object> getMachineDetails(World world, Object obj, boolean additional) {
 		if (obj == null || !(obj instanceof TileEntity) || !additional) {
-			return response;
+			return Collections.emptyMap();
 		}
+
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		TileEntity tile = (TileEntity) obj;
 
@@ -93,13 +93,12 @@ public class Ic2Utils {
 		return response;
 	}
 
-	public static HashMap getPowerDetails(World world, Object obj, boolean additional) {
-
-		HashMap response = new HashMap();
-
+	public static Map<String, Object> getPowerDetails(World world, Object obj, boolean additional) {
 		if (obj == null || !(obj instanceof TileEntity) || !additional) {
-			return response;
+			return Collections.emptyMap();
 		}
+
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		TileEntity tile = (TileEntity) obj;
 
@@ -149,12 +148,12 @@ public class Ic2Utils {
 		return tile instanceof ICropTile;
 	}
 
-	public static Map getCropDetails(Object obj, ChunkCoordinates sensorPos, boolean additional) {
-		HashMap response = new HashMap();
-		if (obj == null) return response;
+	public static Map<String, Object> getCropDetails(Object obj, ChunkCoordinates sensorPos, boolean additional) {
+		if (obj == null) return Collections.emptyMap();
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		TileEntity tile = (TileEntity) obj;
-		HashMap position = new HashMap();
+		HashMap<String, Integer> position = new HashMap<String, Integer>();
 		position.put("X", tile.xCoord - sensorPos.posX);
 		position.put("Y", tile.yCoord - sensorPos.posY);
 		position.put("Z", tile.zCoord - sensorPos.posZ);

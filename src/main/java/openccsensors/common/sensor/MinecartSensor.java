@@ -1,6 +1,7 @@
 package openccsensors.common.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import mods.railcraft.api.carts.IEnergyTransfer;
 import mods.railcraft.api.carts.IExplosiveCart;
@@ -27,12 +28,12 @@ public class MinecartSensor implements ISensor, IRequiresIconLoading {
 
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
 
 		EntityMinecart minecart = (EntityMinecart) obj;
 
-		HashMap response = new HashMap();
-		HashMap position = new HashMap();
+		HashMap<String, Object> response = new HashMap<String, Object>();
+		HashMap<String, Double> position = new HashMap<String, Double>();
 
 		position.put("X", minecart.posX - sensorPos.posX);
 		position.put("Y", minecart.posY - sensorPos.posY);
@@ -71,9 +72,9 @@ public class MinecartSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public HashMap getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map<String, ?> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
 		double radius = tier.getMultiplier() * 4;
-		return (HashMap) EntityUtils.getEntities(world, location, radius, EntityMinecart.class);
+		return EntityUtils.getEntities(world, location, radius, EntityMinecart.class);
 	}
 
 	@Override

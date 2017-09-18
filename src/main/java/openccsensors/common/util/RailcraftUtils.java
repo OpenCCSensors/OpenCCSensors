@@ -1,6 +1,7 @@
 package openccsensors.common.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import mods.railcraft.api.carts.IEnergyTransfer;
 import mods.railcraft.api.carts.IExplosiveCart;
@@ -9,8 +10,8 @@ import net.minecraft.entity.item.EntityMinecart;
 
 public class RailcraftUtils {
 
-	public static HashMap getEnergyDetails(EntityMinecart minecart) {
-		HashMap response = new HashMap();
+	public static Map<String, Object> getEnergyDetails(EntityMinecart minecart) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
 		if (minecart instanceof IEnergyTransfer) {
 			IEnergyTransfer energyCart = (IEnergyTransfer) minecart;
 			int capacity = energyCart.getCapacity();
@@ -28,8 +29,8 @@ public class RailcraftUtils {
 		return response;
 	}
 
-	public static HashMap getExplosiveDetails(EntityMinecart minecart) {
-		HashMap response = new HashMap();
+	public static Map<String, Object> getExplosiveDetails(EntityMinecart minecart) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
 		if (minecart instanceof IExplosiveCart) {
 			IExplosiveCart explosiveCart = (IExplosiveCart) minecart;
 			response.put("IsPrimed", explosiveCart.isPrimed());

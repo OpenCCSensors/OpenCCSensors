@@ -1,6 +1,6 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -45,9 +45,9 @@ public class MachineSensor extends TileSensor implements ISensor, IRequiresIconL
 	}
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
 		TileEntity tile = (TileEntity) obj;
-		HashMap response = super.getDetails(tile, sensorPos);
+		Map<String, Object> response = super.getDetails(tile, sensorPos);
 		if (Mods.IC2) {
 			response.putAll(Ic2Utils.getMachineDetails(world, obj, additional));
 		}

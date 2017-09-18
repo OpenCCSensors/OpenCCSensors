@@ -35,8 +35,6 @@ public class BlockBasicSensor extends BlockContainer {
 		public static IIcon sidePlayers;
 	}
 
-	;
-
 	public BlockBasicSensor() {
 		super(Material.ground);
 		setHardness(0.5F);

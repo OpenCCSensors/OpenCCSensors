@@ -1,23 +1,24 @@
 package openccsensors.common.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
 public class TankUtils {
 
-	public static HashMap fluidHandlerToMap(IFluidHandler container) {
+	public static Map<Integer, Object> fluidHandlerToMap(IFluidHandler container) {
 
 		FluidTankInfo[] tanks = container.getTankInfo(ForgeDirection.UNKNOWN);
 
-		HashMap allTanks = new HashMap();
+		Map<Integer, Object> allTanks = new HashMap<Integer, Object>();
 		int i = 0;
 		try {
 			if (tanks != null) {
 				for (FluidTankInfo tank : tanks) {
 					if (tank != null) {
-						HashMap tankMap = new HashMap();
+						HashMap<String, Object> tankMap = new HashMap<String, Object>();
 						tankMap.put("Capacity", tank.capacity);
 						int fluidAmount = 0;
 						tankMap.put("Amount", 0);

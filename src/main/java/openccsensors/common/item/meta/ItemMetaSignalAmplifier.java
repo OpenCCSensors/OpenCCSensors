@@ -27,9 +27,9 @@ public class ItemMetaSignalAmplifier implements IItemMeta, IRequiresIconLoading 
 				"sgs",
 				"rrr",
 				"sgs",
-				Character.valueOf('s'), new ItemStack((Block) Block.blockRegistry.getObject("stone")),
-				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('g'), new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot")),
+				's', new ItemStack((Block) Block.blockRegistry.getObject("stone")),
+				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				'g', new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot")),
 			}
 		));
 	}

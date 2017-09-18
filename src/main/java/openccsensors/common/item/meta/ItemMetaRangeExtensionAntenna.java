@@ -27,10 +27,10 @@ public class ItemMetaRangeExtensionAntenna implements IItemMeta, IRequiresIconLo
 				" t ",
 				"srs",
 				"sis",
-				Character.valueOf('t'), new ItemStack((Block) Block.blockRegistry.getObject("redstone_torch")),
-				Character.valueOf('s'), new ItemStack((Item) Item.itemRegistry.getObject("stone")),
-				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('i'), new ItemStack((Item) Item.itemRegistry.getObject("iron_ingot")),
+				't', new ItemStack((Block) Block.blockRegistry.getObject("redstone_torch")),
+				's', new ItemStack((Item) Item.itemRegistry.getObject("stone")),
+				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				'i', new ItemStack((Item) Item.itemRegistry.getObject("iron_ingot")),
 			}
 		));
 	}

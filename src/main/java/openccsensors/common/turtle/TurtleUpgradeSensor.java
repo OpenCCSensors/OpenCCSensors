@@ -55,7 +55,7 @@ public class TurtleUpgradeSensor implements ITurtleUpgrade {
 		return OpenCCSensors.Blocks.sensorBlock.turtleIcon;
 	}
 
-	public void addTurtlesToCreative(List subItems) {
+	public void addTurtlesToCreative(List<ItemStack> subItems) {
 		for (int i = 0; i <= 7; i++) {
 			ItemStack turtle = GameRegistry.findItemStack("CCTurtle", "CC-TurtleExpanded", 1);
 			if (turtle != null) {

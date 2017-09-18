@@ -2,6 +2,7 @@ package openccsensors.common.peripheral;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import dan200.computercraft.api.lua.ILuaContext;
@@ -35,7 +36,7 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 		env = _env;
 		isTurtle = _turtle;
 
-		/**
+		/*
 		 * These are the methods exposed to LUA
 		 */
 		eventManager.registerCallback(new IMethodCallback() {
@@ -57,13 +58,14 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 					if (sensor != null) {
 
-						HashMap<String, Object> targets = sensor.getTargets(env.getWorld(), location, card.getTier());
+						Map<String, ?> targets = sensor.getTargets(env.getWorld(), location, card.getTier());
+						HashMap<String, Map<String, ?>> result = new HashMap<String, Map<String, ?>>(targets.size());
 
-						for (Entry entry : targets.entrySet()) {
-							entry.setValue(sensor.getDetails(env.getWorld(), entry.getValue(), location, false));
+						for (Entry<String, ?> entry : targets.entrySet()) {
+							result.put(entry.getKey(), sensor.getDetails(env.getWorld(), entry.getValue(), location, false));
 						}
 
-						return targets;
+						return result;
 
 					}
 
@@ -103,7 +105,7 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 				ChunkCoordinates location = env.getLocation();
 				ISensor sensor = card.getSensor();
-				HashMap<String, Object> targets = sensor.getTargets(env.getWorld(), location, card.getTier());
+				Map<String, ?> targets = sensor.getTargets(env.getWorld(), location, card.getTier());
 
 				if (!targets.containsKey(targetName)) {
 					throw new Exception("Sensor cannot find data at location");
@@ -151,7 +153,7 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 				SensorCard sensorCard = getSensorCard();
 
-				HashMap methods = new HashMap();
+				HashMap<Integer, Object> methods = new HashMap<Integer, Object>();
 
 				if (sensorCard == null) {
 					throw new Exception("Card not found");
@@ -208,7 +210,6 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 				Object[] arguments = new Object[args.length - 1];
 				System.arraycopy(args, 1, arguments, 0, args.length - 1);
-				ChunkCoordinates vec = env.getLocation();
 
 				return sensor.callCustomMethod(
 					env.getWorld(),

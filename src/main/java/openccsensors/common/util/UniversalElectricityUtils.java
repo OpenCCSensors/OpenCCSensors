@@ -14,8 +14,8 @@ public class UniversalElectricityUtils {
 		return target instanceof IEnergyNode;
 	}
 
-	public static Map getDetails(World world, Object obj, boolean additional) {
-		HashMap response = new HashMap();
+	public static Map<String, Object> getDetails(World world, Object obj, boolean additional) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		if (additional) {
 			if (obj instanceof IEnergyNode) {

@@ -26,10 +26,10 @@ public class ItemMetaAdvancedAmplifier implements IItemMeta, IRequiresIconLoadin
 				"igi",
 				"rdr",
 				"igi",
-				Character.valueOf('i'), new ItemStack((Item) Item.itemRegistry.getObject("iron_ingot")),
-				Character.valueOf('g'), new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot")),
-				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('d'), new ItemStack((Item) Item.itemRegistry.getObject("diamond")),
+				'i', new ItemStack((Item) Item.itemRegistry.getObject("iron_ingot")),
+				'g', new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot")),
+				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				'd', new ItemStack((Item) Item.itemRegistry.getObject("diamond")),
 			}
 		));
 	}

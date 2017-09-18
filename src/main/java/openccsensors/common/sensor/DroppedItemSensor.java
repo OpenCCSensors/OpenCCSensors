@@ -1,6 +1,7 @@
 package openccsensors.common.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
@@ -20,12 +21,12 @@ public class DroppedItemSensor implements ISensor, IRequiresIconLoading {
 	private IIcon icon;
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorLocation, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorLocation, boolean additional) {
 
 		EntityItem item = (EntityItem) obj;
 
-		HashMap response = new HashMap();
-		HashMap position = new HashMap();
+		HashMap<String, Object> response = new HashMap<String, Object>();
+		HashMap<String, Double> position = new HashMap<String, Double>();
 
 		position.put("X", item.posX - sensorLocation.posX);
 		position.put("Y", item.posY - sensorLocation.posY);
@@ -49,7 +50,7 @@ public class DroppedItemSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public HashMap getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map<String, ?> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
 		double radius = tier.getMultiplier() * 4;
 		return EntityUtils.getEntities(world, location, radius, EntityItem.class);
 	}

@@ -1,6 +1,7 @@
 package openccsensors.common.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import forestry.api.apiculture.IBee;
 import forestry.api.apiculture.IBeeGenome;
@@ -17,8 +18,8 @@ public class ForestryUtils {
 	private static ISpeciesRoot treeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootTrees");
 	private static ISpeciesRoot butterflyRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootButterflies");
 
-	public static HashMap genomeToMap(ItemStack item) {
-		HashMap response = new HashMap();
+	public static Map<String, Object> genomeToMap(ItemStack item) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
 		if (beeRoot.isMember(item) && beeRoot.getMember(item).isAnalyzed()) {
 			response.putAll(beeGenomeToMap(beeRoot.getMember(item)));
 		} else if (treeRoot.isMember(item) && treeRoot.getMember(item).isAnalyzed()) {
@@ -47,22 +48,22 @@ public class ForestryUtils {
 		return null;
 	}
 
-	public static HashMap beeGenomeToMap(IIndividual individual) {
-		HashMap response = new HashMap();
+	public static Map<String, Object> beeGenomeToMap(IIndividual individual) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
 		if (individual instanceof IBee) {
 			IBee bee = (IBee) individual;
 			IBeeGenome genome = bee.getGenome();
-			IChromosome[] chromosomes = ((IGenome) genome).getChromosomes();
-			HashMap primary = new HashMap();
-			HashMap secondary = new HashMap();
+			IChromosome[] chromosomes = genome.getChromosomes();
+			HashMap<String, Object> primary = new HashMap<String, Object>();
+			HashMap<String, Object> secondary = new HashMap<String, Object>();
 			for (IChromosome chromosome : chromosomes) {
 				IAllele priAllele = chromosome.getPrimaryAllele();
 				IAllele secAllele = chromosome.getSecondaryAllele();
 				primary.put(priAllele.getName(), getAlleleValue(priAllele));
 				secondary.put(secAllele.getName(), getAlleleValue(secAllele));
 			}
-			primary.put("Species", ((IAllele) genome.getPrimary()).getUID());
-			secondary.put("Species", ((IAllele) genome.getSecondary()).getUID());
+			primary.put("Species", genome.getPrimary().getUID());
+			secondary.put("Species", genome.getSecondary().getUID());
 			response.put("Primary", primary);
 			response.put("Secondary", secondary);
 			response.put("Speed", genome.getSpeed());
@@ -78,44 +79,44 @@ public class ForestryUtils {
 		return response;
 	}
 
-	public static HashMap treeGenomeToMap(IIndividual individual) {
-		HashMap response = new HashMap();
+	public static Map<String, Object> treeGenomeToMap(IIndividual individual) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
 		if (individual instanceof ITree) {
 			ITree tree = (ITree) individual;
 			ITreeGenome genome = tree.getGenome();
-			IChromosome[] chromosomes = ((IGenome) genome).getChromosomes();
-			HashMap primary = new HashMap();
-			HashMap secondary = new HashMap();
+			IChromosome[] chromosomes = genome.getChromosomes();
+			HashMap<String, Object> primary = new HashMap<String, Object>();
+			HashMap<String, Object> secondary = new HashMap<String, Object>();
 			for (IChromosome chromosome : chromosomes) {
 				IAllele priAllele = chromosome.getPrimaryAllele();
 				IAllele secAllele = chromosome.getSecondaryAllele();
 				primary.put(priAllele.getName(), getAlleleValue(priAllele));
 				secondary.put(secAllele.getName(), getAlleleValue(secAllele));
 			}
-			primary.put("Species", ((IAllele) genome.getPrimary()).getUID());
-			secondary.put("Species", ((IAllele) genome.getSecondary()).getUID());
+			primary.put("Species", genome.getPrimary().getUID());
+			secondary.put("Species", genome.getSecondary().getUID());
 			response.put("Primary", primary);
 			response.put("Secondary", secondary);
 		}
 		return response;
 	}
 
-	public static HashMap butterflyGenomeToMap(IIndividual individual) {
-		HashMap response = new HashMap();
+	public static Map<String, Object> butterflyGenomeToMap(IIndividual individual) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
 		if (individual instanceof IButterfly) {
 			IButterfly butterfly = (IButterfly) individual;
 			IButterflyGenome genome = butterfly.getGenome();
-			IChromosome[] chromosomes = ((IGenome) genome).getChromosomes();
-			HashMap primary = new HashMap();
-			HashMap secondary = new HashMap();
+			IChromosome[] chromosomes = genome.getChromosomes();
+			HashMap<String, Object> primary = new HashMap<String, Object>();
+			HashMap<String, Object> secondary = new HashMap<String, Object>();
 			for (IChromosome chromosome : chromosomes) {
 				IAllele priAllele = chromosome.getPrimaryAllele();
 				IAllele secAllele = chromosome.getSecondaryAllele();
 				primary.put(priAllele.getName(), getAlleleValue(priAllele));
 				secondary.put(secAllele.getName(), getAlleleValue(secAllele));
 			}
-			primary.put("Species", ((IAllele) genome.getPrimary()).getUID());
-			secondary.put("Species", ((IAllele) genome.getSecondary()).getUID());
+			primary.put("Species", genome.getPrimary().getUID());
+			secondary.put("Species", genome.getSecondary().getUID());
 			response.put("Primary", primary);
 			response.put("Secondary", secondary);
 		}

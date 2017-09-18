@@ -1,6 +1,7 @@
 package openccsensors.common.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -17,13 +18,13 @@ public class WorldSensor implements ISensor, IRequiresIconLoading {
 	private IIcon icon;
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorLocation, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorLocation, boolean additional) {
 
-		HashMap response = new HashMap();
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
-		int x = (int) sensorLocation.posX;
-		int y = (int) sensorLocation.posY;
-		int z = (int) sensorLocation.posZ;
+		int x = sensorLocation.posX;
+		int y = sensorLocation.posY;
+		int z = sensorLocation.posZ;
 
 		response.put("Dimension", world.getWorldInfo().getVanillaDimension());
 		response.put("Biome", world.getBiomeGenForCoords(x, z).biomeName);
@@ -38,8 +39,8 @@ public class WorldSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public HashMap getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
-		HashMap targets = new HashMap();
+	public Map<String, Object> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+		HashMap<String, Object> targets = new HashMap<String, Object>();
 		targets.put("CURRENT", location);
 		return targets;
 	}

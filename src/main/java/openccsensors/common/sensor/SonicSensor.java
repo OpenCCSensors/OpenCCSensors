@@ -1,6 +1,7 @@
 package openccsensors.common.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,17 +20,15 @@ public class SonicSensor implements ISensor, IRequiresIconLoading {
 	private static final int BASE_RANGE = 1;
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
-
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
 		Vec3 target = (Vec3) obj;
-
 		int x = (int) target.xCoord;
 		int y = (int) target.yCoord;
 		int z = (int) target.zCoord;
 
 		Block block = world.getBlock(x, y, z);
 
-		HashMap response = new HashMap();
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		String type = "UNKNOWN";
 
@@ -42,7 +41,7 @@ public class SonicSensor implements ISensor, IRequiresIconLoading {
 		}
 
 		response.put("Type", type);
-		HashMap position = new HashMap();
+		HashMap<String, Integer> position = new HashMap<String, Integer>();
 		position.put("X", x - sensorPos.posX);
 		position.put("Y", y - sensorPos.posY);
 		position.put("Z", z - sensorPos.posZ);
@@ -52,15 +51,15 @@ public class SonicSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public HashMap getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
 
-		HashMap targets = new HashMap();
+		HashMap<String, Object> targets = new HashMap<String, Object>();
 
 		int range = (new Double(tier.getMultiplier())).intValue() + BASE_RANGE;
 
-		int sx = (int) location.posX;
-		int sy = (int) location.posY;
-		int sz = (int) location.posZ;
+		int sx = location.posX;
+		int sy = location.posY;
+		int sz = location.posZ;
 
 		for (int x = -range; x <= range; x++) {
 			for (int y = -range; y <= range; y++) {

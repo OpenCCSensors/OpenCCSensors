@@ -1,7 +1,7 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -27,14 +27,14 @@ public class ProximitySensor implements ISensor, IRequiresIconLoading {
 	private IIcon icon;
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, ?> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
 		return EntityUtils.livingToMap((EntityLivingBase) obj, sensorPos, additional);
 	}
 
 	@Override
-	public HashMap getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map<String, ?> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
 		double radius = tier.getMultiplier() * 4;
-		return (HashMap) EntityUtils.getEntities(world, location, radius, EntityLivingBase.class);
+		return EntityUtils.getEntities(world, location, radius, EntityLivingBase.class);
 	}
 
 	@Override
@@ -63,13 +63,13 @@ public class ProximitySensor implements ISensor, IRequiresIconLoading {
 	}
 
 	public double getDistanceToNearestEntity(World world, Vec3 location, int mode, String owner) {
-		Class klazz = EntityLivingBase.class;
+		Class<? extends EntityLivingBase> klazz = EntityLivingBase.class;
 
 		if (mode == MODE_PLAYERS || mode == MODE_OWNER) {
 			klazz = EntityPlayer.class;
 		}
 
-		List list = world.getEntitiesWithinAABB(
+		List<? extends EntityLivingBase> list = world.getEntitiesWithinAABB(
 			klazz,
 			AxisAlignedBB.getBoundingBox(location.xCoord - 16.0F,
 				location.yCoord - 16.0F,
@@ -80,7 +80,7 @@ public class ProximitySensor implements ISensor, IRequiresIconLoading {
 
 		double closestDistance = Double.MAX_VALUE;
 		Vec3 livingPos = Vec3.createVectorHelper(0, 0, 0);
-		for (EntityLivingBase current : (List<EntityLivingBase>) list) {
+		for (EntityLivingBase current : list) {
 			if (mode == MODE_OWNER && !current.getCommandSenderName().equals(owner)) {
 				continue;
 			}

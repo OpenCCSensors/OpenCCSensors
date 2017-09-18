@@ -1,6 +1,7 @@
 package openccsensors.common.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -47,8 +48,8 @@ public class PowerSensor extends TileSensor implements ISensor, IRequiresIconLoa
 	}
 
 	@Override
-	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
-		HashMap response = super.getDetails((TileEntity) obj, sensorPos);
+	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+		HashMap<String, Object> response = super.getDetails((TileEntity) obj, sensorPos);
 		if (UEApi != null) {
 			response.putAll(UniversalElectricityUtils.getDetails(world, obj, additional));
 		}

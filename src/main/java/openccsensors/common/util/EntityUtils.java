@@ -3,6 +3,7 @@ package openccsensors.common.util;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,9 +25,9 @@ public class EntityUtils {
 
 		int dChunk = (int) Math.ceil(radius / 16.0F);
 
-		int x = (int) location.posX;
-		int y = (int) location.posY;
-		int z = (int) location.posZ;
+		int x = location.posX;
+		int y = location.posY;
+		int z = location.posZ;
 
 		for (int dx = -dChunk; dx <= dChunk; dx++) {
 			for (int dz = -dChunk; dz <= dChunk; dz++) {
@@ -54,10 +55,10 @@ public class EntityUtils {
 	}
 
 
-	public static HashMap livingToMap(EntityLivingBase living, ChunkCoordinates sensorPos, boolean additional) {
-		HashMap map = new HashMap();
+	public static Map<String, Object> livingToMap(EntityLivingBase living, ChunkCoordinates sensorPos, boolean additional) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
 
-		HashMap position = new HashMap();
+		HashMap<String, Double> position = new HashMap<String, Double>();
 		position.put("X", living.posX - sensorPos.posX);
 		position.put("Y", living.posY - sensorPos.posY);
 		position.put("Z", living.posZ - sensorPos.posZ);
@@ -71,7 +72,7 @@ public class EntityUtils {
 
 			map.put("HeldItem", InventoryUtils.itemstackToMap(living.getHeldItem()));
 
-			HashMap armour = new HashMap();
+			HashMap<String, Object> armour = new HashMap<String, Object>();
 			armour.put("Boots", InventoryUtils.itemstackToMap(living.getEquipmentInSlot(1)));
 			armour.put("Leggings", InventoryUtils.itemstackToMap(living.getEquipmentInSlot(2)));
 			armour.put("Chestplate", InventoryUtils.itemstackToMap(living.getEquipmentInSlot(3)));
@@ -94,7 +95,7 @@ public class EntityUtils {
 			map.put("Pitch", living.rotationPitch);
 			map.put("YawHead", living.rotationYawHead);
 
-			HashMap potionEffects = new HashMap();
+			HashMap<Integer, Object> potionEffects = new HashMap<Integer, Object>();
 			Collection<PotionEffect> effects = living.getActivePotionEffects();
 			int count = 1;
 			for (PotionEffect effect : effects) {
@@ -130,7 +131,7 @@ public class EntityUtils {
 			if (tameable instanceof EntityWolf) {
 				EntityWolf wolf = (EntityWolf) tameable;
 				map.put("IsAngry", wolf.isAngry());
-				if (((EntityTameable) wolf).isTamed()) {
+				if (wolf.isTamed()) {
 					map.put("CollarColor", wolf.getCollarColor());
 				}
 			}

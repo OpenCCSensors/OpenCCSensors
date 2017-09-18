@@ -1,6 +1,8 @@
 package openccsensors.common.util;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import Reika.RotaryCraft.API.Interfaces.ThermalMachine;
 import Reika.RotaryCraft.API.Power.PowerGenerator;
@@ -17,12 +19,12 @@ public class RotaryCraftUtils {
 		return target != null && (target instanceof ThermalMachine);
 	}
 
-	public static HashMap getPowerDetails(World world, Object obj, boolean additional) {
-		HashMap response = new HashMap();
-
+	public static Map<String, Object> getPowerDetails(World world, Object obj, boolean additional) {
 		if (obj == null || (!(obj instanceof ShaftMachine) && !(obj instanceof PowerGenerator)) || !additional) {
-			return response;
+			return Collections.emptyMap();
 		}
+		
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		if (obj instanceof ShaftMachine) {
 			ShaftMachine shaftMachine = (ShaftMachine) obj;
@@ -39,12 +41,12 @@ public class RotaryCraftUtils {
 		return response;
 	}
 
-	public static HashMap getMachineDetails(World world, Object obj, boolean additional) {
-		HashMap response = new HashMap();
-
+	public static Map<String, Object> getMachineDetails(World world, Object obj, boolean additional) {
 		if (obj == null || !(obj instanceof ThermalMachine) || !additional) {
-			return response;
+			return Collections.emptyMap();
 		}
+		
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		ThermalMachine machine = (ThermalMachine) obj;
 		int heat = machine.getTemperature();

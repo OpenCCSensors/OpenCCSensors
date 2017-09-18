@@ -1,6 +1,8 @@
 package openccsensors.common.util;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import am2.api.power.IPowerNode;
 import net.minecraft.tileentity.TileEntity;
@@ -19,13 +21,12 @@ public class MagicUtils {
 		return target != null && target instanceof IPowerNode;
 	}
 
-	public static HashMap getMapOfAspects(World world, Object obj, boolean additional) {
-
-		HashMap response = new HashMap();
-
+	public static Map<String, Object> getMapOfAspects(World world, Object obj, boolean additional) {
 		if (obj == null || !(obj instanceof TileEntity) || !additional) {
-			return response;
+			return Collections.emptyMap();
 		}
+
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		if (obj instanceof IAspectContainer) {
 			IAspectContainer aspectContainer = (IAspectContainer) obj;
@@ -40,12 +41,12 @@ public class MagicUtils {
 		return response;
 	}
 
-	public static HashMap getMapOfArsMagicaPower(World world, Object obj, boolean additional) {
-		HashMap response = new HashMap();
-
+	public static Map<String, Object> getMapOfArsMagicaPower(World world, Object obj, boolean additional) {
 		if (obj == null || !(obj instanceof TileEntity) || !additional) {
-			return response;
+			return Collections.emptyMap();
 		}
+
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		if (obj instanceof IPowerNode) {
 			IPowerNode powerObj = (IPowerNode) obj;

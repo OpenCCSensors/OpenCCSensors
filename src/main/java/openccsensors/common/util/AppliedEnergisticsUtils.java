@@ -1,13 +1,13 @@
 package openccsensors.common.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.ICellInventory;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -24,8 +24,8 @@ public class AppliedEnergisticsUtils {
 		return target != null && target.getClass().getName().equals(ME_WIRELESS_CLASS);
 	}
 
-	public static HashMap getTileDetails(Object obj, boolean additional) {
-		HashMap response = new HashMap();
+	public static Map<String, Object> getTileDetails(Object obj, boolean additional) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		if (!(obj instanceof TileEntity)) {
 			return response;
@@ -38,14 +38,13 @@ public class AppliedEnergisticsUtils {
 		IGridNode gi = aeMachine.getMachine().getGridNode(ForgeDirection.UNKNOWN);
 		if (aeMachine instanceof IEnergyGrid && ((IEnergyGrid) aeMachine).isNetworkPowered() && aeMachine instanceof IMEInventoryHandler) {
 
-			IMEInventoryHandler imivh = (IMEInventoryHandler) aeMachine;
-			IMEInventory imiv = (IMEInventory) imivh;
+			IMEInventoryHandler<?> imivh = (IMEInventoryHandler) aeMachine;
 			IEnergyGrid eGrid = (IEnergyGrid) aeMachine;
 			response.put("Powered", true);
 
-			if (imiv instanceof ICellInventory) {
+			if (imivh instanceof ICellInventory) {
 				//uses ICellInventory for remaining item types and count.
-				ICellInventory cells = (ICellInventory) imiv;
+				ICellInventory cells = (ICellInventory) imivh;
 				response.put("FreeTypes", (int) cells.getRemainingItemTypes());
 				response.put("FreeCount", (int) cells.getRemainingItemCount());
 				response.put("FreeBytes", (int) cells.getFreeBytes());
@@ -63,12 +62,11 @@ public class AppliedEnergisticsUtils {
 
 			if (additional) {
 				IItemList list = AEApi.instance().storage().createItemList();
-				imiv.getAvailableItems(list);
+				imivh.getAvailableItems(list);
 				int totalCount = 0;
 				int i = 0;
-				HashMap stacks = new HashMap();
-				Iterable<IAEStack> iterator = (Iterable<IAEStack>) list.iterator();
-				for (IAEStack stack : iterator) {
+				HashMap<Integer, Object> stacks = new HashMap<Integer, Object>();
+				for (IAEStack stack : (Iterable<IAEStack>) list.iterator()) {
 					if (stack.isItem()) {
 						IAEItemStack itemStack = (IAEItemStack) stack;
 						ItemStack items = itemStack.getItemStack();
@@ -76,7 +74,6 @@ public class AppliedEnergisticsUtils {
 						totalCount += items.stackSize;
 					}
 				}
-				;
 
 				response.put("UsedTypes", list.size());
 				response.put("UsedCount", totalCount);

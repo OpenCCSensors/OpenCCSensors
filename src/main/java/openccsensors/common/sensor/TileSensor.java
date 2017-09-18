@@ -16,10 +16,9 @@ public abstract class TileSensor {
 		return false;
 	}
 
-	public HashMap getDetails(TileEntity tile, ChunkCoordinates sensorPos) {
-
-		HashMap response = new HashMap();
-		HashMap position = new HashMap();
+	public HashMap<String, Object> getDetails(TileEntity tile, ChunkCoordinates sensorPos) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
+		HashMap<String, Integer> position = new HashMap<String, Integer>();
 
 		position.put("X", tile.xCoord - sensorPos.posX);
 		position.put("Y", tile.yCoord - sensorPos.posY);
@@ -35,18 +34,17 @@ public abstract class TileSensor {
 		return response;
 	}
 
-	public HashMap getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
-
-		HashMap targets = new HashMap();
+	public HashMap<String, Object> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+		HashMap<String, Object> targets = new HashMap<String, Object>();
 		int distance = (int) tier.getMultiplier();
 
 		for (int x = -distance; x <= distance; x++) {
 			for (int y = -distance; y <= distance; y++) {
 				for (int z = -distance; z <= distance; z++) {
 
-					int tileX = x + (int) location.posX;
-					int tileY = y + (int) location.posY;
-					int tileZ = z + (int) location.posZ;
+					int tileX = x + location.posX;
+					int tileY = y + location.posY;
+					int tileZ = z + location.posZ;
 
 					String name = String.format("%s,%s,%s", x, y, z);
 

@@ -2,6 +2,7 @@ package openccsensors.common.tileentity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import dan200.computercraft.api.ComputerCraftAPI;
@@ -136,12 +137,12 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 	public void detach(IComputerAccess computer) {
 	}
 
-	private HashMap checkForKeys(HashMap data, String[] keys, String prefix) {
-		HashMap properties = new HashMap();
+	private Map<?, ?> checkForKeys(Map<?, ?> data, String[] keys, String prefix) {
+		HashMap<Object, Object> properties = new HashMap<Object, Object>();
 		for (Object obj : data.keySet()) {
 			Object value = data.get(obj);
-			if (value instanceof HashMap) {
-				properties.putAll(checkForKeys((HashMap) value, keys, prefix + obj.toString()));
+			if (value instanceof Map) {
+				properties.putAll(checkForKeys((Map<?, ?>) value, keys, prefix + obj.toString()));
 			} else if (obj instanceof String) {
 				for (String property : keys) {
 					if (property.equals(obj)) {
@@ -165,7 +166,7 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 			if (behindTile != null) {
 				for (IGaugeSensor gaugeSensor : gaugeSensors) {
 					if (gaugeSensor.isValidTarget(behindTile)) {
-						HashMap details = gaugeSensor.getDetails(worldObj, behindTile, new ChunkCoordinates(behindTile.xCoord, behindTile.yCoord, behindTile.zCoord), true);
+						Map<String, ?> details = gaugeSensor.getDetails(worldObj, behindTile, new ChunkCoordinates(behindTile.xCoord, behindTile.yCoord, behindTile.zCoord), true);
 						tileProperties.putAll(checkForKeys(details, gaugeSensor.getGaugeProperties(), ""));
 					}
 				}
