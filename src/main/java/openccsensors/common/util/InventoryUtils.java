@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,37 +14,36 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
-import net.minecraft.item.ItemEnchantedBook;
 
 public class InventoryUtils {
 
 	public static final String FACTORIZATION_BARREL_CLASS = "factorization.common.TileEntityBarrel";
-	public static int[] mapColors = new int[] {
-			32768, 	// black
-			32, 	// lime
-			16, 	// yellow
-			256, 	// light gray
-			16384, 	// red
-			2048, 	// blue
-			128, 	// gray
-			8192, 	// green
-			1, 		// white
-			512, 	// cyan
-			4096, 	// brown
-			128, 	// gray
-			2048, 	// blue
-			4096 	// brown	
+	public static int[] mapColors = new int[]{
+		32768, // black
+		32,    // lime
+		16,    // yellow
+		256,   // light gray
+		16384, // red
+		2048,  // blue
+		128,   // gray
+		8192,  // green
+		1,     // white
+		512,   // cyan
+		4096,  // brown
+		128,   // gray
+		2048,  // blue
+		4096   // brown
 	};
-	
+
 	public static HashMap itemstackToMap(ItemStack itemstack) {
-		
+
 		if (itemstack == null) {
 
 			return null;
 
 		} else {
 			HashMap map = new HashMap();
-			map.put("Name", getNameForItemStack(itemstack));			
+			map.put("Name", getNameForItemStack(itemstack));
 			map.put("RawName", getRawNameForStack(itemstack));
 			map.put("Size", itemstack.stackSize);
 			map.put("DamageValue", itemstack.getItemDamage());
@@ -59,34 +59,31 @@ public class InventoryUtils {
 		}
 
 	}
-	
-	protected static HashMap getBookEnchantments(ItemStack stack) {
-		
-		HashMap response = new HashMap();
-		
-		ItemEnchantedBook book = (ItemEnchantedBook) stack.getItem();
-        NBTTagList nbttaglist = book.func_92110_g(stack);
-        int offset = 1;
-        if (nbttaglist != null)
-        {
-            for (int i = 0; i < nbttaglist.tagCount(); ++i)
-            {
-                short short1 = (nbttaglist.getCompoundTagAt(i)).getShort("id");
-                short short2 = (nbttaglist.getCompoundTagAt(i)).getShort("lvl");
 
-                if (Enchantment.enchantmentsList[short1] != null)
-                {
-                    response.put(offset, Enchantment.enchantmentsList[short1].getTranslatedName(short2));
-                    offset++;
-                }
-            }
-        }
-        return response;
+	protected static HashMap getBookEnchantments(ItemStack stack) {
+
+		HashMap response = new HashMap();
+
+		ItemEnchantedBook book = (ItemEnchantedBook) stack.getItem();
+		NBTTagList nbttaglist = book.func_92110_g(stack);
+		int offset = 1;
+		if (nbttaglist != null) {
+			for (int i = 0; i < nbttaglist.tagCount(); ++i) {
+				short short1 = (nbttaglist.getCompoundTagAt(i)).getShort("id");
+				short short2 = (nbttaglist.getCompoundTagAt(i)).getShort("lvl");
+
+				if (Enchantment.enchantmentsList[short1] != null) {
+					response.put(offset, Enchantment.enchantmentsList[short1].getTranslatedName(short2));
+					offset++;
+				}
+			}
+		}
+		return response;
 	}
-	
+
 	public static HashMap invToMap(IInventory inventory) {
 		HashMap map = new HashMap();
-		if (inventory.getClass().getName() == FACTORIZATION_BARREL_CLASS) {
+		if (inventory.getClass().getName().equals(FACTORIZATION_BARREL_CLASS)) {
 			Map details = itemstackToMap(inventory.getStackInSlot(0));
 			try {
 				TileEntity barrel = (TileEntity) inventory;
@@ -94,7 +91,7 @@ public class InventoryUtils {
 				barrel.writeToNBT(compound);
 				details.put("Size", compound.getInteger("item_count"));
 				details.put("MaxStack",
-						compound.getInteger("upgrade") == 1 ? 65536 : 4096);
+					compound.getInteger("upgrade") == 1 ? 65536 : 4096);
 
 			} catch (Exception e) {
 			}
@@ -106,7 +103,7 @@ public class InventoryUtils {
 		}
 		return map;
 	}
-	
+
 	public static HashMap getInventorySizeCalculations(IInventory inventory) {
 		ItemStack stack;
 		int totalSpace = 0;
@@ -115,21 +112,21 @@ public class InventoryUtils {
 			stack = inventory.getStackInSlot(i);
 			if (stack == null) {
 				totalSpace += 64;
-			}else {
+			} else {
 				totalSpace += stack.getMaxStackSize();
 				itemCount += stack.stackSize;
 			}
 		}
-		
+
 		HashMap response = new HashMap();
 		response.put("TotalSpace", totalSpace);
 		response.put("ItemCount", itemCount);
 		if (totalSpace > 0) {
-			double percent = (double)100 / totalSpace * itemCount;
+			double percent = (double) 100 / totalSpace * itemCount;
 			percent = Math.max(Math.min(percent, 100), 0);
-			response.put("InventoryPercentFull", percent);			
+			response.put("InventoryPercentFull", percent);
 		}
-		
+
 		return response;
 	}
 
@@ -153,10 +150,10 @@ public class InventoryUtils {
 		try {
 			if (rawName.length() - rawName.replaceAll("\\.", "").length() == 0) {
 				String packageName = is.getItem().getClass().getName()
-						.toLowerCase();
+					.toLowerCase();
 				String[] packageLevels = packageName.split("\\.");
 				if (!rawName.startsWith(packageLevels[0])
-						&& packageLevels.length > 1) {
+					&& packageLevels.length > 1) {
 					rawName = packageLevels[0] + "." + rawName;
 				}
 			}
@@ -179,29 +176,26 @@ public class InventoryUtils {
 		}
 		return null;
 	}
-	
-	public static HashMap getMapData(World world, HashMap targets, String targetName,
-			int slot) {
+
+	public static HashMap getMapData(World world, HashMap targets, String targetName, int slot) {
 		ItemStack stack = getStackInSlot(world, targets, targetName, slot);
-					
+
 		if (stack != null) {
 			Item item = stack.getItem();
-			if (item != null && item instanceof ItemMap)
-			{
+			if (item != null && item instanceof ItemMap) {
 				// Create a new map
-				MapData data = ((ItemMap)item).getMapData(stack, world);
+				MapData data = ((ItemMap) item).getMapData(stack, world);
 
 				// prepare the return data
 				HashMap ret = new HashMap();
 				ret.put("MapName", data.mapName);
-				ret.put("Scale", (int)data.scale);
+				ret.put("Scale", (int) data.scale);
 				ret.put("CenterX", data.xCenter);
 				ret.put("CenterZ", data.zCenter);
 				HashMap colors = new HashMap();
 				// put all the colours in
-				for (int b = 0; b < data.colors.length; b++)
-				{
-					colors.put(b + 1,  mapColors[data.colors[b] / 4]);
+				for (int b = 0; b < data.colors.length; b++) {
+					colors.put(b + 1, mapColors[data.colors[b] / 4]);
 				}
 				ret.put("Colors", colors);
 				return ret;

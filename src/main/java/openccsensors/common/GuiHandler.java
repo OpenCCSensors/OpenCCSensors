@@ -1,15 +1,15 @@
 package openccsensors.common;
 
+import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openccsensors.client.gui.GuiSensor;
 import openccsensors.common.container.ContainerSensor;
 import openccsensors.common.tileentity.TileEntitySensor;
-import cpw.mods.fml.common.network.IGuiHandler;
 
-public class GuiHandler implements IGuiHandler {	
-	
+public class GuiHandler implements IGuiHandler {
+
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity tile = world.getTileEntity(x, y, z);

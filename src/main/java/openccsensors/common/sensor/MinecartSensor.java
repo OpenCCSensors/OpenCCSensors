@@ -19,11 +19,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
-import openccsensors.common.util.EntityUtils;
-import openccsensors.common.util.InventoryUtils;
-import openccsensors.common.util.Mods;
-import openccsensors.common.util.RailcraftUtils;
-import openccsensors.common.util.TankUtils;
+import openccsensors.common.util.*;
 
 public class MinecartSensor implements ISensor, IRequiresIconLoading {
 
@@ -37,38 +33,38 @@ public class MinecartSensor implements ISensor, IRequiresIconLoading {
 
 		HashMap response = new HashMap();
 		HashMap position = new HashMap();
-		
+
 		position.put("X", minecart.posX - sensorPos.posX);
 		position.put("Y", minecart.posY - sensorPos.posY);
 		position.put("Z", minecart.posZ - sensorPos.posZ);
 		response.put("Position", position);
-		
+
 		response.put("Name", minecart.func_95999_t());
 		response.put("RawName", EntityList.getEntityString(minecart));
-		
+
 		if (minecart instanceof IInventory) {
-			response.put("Slots", InventoryUtils.invToMap((IInventory)minecart));
+			response.put("Slots", InventoryUtils.invToMap((IInventory) minecart));
 		}
 
 		if (minecart instanceof IFluidHandler) {
-			response.put("Tanks", TankUtils.fluidHandlerToMap((IFluidHandler)minecart));
+			response.put("Tanks", TankUtils.fluidHandlerToMap((IFluidHandler) minecart));
 		}
-		
+
 		if (minecart.riddenByEntity != null && minecart.riddenByEntity instanceof EntityLivingBase) {
-			response.put("Riding", EntityUtils.livingToMap((EntityLivingBase)minecart.riddenByEntity, sensorPos, true));
+			response.put("Riding", EntityUtils.livingToMap((EntityLivingBase) minecart.riddenByEntity, sensorPos, true));
 		}
-		
+
 		if (Mods.RAIL) {
 			if (minecart instanceof IEnergyTransfer) {
 				response.putAll(RailcraftUtils.getEnergyDetails(minecart));
 			}
-			
+
 			if (minecart instanceof IExplosiveCart) {
 				response.putAll(RailcraftUtils.getExplosiveDetails(minecart));
 			}
-			
+
 			if (minecart instanceof IRoutableCart) {
-				response.put("RouteDestination", ((IRoutableCart)minecart).getDestination());
+				response.put("RouteDestination", ((IRoutableCart) minecart).getDestination());
 			}
 		}
 		return response;
@@ -86,8 +82,7 @@ public class MinecartSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
@@ -104,12 +99,12 @@ public class MinecartSensor implements ISensor, IRequiresIconLoading {
 	@Override
 	public void loadIcon(IIconRegister iconRegistry) {
 		icon = iconRegistry.registerIcon("openccsensors:minecart");
-		
+
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item)Item.itemRegistry.getObject("minecart"));
+		return new ItemStack((Item) Item.itemRegistry.getObject("minecart"));
 	}
 
 }

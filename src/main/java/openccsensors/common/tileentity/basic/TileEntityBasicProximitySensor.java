@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -43,11 +42,11 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 			}
 
 			distance = OpenCCSensors.Sensors.proximitySensor.getDistanceToNearestEntity(
-					worldObj,
-					blockPos,
-					entityMode,
-					owner
-					);
+				worldObj,
+				blockPos,
+				entityMode,
+				owner
+			);
 
 			output = MathHelper.clamp_int(15 - ((Double) distance).intValue(), 0, 15);
 
@@ -86,16 +85,16 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 				entityMode = 0;
 			}
 			String modeMsg = "";
-			switch(entityMode) {
-			case ProximitySensor.MODE_ALL:
-				modeMsg = "Any Living Entity";
-				break;
-			case ProximitySensor.MODE_PLAYERS:
-				modeMsg = "Any Player";
-				break;
-			case ProximitySensor.MODE_OWNER:
-				modeMsg = "Owner Only";
-				break;
+			switch (entityMode) {
+				case ProximitySensor.MODE_ALL:
+					modeMsg = "Any Living Entity";
+					break;
+				case ProximitySensor.MODE_PLAYERS:
+					modeMsg = "Any Player";
+					break;
+				case ProximitySensor.MODE_OWNER:
+					modeMsg = "Owner Only";
+					break;
 			}
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			player.addChatMessage(new ChatComponentText(String.format("Changing sensor mode to \"%s\"", modeMsg)));
@@ -112,8 +111,8 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 		NBTTagCompound nbt = new NBTTagCompound();
 		writeToNBT(nbt);
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, nbt);
-	}	
-	
+	}
+
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());

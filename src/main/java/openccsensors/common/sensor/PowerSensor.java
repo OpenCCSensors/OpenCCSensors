@@ -13,48 +13,42 @@ import openccsensors.api.IGaugeSensor;
 import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
-import openccsensors.common.util.Ic2Utils;
-import openccsensors.common.util.InventoryUtils;
-import openccsensors.common.util.Mods;
-import openccsensors.common.util.RotaryCraftUtils;
-import openccsensors.common.util.CoFHUtils;
-import openccsensors.common.util.UniversalElectricityUtils;
-import cpw.mods.fml.common.Loader;
+import openccsensors.common.util.*;
 
 public class PowerSensor extends TileSensor implements ISensor, IRequiresIconLoading, IGaugeSensor {
 
 	private IIcon icon;
-	private String[] gaugeProperties = new String[] {
-		"StoredPercentage"	
+	private String[] gaugeProperties = new String[]{
+		"StoredPercentage"
 	};
-	
+
 	Class UEApi = null;
-	
+
 	public PowerSensor() {
 		try {
 			UEApi = Class.forName("universalelectricity.core.block.IElectrical");
 		} catch (ClassNotFoundException e) {
 		}
 	}
-	
+
 	@Override
 	public boolean isValidTarget(Object target) {
 		if (!(target instanceof TileEntity)) {
 			return false;
 		}
-		if ("unknown" == InventoryUtils.getRawNameForStack(new ItemStack(((TileEntity)target).getBlockType(), 1, ((TileEntity)target).getBlockMetadata()))) {
+		if ("unknown".equals(InventoryUtils.getRawNameForStack(new ItemStack(((TileEntity) target).getBlockType(), 1, ((TileEntity) target).getBlockMetadata())))) {
 			return false;
 		}
-		return (UEApi != null && UniversalElectricityUtils.isValidTarget((TileEntity)target)) ||
-			   (Mods.IC2 && Ic2Utils.isValidPowerTarget(target)) ||
-			   (Mods.COFH && CoFHUtils.isValidPowerTarget(target)) ||
-			   (Mods.TE && CoFHUtils.isValidPowerTarget(target)) ||
-			   (Mods.RC && RotaryCraftUtils.isValidPowerTarget(target));
+		return (UEApi != null && UniversalElectricityUtils.isValidTarget((TileEntity) target)) ||
+			(Mods.IC2 && Ic2Utils.isValidPowerTarget(target)) ||
+			(Mods.COFH && CoFHUtils.isValidPowerTarget(target)) ||
+			(Mods.TE && CoFHUtils.isValidPowerTarget(target)) ||
+			(Mods.RC && RotaryCraftUtils.isValidPowerTarget(target));
 	}
 
 	@Override
 	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
-		HashMap response = super.getDetails((TileEntity)obj, sensorPos);
+		HashMap response = super.getDetails((TileEntity) obj, sensorPos);
 		if (UEApi != null) {
 			response.putAll(UniversalElectricityUtils.getDetails(world, obj, additional));
 		}
@@ -79,8 +73,7 @@ public class PowerSensor extends TileSensor implements ISensor, IRequiresIconLoa
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
@@ -106,6 +99,6 @@ public class PowerSensor extends TileSensor implements ISensor, IRequiresIconLoa
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item)Item.itemRegistry.getObject("coal"));
+		return new ItemStack((Item) Item.itemRegistry.getObject("coal"));
 	}
 }

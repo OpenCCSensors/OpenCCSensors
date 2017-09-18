@@ -2,12 +2,12 @@ package openccsensors.common.util;
 
 import java.util.HashMap;
 
+import am2.api.power.IPowerNode;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
-import am2.api.power.IPowerNode;
 
 public class MagicUtils {
 

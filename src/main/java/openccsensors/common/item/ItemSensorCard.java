@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,17 +16,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import openccsensors.OpenCCSensors;
-import openccsensors.api.EnumItemRarity;
-import openccsensors.api.IRequiresIconLoading;
-import openccsensors.api.ISensor;
-import openccsensors.api.ISensorCardRegistry;
-import openccsensors.api.ISensorTier;
-import openccsensors.api.SensorCard;
+import openccsensors.api.*;
 import openccsensors.common.SensorTier;
 import openccsensors.common.util.OCSLog;
 import openccsensors.common.util.RecipeUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemSensorCard extends Item implements ISensorCardRegistry {
 
@@ -38,43 +33,42 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 		setHasSubtypes(true);
 		setCreativeTab(OpenCCSensors.tabOpenCCSensors);
 	}
-	
+
 	@Override
-    public String getUnlocalizedName(ItemStack itemStack)
-    {
+	public String getUnlocalizedName(ItemStack itemStack) {
 		SensorCard card = getSensorCard(itemStack);
 		if (card == null) {
 			return "";
 		}
-        return String.format("item.openccsensors.%s", card.getSensor().getName());
-    }
-	
+		return String.format("item.openccsensors.%s", card.getSensor().getName());
+	}
+
 	public void registerSensors() {
 
 		SensorTier tier1 = new SensorTier("Mk. I", EnumItemRarity.COMMON, 2, "openccsensors:tier1");
 		SensorTier tier2 = new SensorTier("Mk. II", EnumItemRarity.UNCOMMON, 4, "openccsensors:tier2");
 		SensorTier tier3 = new SensorTier("Mk. III", EnumItemRarity.RARE, 6, "openccsensors:tier3");
 		SensorTier tier4 = new SensorTier("Mk. IV", EnumItemRarity.EPIC, 8, "openccsensors:tier4");
-		
+
 		addIconsForLoading(tier1, tier2, tier3, tier4);
-		
+
 		OpenCCSensors.Tiers.tier1 = tier1;
 		OpenCCSensors.Tiers.tier2 = tier2;
 		OpenCCSensors.Tiers.tier3 = tier3;
 		OpenCCSensors.Tiers.tier4 = tier4;
-		
+
 		addSensorCard(1, new SensorCard(OpenCCSensors.Sensors.proximitySensor, tier1));
 		addSensorCard(2, new SensorCard(OpenCCSensors.Sensors.proximitySensor, tier2));
 		addSensorCard(3, new SensorCard(OpenCCSensors.Sensors.proximitySensor, tier3));
 		addSensorCard(4, new SensorCard(OpenCCSensors.Sensors.proximitySensor, tier4));
 		addIconsForLoading(OpenCCSensors.Sensors.proximitySensor);
-		
+
 		addSensorCard(5, new SensorCard(OpenCCSensors.Sensors.droppedItemSensor, tier1));
 		addSensorCard(6, new SensorCard(OpenCCSensors.Sensors.droppedItemSensor, tier2));
 		addSensorCard(7, new SensorCard(OpenCCSensors.Sensors.droppedItemSensor, tier3));
 		addSensorCard(8, new SensorCard(OpenCCSensors.Sensors.droppedItemSensor, tier4));
 		addIconsForLoading(OpenCCSensors.Sensors.droppedItemSensor);
-		
+
 		/*addSensorCard(9, new SensorCard(OpenCCSensors.Sensors.signSensor, tier1));
 		addSensorCard(10, new SensorCard(OpenCCSensors.Sensors.signSensor, tier2));
 		addSensorCard(11, new SensorCard(OpenCCSensors.Sensors.signSensor, tier3));
@@ -107,37 +101,37 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 
 		addSensorCard(29, new SensorCard(OpenCCSensors.Sensors.worldSensor, tier1));
 		addIconsForLoading(OpenCCSensors.Sensors.worldSensor);
-		
+
 		addSensorCard(30, new SensorCard(OpenCCSensors.Sensors.powerSensor, tier1));
 		addSensorCard(31, new SensorCard(OpenCCSensors.Sensors.powerSensor, tier2));
 		addSensorCard(32, new SensorCard(OpenCCSensors.Sensors.powerSensor, tier3));
 		addSensorCard(33, new SensorCard(OpenCCSensors.Sensors.powerSensor, tier4));
 		addIconsForLoading(OpenCCSensors.Sensors.powerSensor);
-		
+
 
 		addSensorCard(34, new SensorCard(OpenCCSensors.Sensors.machineSensor, tier1));
 		addSensorCard(35, new SensorCard(OpenCCSensors.Sensors.machineSensor, tier2));
 		addSensorCard(36, new SensorCard(OpenCCSensors.Sensors.machineSensor, tier3));
 		addSensorCard(37, new SensorCard(OpenCCSensors.Sensors.machineSensor, tier4));
 		addIconsForLoading(OpenCCSensors.Sensors.machineSensor);
-		
+
 
 		addSensorCard(38, new SensorCard(OpenCCSensors.Sensors.cropSensor, tier1));
 		addSensorCard(39, new SensorCard(OpenCCSensors.Sensors.cropSensor, tier2));
 		addSensorCard(40, new SensorCard(OpenCCSensors.Sensors.cropSensor, tier3));
 		addSensorCard(41, new SensorCard(OpenCCSensors.Sensors.cropSensor, tier4));
 		addIconsForLoading(OpenCCSensors.Sensors.cropSensor);
-		
+
 		addSensorCard(42, new SensorCard(OpenCCSensors.Sensors.magicSensor, tier1));
 		addSensorCard(43, new SensorCard(OpenCCSensors.Sensors.magicSensor, tier2));
 		addSensorCard(44, new SensorCard(OpenCCSensors.Sensors.magicSensor, tier3));
 		addSensorCard(45, new SensorCard(OpenCCSensors.Sensors.magicSensor, tier4));
 		addIconsForLoading(OpenCCSensors.Sensors.magicSensor);
-		
+
 		OCSLog.info("Added %d Sensor Cards with %d Icons", cards.size(), iconLoadList.size());
 	}
 
-	public void addIconsForLoading (IRequiresIconLoading... list){
+	public void addIconsForLoading(IRequiresIconLoading... list) {
 		iconLoadList.addAll(Arrays.asList(list));
 	}
 
@@ -151,7 +145,7 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer player,
-			List list, boolean par4) {
+							   List list, boolean par4) {
 		SensorCard card = getSensorCard(itemStack);
 		if (card != null) {
 			ISensorTier tier = card.getTier();
@@ -166,14 +160,14 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 		if (card != null) {
 			ISensorTier tier = card.getTier();
 			switch (tier.getRarity()) {
-			case COMMON:
-				return EnumRarity.common;
-			case UNCOMMON:
-				return EnumRarity.uncommon;
-			case RARE:
-				return EnumRarity.rare;
-			case EPIC:
-				return EnumRarity.epic;
+				case COMMON:
+					return EnumRarity.common;
+				case UNCOMMON:
+					return EnumRarity.uncommon;
+				case RARE:
+					return EnumRarity.rare;
+				case EPIC:
+					return EnumRarity.epic;
 			}
 		}
 		return EnumRarity.common;
@@ -205,7 +199,7 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 			stack.setItemDamage(cards.keySet().iterator().next());
 		}
 		SensorCard card = getSensorCard(stack.getItemDamage());
-		
+
 		return card;
 	}
 
@@ -215,7 +209,7 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 		}
 		return cards.get(id);
 	}
-	
+
 	public Entry<Integer, SensorCard> getEntryForSensorAndTier(ISensor sensor, SensorTier tier) {
 		for (Entry<Integer, SensorCard> entry : cards.entrySet()) {
 			if (entry.getValue().getSensor() == sensor && entry.getValue().getTier() == tier) {
@@ -229,30 +223,30 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 	public void addSensorCard(int id, SensorCard sensorCard) {
 		cards.put(id, sensorCard);
 		Entry<Integer, SensorCard> previousTier;
-		if (sensorCard.getTier() == OpenCCSensors.Tiers.tier1){
+		if (sensorCard.getTier() == OpenCCSensors.Tiers.tier1) {
 			RecipeUtils.addTier1Recipe(
-					sensorCard.getSensor().getUniqueRecipeItem(),
-					new ItemStack(OpenCCSensors.Items.sensorCard, 1, id)
+				sensorCard.getSensor().getUniqueRecipeItem(),
+				new ItemStack(OpenCCSensors.Items.sensorCard, 1, id)
 			);
-		}else if (sensorCard.getTier() == OpenCCSensors.Tiers.tier2){
+		} else if (sensorCard.getTier() == OpenCCSensors.Tiers.tier2) {
 			previousTier = getEntryForSensorAndTier(sensorCard.getSensor(), OpenCCSensors.Tiers.tier1);
 			RecipeUtils.addTier2Recipe(
-					new ItemStack(OpenCCSensors.Items.sensorCard, 1, previousTier.getKey()),
-					new ItemStack(OpenCCSensors.Items.sensorCard, 1, id)
+				new ItemStack(OpenCCSensors.Items.sensorCard, 1, previousTier.getKey()),
+				new ItemStack(OpenCCSensors.Items.sensorCard, 1, id)
 			);
-		}else if (sensorCard.getTier() == OpenCCSensors.Tiers.tier3) {
+		} else if (sensorCard.getTier() == OpenCCSensors.Tiers.tier3) {
 			previousTier = getEntryForSensorAndTier(sensorCard.getSensor(), OpenCCSensors.Tiers.tier2);
 			RecipeUtils.addTier3Recipe(
-					new ItemStack(OpenCCSensors.Items.sensorCard, 1, previousTier.getKey()),
-					new ItemStack(OpenCCSensors.Items.sensorCard, 1, id)
+				new ItemStack(OpenCCSensors.Items.sensorCard, 1, previousTier.getKey()),
+				new ItemStack(OpenCCSensors.Items.sensorCard, 1, id)
 			);
-		}else if (sensorCard.getTier() == OpenCCSensors.Tiers.tier4) {
+		} else if (sensorCard.getTier() == OpenCCSensors.Tiers.tier4) {
 			previousTier = getEntryForSensorAndTier(sensorCard.getSensor(), OpenCCSensors.Tiers.tier3);
 			RecipeUtils.addTier4Recipe(
-					new ItemStack(OpenCCSensors.Items.sensorCard, 1, previousTier.getKey()),
-					new ItemStack(OpenCCSensors.Items.sensorCard, 1, id)
+				new ItemStack(OpenCCSensors.Items.sensorCard, 1, previousTier.getKey()),
+				new ItemStack(OpenCCSensors.Items.sensorCard, 1, id)
 			);
 		}
 	}
-	
+
 }

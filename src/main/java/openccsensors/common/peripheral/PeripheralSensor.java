@@ -4,22 +4,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import openccsensors.OpenCCSensors;
-import openccsensors.api.IMethodCallback;
-import openccsensors.api.ISensor;
-import openccsensors.api.ISensorAccess;
-import openccsensors.api.ISensorEnvironment;
-import openccsensors.api.SensorCard;
+import openccsensors.api.*;
 import openccsensors.common.item.ItemSensorCard;
 import openccsensors.common.util.CallbackEventManager;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
@@ -50,11 +46,11 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 			@Override
 			public Object execute(IComputerAccess computer, Object[] arguments)
-					throws Exception {
-	
+				throws Exception {
+
 				SensorCard card = getSensorCard();
 				if (card != null) {
-					
+
 					ChunkCoordinates location = env.getLocation();
 
 					ISensor sensor = card.getSensor();
@@ -62,18 +58,18 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 					if (sensor != null) {
 
 						HashMap<String, Object> targets = sensor.getTargets(env.getWorld(), location, card.getTier());
-						
-						for(Entry entry : targets.entrySet()) {
+
+						for (Entry entry : targets.entrySet()) {
 							entry.setValue(sensor.getDetails(env.getWorld(), entry.getValue(), location, false));
 						}
-						
+
 						return targets;
 
 					}
-					
+
 
 					throw new Exception(
-							"There was a problem with your sensor card. Please report details on the OpenCCSensors bug tracker");
+						"There was a problem with your sensor card. Please report details on the OpenCCSensors bug tracker");
 				}
 				throw new Exception("Could not find a valid sensor card");
 
@@ -90,29 +86,29 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 			@Override
 			public Object execute(IComputerAccess computer, Object[] arguments)
-					throws Exception {
+				throws Exception {
 
 				if (arguments.length != 1 || !(arguments[0] instanceof String)) {
 					throw new Exception(
-							"getTargetDetails takes just one argument, which should be the name of the target you're trying to retrieve");
+						"getTargetDetails takes just one argument, which should be the name of the target you're trying to retrieve");
 				}
 
 				String targetName = (String) arguments[0];
-				
+
 				SensorCard card = getSensorCard();
-				
+
 				if (card == null) {
 					throw new Exception("Could not find a valid sensor card");
 				}
-				
+
 				ChunkCoordinates location = env.getLocation();
 				ISensor sensor = card.getSensor();
 				HashMap<String, Object> targets = sensor.getTargets(env.getWorld(), location, card.getTier());
-				
+
 				if (!targets.containsKey(targetName)) {
-					throw new Exception("Sensor cannot find data at location"); 
+					throw new Exception("Sensor cannot find data at location");
 				}
-				
+
 				return sensor.getDetails(env.getWorld(), targets.get(targetName), location, true);
 			}
 		});
@@ -126,18 +122,18 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 			@Override
 			public Object execute(IComputerAccess computer, Object[] arguments)
-					throws Exception {
-				
+				throws Exception {
+
 				if (arguments.length > 0) {
 					throw new Exception(
-							"getSensorName does not take any arguments");
+						"getSensorName does not take any arguments");
 				}
-				
+
 				SensorCard sensorCard = getSensorCard();
 				if (sensorCard == null) {
 					return null;
 				}
-				
+
 				return sensorCard.getSensor().getName();
 			}
 		});
@@ -151,10 +147,10 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 			@Override
 			public Object execute(IComputerAccess item, Object[] args)
-					throws Exception {
+				throws Exception {
 
 				SensorCard sensorCard = getSensorCard();
-				
+
 				HashMap methods = new HashMap();
 
 				if (sensorCard == null) {
@@ -163,14 +159,13 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 				ISensor sensor = sensorCard.getSensor();
 				String[] customMethods = sensor.getCustomMethods(sensorCard.getTier());
-				
+
 				if (customMethods == null) {
 					return null;
 				}
-				
-				for(int i = 0 ; i < customMethods.length; i++)
-				{
-				   methods.put(i + 1, customMethods[i]);
+
+				for (int i = 0; i < customMethods.length; i++) {
+					methods.put(i + 1, customMethods[i]);
 				}
 				return methods;
 			}
@@ -185,8 +180,8 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 			@Override
 			public Object execute(IComputerAccess item, Object[] args)
-					throws Exception {
-				
+				throws Exception {
+
 				SensorCard sensorCard = getSensorCard();
 
 				if (sensorCard == null) {
@@ -198,17 +193,18 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 				if (args.length < 1 || !(args[0] instanceof String)) {
 					throw new Exception("Invalid arguments. Expected String.");
 				}
-				
+
 				String[] sensorMethods = sensor.getCustomMethods(sensorCard.getTier());
-				
+
 				if (sensorMethods == null) {
 					return null;
 				}
-				
+
 				int methodId = Arrays.asList(sensorMethods).indexOf(args[0].toString());
 
-				if (methodId < 0)
+				if (methodId < 0) {
 					throw new Exception("Invalid sensor command");
+				}
 
 				Object[] arguments = new Object[args.length - 1];
 				System.arraycopy(args, 1, arguments, 0, args.length - 1);
@@ -220,7 +216,7 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 					methodId,
 					arguments, sensorCard.getTier()
 				);
-				
+
 			}
 		});
 
@@ -236,11 +232,11 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 		int id = eventManager.queueMethodCall(computer, method, arguments);
 		while (true) {
 			Object[] params = context.pullEvent(null);
-			if (params.length >= 3 && params[1] instanceof Double && ((Double)params[1]).intValue() == id) {
+			if (params.length >= 3 && params[1] instanceof Double && ((Double) params[1]).intValue() == id) {
 				if (params[0].equals("ocs_success")) {
-					return new Object[] {params[2]};
+					return new Object[]{params[2]};
 				} else if (params[0].equals("ocs_error")) {
-					return new Object[] {null, params[2]};
+					return new Object[]{null, params[2]};
 				}
 			}
 		}
@@ -280,19 +276,20 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 	/**
 	 * Get the sensor card interface for the current card
-	 * 
+	 *
 	 * @return
 	 */
 	public SensorCard getSensorCard() {
 		if (env != null) {
 			ItemStack stack = env.getSensorCardStack();
 
-			if (stack == null)
+			if (stack == null) {
 				return null;
+			}
 
 			Item card = stack.getItem();
 			if (card != null && card instanceof ItemSensorCard) {
-				return ((ItemSensorCard)card).getSensorCard(stack);
+				return ((ItemSensorCard) card).getSensorCard(stack);
 			}
 		}
 		return null;
@@ -300,13 +297,13 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 
 	@Override
 	public boolean equals(IPeripheral other) {
-		if(other == null) {
+		if (other == null) {
 			return false;
 		}
-		if(this == other) {
+		if (this == other) {
 			return true;
 		}
-		if(other instanceof TileEntity) {
+		if (other instanceof TileEntity) {
 			TileEntity tother = (TileEntity) other;
 			ChunkCoordinates location = env.getLocation();
 			return tother.getWorldObj().equals(env.getWorld()) && tother.xCoord == location.posX && tother.yCoord == location.posY && tother.zCoord == location.posZ;

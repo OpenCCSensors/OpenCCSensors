@@ -2,13 +2,14 @@ package openccsensors.common;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.FMLLaunchHandler;
+import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.ForgeVersion;
 import openccsensors.OpenCCSensors;
 import openccsensors.common.block.BlockBasicSensor;
 import openccsensors.common.block.BlockGauge;
@@ -18,60 +19,42 @@ import openccsensors.common.item.ItemSensorCard;
 import openccsensors.common.item.meta.ItemMetaAdvancedAmplifier;
 import openccsensors.common.item.meta.ItemMetaRangeExtensionAntenna;
 import openccsensors.common.item.meta.ItemMetaSignalAmplifier;
-import openccsensors.common.sensor.CropSensor;
-import openccsensors.common.sensor.DroppedItemSensor;
-import openccsensors.common.sensor.InventorySensor;
-import openccsensors.common.sensor.MachineSensor;
-import openccsensors.common.sensor.MagicSensor;
-import openccsensors.common.sensor.MinecartSensor;
-import openccsensors.common.sensor.PowerSensor;
-import openccsensors.common.sensor.ProximitySensor;
-import openccsensors.common.sensor.SignSensor;
-import openccsensors.common.sensor.SonicSensor;
-import openccsensors.common.sensor.TankSensor;
-import openccsensors.common.sensor.WorldSensor;
+import openccsensors.common.sensor.*;
 import openccsensors.common.tileentity.TileEntityGauge;
 import openccsensors.common.turtle.TurtleUpgradeSensor;
-import openccsensors.common.util.OCSLog;
 import openccsensors.common.util.RecipeUtils;
 import openccsensors.common.util.ResourceExtractingUtils;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.FMLLaunchHandler;
-import dan200.computercraft.api.ComputerCraftAPI;
 
 public class CommonProxy {
-	
+
 	public void init() {
 
 		initSensors();
 		initBlocks();
 		initItems();
-		
+
 		OpenCCSensors.turtleUpgradeSensor = new TurtleUpgradeSensor();
-			
+
 		if (OpenCCSensors.Config.turtlePeripheralEnabled) {
 			ComputerCraftAPI.registerTurtleUpgrade(OpenCCSensors.turtleUpgradeSensor);
 		}
-		
+
 		ComputerCraftAPI.registerPeripheralProvider(OpenCCSensors.Blocks.sensorBlock);
-		
+
 		NetworkRegistry.INSTANCE.registerGuiHandler(OpenCCSensors.instance, new GuiHandler());
 
 		TileEntityGauge.addGaugeSensor(OpenCCSensors.Sensors.machineSensor);
 		TileEntityGauge.addGaugeSensor(OpenCCSensors.Sensors.powerSensor);
 		TileEntityGauge.addGaugeSensor(OpenCCSensors.Sensors.inventorySensor);
 		TileEntityGauge.addGaugeSensor(OpenCCSensors.Sensors.tankSensor);
-		
+
 		RecipeUtils.addGaugeRecipe();
 		RecipeUtils.addSensorRecipe();
 		RecipeUtils.addProxSensorBlockRecipe();
-		
+
 		setupLuaFiles();
 	}
-	
+
 	private void initSensors() {
 		OpenCCSensors.Sensors.proximitySensor = new ProximitySensor();
 		OpenCCSensors.Sensors.droppedItemSensor = new DroppedItemSensor();
@@ -86,37 +69,37 @@ public class CommonProxy {
 		OpenCCSensors.Sensors.magicSensor = new MagicSensor();
 		OpenCCSensors.Sensors.cropSensor = new CropSensor();
 	}
-	
+
 	private void initBlocks() {
 		OpenCCSensors.Blocks.sensorBlock = new BlockSensor();
 		OpenCCSensors.Blocks.gaugeBlock = new BlockGauge();
 		OpenCCSensors.Blocks.basicSensorBlock = new BlockBasicSensor();
 	}
-	
+
 	private void initItems() {
-		
+
 		// metas
 		OpenCCSensors.Items.genericItem = new ItemGeneric();
 		OpenCCSensors.Items.rangeExtensionAntenna = new ItemMetaRangeExtensionAntenna(1);
 		OpenCCSensors.Items.signalAmplifier = new ItemMetaSignalAmplifier(2);
 		OpenCCSensors.Items.advancedAmplifier = new ItemMetaAdvancedAmplifier(3);
-		
+
 		OpenCCSensors.Items.sensorCard = new ItemSensorCard();
 		OpenCCSensors.Items.sensorCard.registerSensors();
-		
+
 		GameRegistry.registerItem(OpenCCSensors.Items.genericItem, "genericItem", "ocs");
 		GameRegistry.registerItem(OpenCCSensors.Items.sensorCard, "sensorCard", "ocs");
-		
+
 	}
-	
-	
+
+
 	public void registerRenderInformation() {
 
 	}
 
 	public File getBase() {
 		if (FMLLaunchHandler.side().isClient()) {
-            return Minecraft.getMinecraft().mcDataDir;
+			return Minecraft.getMinecraft().mcDataDir;
 		} else {
 			return new File(".");
 		}
@@ -145,5 +128,5 @@ public class CommonProxy {
 		}
 		return true;
 	}
-	
+
 }

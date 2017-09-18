@@ -16,80 +16,81 @@ public class RecipeUtils {
 
 	public static void addTier1Recipe(ItemStack input, ItemStack output) {
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
-				output,
-				new Object[] {
-					"rpr",
-					"rrr",
-					"aaa",
-					Character.valueOf('r'), new ItemStack((Item)Item.itemRegistry.getObject("redstone")),
-					Character.valueOf('a'), new ItemStack((Item)Item.itemRegistry.getObject("paper")),
-					Character.valueOf('p'), input				
-				}
-			));
-		
+			output,
+			new Object[]{
+				"rpr",
+				"rrr",
+				"aaa",
+				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				Character.valueOf('a'), new ItemStack((Item) Item.itemRegistry.getObject("paper")),
+				Character.valueOf('p'), input
+			}
+		));
+
 	}
-	
+
 	public static void addTier2Recipe(ItemStack input, ItemStack output) {
 		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(
-				output,
-				input,
-				OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1)
-			));
+			output,
+			input,
+			OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1)
+		));
 	}
 
 	public static void addTier3Recipe(ItemStack input, ItemStack output) {
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
-				output,
-				new Object[] {
-					"aca",
-					" m ",
-					Character.valueOf('a'), OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1),
-					Character.valueOf('c'), input,
-					Character.valueOf('m'), OpenCCSensors.Items.signalAmplifier.newItemStack(1)			
-				}
-			));
+			output,
+			new Object[]{
+				"aca",
+				" m ",
+				Character.valueOf('a'), OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1),
+				Character.valueOf('c'), input,
+				Character.valueOf('m'), OpenCCSensors.Items.signalAmplifier.newItemStack(1)
+			}
+		));
 	}
-	
+
 	public static void addTier4Recipe(ItemStack input, ItemStack output) {
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
 			output,
-			new Object[] {
+			new Object[]{
 				" a ",
 				"aca",
 				"mpm",
 				Character.valueOf('a'), OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1),
 				Character.valueOf('c'), input,
-				Character.valueOf('m'), OpenCCSensors.Items.signalAmplifier.newItemStack(1),	
-				Character.valueOf('p'), OpenCCSensors.Items.advancedAmplifier.newItemStack(1)			
+				Character.valueOf('m'), OpenCCSensors.Items.signalAmplifier.newItemStack(1),
+				Character.valueOf('p'), OpenCCSensors.Items.advancedAmplifier.newItemStack(1)
 			}
 		));
 	}
-	
+
 	public static void addSensorRecipe() {
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
-				new ItemStack(OpenCCSensors.Blocks.sensorBlock),
-				new Object[] {
-					"ooo",
-					"ror",
-					"sss",
-					Character.valueOf('o'), new ItemStack((Block)Block.blockRegistry.getObject("obsidian")),
-					Character.valueOf('r'), new ItemStack((Item)Item.itemRegistry.getObject("redstone")),
-					Character.valueOf('s'), new ItemStack((Block)Block.blockRegistry.getObject("stone"))
-				}
-			));	
+			new ItemStack(OpenCCSensors.Blocks.sensorBlock),
+			new Object[]{
+				"ooo",
+				"ror",
+				"sss",
+				Character.valueOf('o'), new ItemStack((Block) Block.blockRegistry.getObject("obsidian")),
+				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				Character.valueOf('s'), new ItemStack((Block) Block.blockRegistry.getObject("stone"))
+			}
+		));
 	}
-	
+
 	public static void addGaugeRecipe() {
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
-				new ItemStack(OpenCCSensors.Blocks.gaugeBlock),
-				new Object[] {
-					"grm",
-					Character.valueOf('g'), new ItemStack((Block)Block.blockRegistry.getObject("glass_pane")),
-					Character.valueOf('r'), new ItemStack((Item)Item.itemRegistry.getObject("redstone")),
-					Character.valueOf('m'), new ItemStack(getMonitor(), 1, 2)
-				}
-			));	
+			new ItemStack(OpenCCSensors.Blocks.gaugeBlock),
+			new Object[]{
+				"grm",
+				Character.valueOf('g'), new ItemStack((Block) Block.blockRegistry.getObject("glass_pane")),
+				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				Character.valueOf('m'), new ItemStack(getMonitor(), 1, 2)
+			}
+		));
 	}
+
 	private static Block getMonitor() {
 		Block monitor = null;
 		try {
@@ -105,25 +106,25 @@ public class RecipeUtils {
 		}
 		return monitor;
 	}
-	
+
 	public static void addProxSensorBlockRecipe() {
 
 		Entry<Integer, SensorCard> entry = OpenCCSensors.Items.sensorCard.getEntryForSensorAndTier(
-												OpenCCSensors.Sensors.proximitySensor,
-												OpenCCSensors.Tiers.tier4
-											);
+			OpenCCSensors.Sensors.proximitySensor,
+			OpenCCSensors.Tiers.tier4
+		);
 		ItemStack proxCard = new ItemStack(OpenCCSensors.Items.sensorCard, 1, entry.getKey());
-		
+
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
 			new ItemStack(OpenCCSensors.Blocks.basicSensorBlock),
-			new Object[] {
+			new Object[]{
 				"   ",
 				"cpc",
 				"rir",
-				Character.valueOf('c'), new ItemStack((Item)Item.itemRegistry.getObject("comparator")),
+				Character.valueOf('c'), new ItemStack((Item) Item.itemRegistry.getObject("comparator")),
 				Character.valueOf('p'), proxCard,
-				Character.valueOf('r'), new ItemStack((Item)Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('i'), new ItemStack((Block)Block.blockRegistry.getObject("iron_block")),				
+				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				Character.valueOf('i'), new ItemStack((Block) Block.blockRegistry.getObject("iron_block")),
 			}
 		));
 	}

@@ -1,11 +1,11 @@
 package openccsensors.common.turtle;
 
+import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import openccsensors.api.ISensorEnvironment;
-import dan200.computercraft.api.turtle.ITurtleAccess;
 
 public class TurtleSensorEnvironment implements ISensorEnvironment {
 

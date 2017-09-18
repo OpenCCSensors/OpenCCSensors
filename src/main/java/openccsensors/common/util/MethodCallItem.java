@@ -9,8 +9,7 @@ public class MethodCallItem {
 	private int callId;
 	private Object[] arguments;
 
-	public MethodCallItem(int callId, IComputerAccess computer, int methodId,
-			Object[] arguments) {
+	public MethodCallItem(int callId, IComputerAccess computer, int methodId, Object[] arguments) {
 		this.computer = computer;
 		this.methodId = methodId;
 		this.callId = callId;

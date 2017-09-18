@@ -1,6 +1,5 @@
 package openccsensors.api;
 
-
 public interface ISensorCardRegistry {
-	public void addSensorCard(int id, SensorCard sensorCard);
+	void addSensorCard(int id, SensorCard sensorCard);
 }

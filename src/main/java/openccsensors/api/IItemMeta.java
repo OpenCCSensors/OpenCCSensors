@@ -4,9 +4,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
 public interface IItemMeta {
-	public int getId();
-    public boolean displayInCreative();
-    public IIcon getIcon();
-    public String getName();
+	int getId();
+
+	boolean displayInCreative();
+
+	IIcon getIcon();
+
+	String getName();
+
 	ItemStack newItemStack(int size);
 }

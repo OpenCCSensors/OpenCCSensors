@@ -21,38 +21,38 @@ import openccsensors.common.util.Mods;
 public class InventorySensor extends TileSensor implements ISensor, IRequiresIconLoading, IGaugeSensor {
 
 	private IIcon icon;
-	private String[] gaugeProperties = new String[] {
-		"InventoryPercentFull"	
+	private String[] gaugeProperties = new String[]{
+		"InventoryPercentFull"
 	};
-	
+
 	@Override
 	public boolean isValidTarget(Object target) {
 		return target instanceof IInventory || (Mods.AE && AppliedEnergisticsUtils.isValidTarget(target));
 	}
-	
+
 	@Override
 	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
-		
+
 		TileEntity tile = (TileEntity) obj;
-		
+
 		HashMap response = super.getDetails(tile, sensorPos);
-		
+
 		if (Mods.AE && AppliedEnergisticsUtils.isValidTarget(obj)) {
 			response.putAll(AppliedEnergisticsUtils.getTileDetails(obj, additional));
-		}else {
+		} else {
 			response.putAll(InventoryUtils.getInventorySizeCalculations((IInventory) tile));
 			if (additional) {
 				response.put("Slots", InventoryUtils.invToMap((IInventory) tile));
 			}
 		}
-		
+
 		return response;
 	}
 
 	@Override
 	public String[] getCustomMethods(ISensorTier tier) {
-		return new String[] {
-				"getMapData"
+		return new String[]{
+			"getMapData"
 			/*
 				"getBeeInfo",
 				"getMystcraftBookInfo"
@@ -61,32 +61,31 @@ public class InventorySensor extends TileSensor implements ISensor, IRequiresIco
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) throws Exception {
-		
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) throws Exception {
+
 		if (args.length != 2) {
 			throw new Exception("This method expects two parameters");
 		}
 
 		if (args[1] instanceof Double) {
-			args[1] = ((Double)args[1]).intValue();
+			args[1] = ((Double) args[1]).intValue();
 		}
 
 		if (!(args[0] instanceof String) || !(args[1] instanceof Integer)) {
 			throw new Exception("Incorrect parameters. It should be target name, then slot number");
 		}
-		
-		String targetName = (String)args[0];
-		int slot = ((Integer)args[1])-1;
-		
+
+		String targetName = (String) args[0];
+		int slot = ((Integer) args[1]) - 1;
+
 		HashMap targets = getTargets(world, location, tier);
-		
+
 		switch (methodID) {
-			case 0:				
+			case 0:
 				return InventoryUtils.getMapData(world, targets, targetName, slot);
-			case 1:				
+			case 1:
 				return null;
-			case 2:				
+			case 2:
 				return null;
 		}
 		return null;
@@ -109,7 +108,7 @@ public class InventorySensor extends TileSensor implements ISensor, IRequiresIco
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Block)Block.blockRegistry.getObject("chest"));
+		return new ItemStack((Block) Block.blockRegistry.getObject("chest"));
 	}
 
 	@Override

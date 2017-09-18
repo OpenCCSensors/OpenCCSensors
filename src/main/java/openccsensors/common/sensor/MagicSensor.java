@@ -2,7 +2,6 @@ package openccsensors.common.sensor;
 
 import java.util.HashMap;
 
-import cpw.mods.fml.common.Loader;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +22,7 @@ public class MagicSensor extends TileSensor implements ISensor, IRequiresIconLoa
 	@Override
 	public boolean isValidTarget(Object tile) {
 		return (Mods.TC && MagicUtils.isValidAspectTarget(tile)) ||
-		       (Mods.AM && MagicUtils.isValidAspectTarget(tile));
+			(Mods.AM && MagicUtils.isValidAspectTarget(tile));
 	}
 
 	@Override
@@ -38,15 +37,14 @@ public class MagicSensor extends TileSensor implements ISensor, IRequiresIconLoa
 		}
 		return response;
 	}
-	
+
 	@Override
 	public String[] getCustomMethods(ISensorTier tier) {
 		return null;
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
@@ -67,7 +65,7 @@ public class MagicSensor extends TileSensor implements ISensor, IRequiresIconLoa
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item)Item.itemRegistry.getObject("gold_ingot"));
+		return new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot"));
 	}
 
 }

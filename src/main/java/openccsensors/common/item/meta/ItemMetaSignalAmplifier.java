@@ -15,25 +15,25 @@ public class ItemMetaSignalAmplifier implements IItemMeta, IRequiresIconLoading 
 
 	private int id;
 	private IIcon icon;
-	
+
 	public ItemMetaSignalAmplifier(int id) {
 		this.id = id;
 
 		OpenCCSensors.Items.genericItem.addMeta(this);
-		
+
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
 			newItemStack(1),
-			new Object[] {
+			new Object[]{
 				"sgs",
 				"rrr",
 				"sgs",
-				Character.valueOf('s'), new ItemStack((Block)Block.blockRegistry.getObject("stone")),
-				Character.valueOf('r'), new ItemStack((Item)Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('g'), new ItemStack((Item)Item.itemRegistry.getObject("gold_ingot")),			
+				Character.valueOf('s'), new ItemStack((Block) Block.blockRegistry.getObject("stone")),
+				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				Character.valueOf('g'), new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot")),
 			}
 		));
 	}
-	
+
 	@Override
 	public int getId() {
 		return id;
@@ -58,7 +58,7 @@ public class ItemMetaSignalAmplifier implements IItemMeta, IRequiresIconLoading 
 	public ItemStack newItemStack(int size) {
 		return new ItemStack(OpenCCSensors.Items.genericItem, size, getId());
 	}
-	
+
 	@Override
 	public String getName() {
 		return "signalAmplifier";

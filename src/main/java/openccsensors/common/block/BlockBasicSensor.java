@@ -2,6 +2,9 @@ package openccsensors.common.block;
 
 import java.util.List;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -19,9 +22,6 @@ import openccsensors.OpenCCSensors;
 import openccsensors.api.IBasicSensor;
 import openccsensors.common.sensor.ProximitySensor;
 import openccsensors.common.tileentity.basic.TileEntityBasicProximitySensor;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBasicSensor extends BlockContainer {
 
@@ -33,7 +33,9 @@ public class BlockBasicSensor extends BlockContainer {
 		public static IIcon sideAll;
 		public static IIcon sideOwner;
 		public static IIcon sidePlayers;
-	};
+	}
+
+	;
 
 	public BlockBasicSensor() {
 		super(Material.ground);
@@ -42,7 +44,7 @@ public class BlockBasicSensor extends BlockContainer {
 		GameRegistry.registerBlock(this, "basicProximitySensor");
 		GameRegistry.registerTileEntity(TileEntityBasicProximitySensor.class, "basicProximitySensor");
 		setBlockName("openccsensors.proximitysensor");
-		
+
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -58,41 +60,39 @@ public class BlockBasicSensor extends BlockContainer {
 		Icons.sidePlayers = iconRegister.registerIcon("openccsensors:proxSidePlayers");
 		Icons.sideOwner = iconRegister.registerIcon("openccsensors:proxSideOwner");
 	}
-	
-    @Override
-	public IIcon getIcon(int side, int par2)
-    {
-		switch(side) {
-		case 0:
-			return Icons.bottom;
-		case 1:
-			return Icons.top;
-		default:
-			return Icons.sideAll;
-		}
-    }
-    
+
 	@Override
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
-    {
-		switch(side) {
-		case 0:
-			return Icons.bottom;
-		case 1:
-			return Icons.top;
-		default:
-			TileEntity tile = blockAccess.getTileEntity(x, y, z);
-			if ((tile != null) && ((tile instanceof TileEntityBasicProximitySensor))) {
-				switch(((TileEntityBasicProximitySensor) tile).getEntityMode()) {
-					case ProximitySensor.MODE_ALL:
-						return Icons.sideAll;
-					case ProximitySensor.MODE_OWNER:
-						return Icons.sideOwner;
-					case ProximitySensor.MODE_PLAYERS:
-						return Icons.sidePlayers;
+	public IIcon getIcon(int side, int par2) {
+		switch (side) {
+			case 0:
+				return Icons.bottom;
+			case 1:
+				return Icons.top;
+			default:
+				return Icons.sideAll;
+		}
+	}
+
+	@Override
+	public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
+		switch (side) {
+			case 0:
+				return Icons.bottom;
+			case 1:
+				return Icons.top;
+			default:
+				TileEntity tile = blockAccess.getTileEntity(x, y, z);
+				if ((tile != null) && ((tile instanceof TileEntityBasicProximitySensor))) {
+					switch (((TileEntityBasicProximitySensor) tile).getEntityMode()) {
+						case ProximitySensor.MODE_ALL:
+							return Icons.sideAll;
+						case ProximitySensor.MODE_OWNER:
+							return Icons.sideOwner;
+						case ProximitySensor.MODE_PLAYERS:
+							return Icons.sidePlayers;
+					}
 				}
-			}
-			return Icons.sideAll;
+				return Icons.sideAll;
 		}
 	}
 
@@ -107,8 +107,7 @@ public class BlockBasicSensor extends BlockContainer {
 	}
 
 	@Override
-	public int isProvidingWeakPower(IBlockAccess iblockaccess, int x, int y,
-			int z, int m) {
+	public int isProvidingWeakPower(IBlockAccess iblockaccess, int x, int y, int z, int m) {
 		TileEntity tile = iblockaccess.getTileEntity(x, y, z);
 		if ((tile != null) && ((tile instanceof IBasicSensor))) {
 			return ((IBasicSensor) tile).getPowerOutput();
@@ -117,14 +116,12 @@ public class BlockBasicSensor extends BlockContainer {
 	}
 
 	@Override
-	public int isProvidingStrongPower(IBlockAccess iblockaccess, int x, int y,
-			int z, int m) {
+	public int isProvidingStrongPower(IBlockAccess iblockaccess, int x, int y, int z, int m) {
 		return isProvidingWeakPower(iblockaccess, x, y, z, m);
 	}
 
 	@Override
-	public void breakBlock(World worldObj, int xCoord, int yCoord, int zCoord,
-			Block par5, int par6) {
+	public void breakBlock(World worldObj, int xCoord, int yCoord, int zCoord, Block par5, int par6) {
 		worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, OpenCCSensors.Blocks.sensorBlock);
 		worldObj.notifyBlockOfNeighborChange(xCoord, yCoord - 1, zCoord, OpenCCSensors.Blocks.sensorBlock);
 		worldObj.notifyBlockOfNeighborChange(xCoord, yCoord + 1, zCoord, OpenCCSensors.Blocks.sensorBlock);
@@ -135,23 +132,23 @@ public class BlockBasicSensor extends BlockContainer {
 		super.breakBlock(worldObj, xCoord, yCoord, zCoord, par5, par6);
 
 	}
-	
+
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack itemStack) {
-		TileEntity tile = world.getTileEntity(x,  y,  z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 		if (tile != null && tile instanceof TileEntityBasicProximitySensor) {
 			((TileEntityBasicProximitySensor) tile).setOwner(player.getCommandSenderName());
 		}
 		super.onBlockPlacedBy(world, x, y, z, player, itemStack);
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
 		if (!world.isRemote) {
 			if (player.isSneaking()) {
 				return false;
 			}
-			TileEntity tile = world.getTileEntity(x,  y,  z);
+			TileEntity tile = world.getTileEntity(x, y, z);
 			if (tile != null && tile instanceof TileEntityBasicProximitySensor) {
 				((TileEntityBasicProximitySensor) tile).onBlockClicked(player);
 			}
@@ -160,14 +157,12 @@ public class BlockBasicSensor extends BlockContainer {
 	}
 
 	@Override
-	public boolean canBeReplacedByLeaves(IBlockAccess world, int x, int y, int z)
-	{
-	    return false;
+	public boolean canBeReplacedByLeaves(IBlockAccess world, int x, int y, int z) {
+		return false;
 	}
 
 	@Override
-    public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face)
-	{
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
 		return false;
 	}
 

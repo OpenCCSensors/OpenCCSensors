@@ -13,30 +13,30 @@ import openccsensors.api.IGaugeSensor;
 import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
+import openccsensors.common.util.CoFHUtils;
 import openccsensors.common.util.Ic2Utils;
 import openccsensors.common.util.Mods;
 import openccsensors.common.util.RotaryCraftUtils;
-import openccsensors.common.util.CoFHUtils;
 
 public class MachineSensor extends TileSensor implements ISensor, IRequiresIconLoading, IGaugeSensor {
 
 	private IIcon icon;
-	
-	private String[] gaugeProperties = new String[] {
+
+	private String[] gaugeProperties = new String[]{
 		"HeatPercentage",
 		"Progress"
 	};
-	
+
 	@Override
 	public String[] getGaugeProperties() {
 		return gaugeProperties;
 	}
-	
+
 	@Override
 	public boolean isValidTarget(Object target) {
 		return (Mods.IC2 && Ic2Utils.isValidMachineTarget(target)) ||
-			   (Mods.TE && CoFHUtils.isValidMachineTarget(target)) ||
-			   (Mods.RC && RotaryCraftUtils.isValidMachineTarget(target));
+			(Mods.TE && CoFHUtils.isValidMachineTarget(target)) ||
+			(Mods.RC && RotaryCraftUtils.isValidMachineTarget(target));
 	}
 
 	@Override
@@ -66,8 +66,7 @@ public class MachineSensor extends TileSensor implements ISensor, IRequiresIconL
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) throws Exception {
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) throws Exception {
 		return null;
 	}
 
@@ -83,7 +82,7 @@ public class MachineSensor extends TileSensor implements ISensor, IRequiresIconL
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item)Item.itemRegistry.getObject("redstone"));
+		return new ItemStack((Item) Item.itemRegistry.getObject("redstone"));
 	}
 
 }

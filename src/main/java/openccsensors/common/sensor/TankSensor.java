@@ -19,16 +19,16 @@ import openccsensors.api.ISensorTier;
 import openccsensors.common.util.TankUtils;
 
 public class TankSensor extends TileSensor implements ISensor, IRequiresIconLoading, IGaugeSensor {
-	
+
 	private IIcon icon;
-	private String[] gaugeProperties = new String[] {
-			"PercentFull"	
-		};
+	private String[] gaugeProperties = new String[]{
+		"PercentFull"
+	};
 
 	@Override
 	public boolean isValidTarget(Object tile) {
 		if (tile instanceof IFluidHandler) {
-			FluidTankInfo[] tanks = ((IFluidHandler)tile).getTankInfo(ForgeDirection.UNKNOWN);
+			FluidTankInfo[] tanks = ((IFluidHandler) tile).getTankInfo(ForgeDirection.UNKNOWN);
 			if (tanks != null) {
 				return tanks.length > 0;
 			}
@@ -40,18 +40,17 @@ public class TankSensor extends TileSensor implements ISensor, IRequiresIconLoad
 	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
 		TileEntity tile = (TileEntity) obj;
 		HashMap response = super.getDetails(tile, sensorPos);
-		response.put("Tanks", TankUtils.fluidHandlerToMap((IFluidHandler)tile));
+		response.put("Tanks", TankUtils.fluidHandlerToMap((IFluidHandler) tile));
 		return response;
 	}
-	
+
 	@Override
 	public String[] getCustomMethods(ISensorTier tier) {
 		return null;
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
@@ -72,7 +71,7 @@ public class TankSensor extends TileSensor implements ISensor, IRequiresIconLoad
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item)Item.itemRegistry.getObject("bucket"));
+		return new ItemStack((Item) Item.itemRegistry.getObject("bucket"));
 	}
 
 	@Override

@@ -1,5 +1,9 @@
 package openccsensors.common.tileentity;
 
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -13,10 +17,6 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import openccsensors.api.ISensorEnvironment;
 import openccsensors.common.peripheral.PeripheralSensor;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntitySensor extends TileEntity implements ISensorEnvironment, IPeripheral, IInventory {
 
@@ -26,45 +26,45 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 
 	private float rotation;
 	private final static float rotationSpeed = 3.0F;
-	
+
 	public TileEntitySensor() {
 		peripheral = new PeripheralSensor(this, false);
 		inventory = new InventoryBasic("Sensor", true, 1);
 		rotation = 0;
 	}
-	
+
 	public float getRotation() {
 		return rotation;
 	}
-	
+
 	/* Tile entity overrides */
-	
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
 		peripheral.update();
 		rotation = (rotation + rotationSpeed) % 360;
 	}
-	
+
 	@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		writeToNBT(nbt);
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, nbt);
-	}	
-	
+	}
+
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
 		NBTTagCompound item = compound.getCompoundTag("item");
 		inventory.setInventorySlotContents(0, ItemStack.loadItemStackFromNBT(item));
 	}
-	
+
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
@@ -75,9 +75,9 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 		}
 		nbttagcompound.setTag("item", item);
 	}
-	
+
 	/* Inventory proxy methods */
-	
+
 	@Override
 	public int getSizeInventory() {
 		return inventory.getSizeInventory();
@@ -109,7 +109,7 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 	public String getInventoryName() {
 		return inventory.getInventoryName();
 	}
-	
+
 	@Override
 	public int getInventoryStackLimit() {
 		return inventory.getInventoryStackLimit();
@@ -130,7 +130,7 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 
 
 	/* Peripheral proxy methods */
-	
+
 	@Override
 	public String getType() {
 		return peripheral.getType();
@@ -191,6 +191,6 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 	@Override
 	public boolean equals(IPeripheral other) {
 		// TODO Auto-generated method stub
-		return false;
+		return this == other;
 	}
 }

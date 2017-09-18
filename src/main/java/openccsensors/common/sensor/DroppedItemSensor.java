@@ -18,40 +18,40 @@ import openccsensors.common.util.InventoryUtils;
 public class DroppedItemSensor implements ISensor, IRequiresIconLoading {
 
 	private IIcon icon;
-	
+
 	@Override
 	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorLocation, boolean additional) {
-		
+
 		EntityItem item = (EntityItem) obj;
 
 		HashMap response = new HashMap();
 		HashMap position = new HashMap();
-		
+
 		position.put("X", item.posX - sensorLocation.posX);
 		position.put("Y", item.posY - sensorLocation.posY);
 		position.put("Z", item.posZ - sensorLocation.posZ);
-		
+
 		response.put("Position", position);
 
 		ItemStack stack = item.getEntityItem();
-		
+
 		response.put("Name", InventoryUtils.getNameForItemStack(stack));
 		response.put("RawName", InventoryUtils.getRawNameForStack(stack));
-		
+
 		if (additional) {
-			
+
 			response.putAll(InventoryUtils.itemstackToMap(stack));
 			response.put("IsBurning", item.isBurning());
-			
+
 		}
-		
+
 		return response;
 	}
 
 	@Override
 	public HashMap getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
 		double radius = tier.getMultiplier() * 4;
-		return (HashMap) EntityUtils.getEntities(world, location, radius, EntityItem.class);
+		return EntityUtils.getEntities(world, location, radius, EntityItem.class);
 	}
 
 	@Override
@@ -60,8 +60,7 @@ public class DroppedItemSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
@@ -82,7 +81,7 @@ public class DroppedItemSensor implements ISensor, IRequiresIconLoading {
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item)Item.itemRegistry.getObject("slime_ball"));
+		return new ItemStack((Item) Item.itemRegistry.getObject("slime_ball"));
 	}
 
 }

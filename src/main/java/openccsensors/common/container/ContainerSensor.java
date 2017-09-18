@@ -13,19 +13,19 @@ public class ContainerSensor extends Container {
 	private TileEntitySensor sensor;
 	private InventoryPlayer inventory;
 	private int inventorySize;
-	
+
 	public ContainerSensor(InventoryPlayer _inventory, TileEntity _tile) {
-		
-		sensor = (TileEntitySensor)_tile;
+
+		sensor = (TileEntitySensor) _tile;
 		inventory = _inventory;
 		inventorySize = sensor.getSizeInventory();
-		
+
 		addSlotToContainer(new Slot(sensor, 0, 8 + 4 * 18, 35));
 
 		for (int j = 0; j < 3; j++) {
 			for (int i1 = 0; i1 < 9; i1++) {
 				addSlotToContainer(new Slot(inventory, i1 + j * 9 + 9,
-						8 + i1 * 18, 84 + j * 18));
+					8 + i1 * 18, 84 + j * 18));
 			}
 		}
 
@@ -38,7 +38,7 @@ public class ContainerSensor extends Container {
 	public boolean canInteractWith(EntityPlayer player) {
 		return sensor.isUseableByPlayer(player);
 	}
-	
+
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer pl, int i) {
 		ItemStack itemstack = null;
@@ -47,10 +47,12 @@ public class ContainerSensor extends Container {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
 			if (i < inventorySize) {
-				if (!mergeItemStack(itemstack1, inventorySize, inventorySlots.size(), true))
+				if (!mergeItemStack(itemstack1, inventorySize, inventorySlots.size(), true)) {
 					return null;
-			} else if (!mergeItemStack(itemstack1, 0, inventorySize, false))
+				}
+			} else if (!mergeItemStack(itemstack1, 0, inventorySize, false)) {
 				return null;
+			}
 			if (itemstack1.stackSize == 0) {
 				slot.putStack(null);
 			} else {

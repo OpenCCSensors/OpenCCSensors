@@ -16,7 +16,7 @@ public class ResourceExtractingUtils {
 	 * Copies a file from source to destination
 	 */
 	private static final void copyFile(File source, File destination)
-			throws IOException {
+		throws IOException {
 		FileInputStream inputStream = new FileInputStream(source);
 		FileOutputStream outputStream = new FileOutputStream(destination);
 		FileChannel sourceChannel = inputStream.getChannel();
@@ -27,20 +27,21 @@ public class ResourceExtractingUtils {
 		inputStream.close();
 		outputStream.close();
 	}
+
 	/**
 	 * Recursively copies a directory from source to destination including
 	 * all the files within the folders
 	 */
 	public static final void copyDirectory(File source, File destination)
-			throws IOException {
+		throws IOException {
 		if (!source.isDirectory()) {
 			throw new IllegalArgumentException("Source (" + source.getPath()
-					+ ") must be a directory.");
+				+ ") must be a directory.");
 		}
 
 		if (!source.exists()) {
 			throw new IllegalArgumentException("Source directory ("
-					+ source.getPath() + ") doesn't exist.");
+				+ source.getPath() + ") doesn't exist.");
 		}
 
 		destination.mkdirs();
@@ -54,8 +55,9 @@ public class ResourceExtractingUtils {
 			}
 		}
 	}
+
 	public static final void copy(File source, File destination)
-			throws IOException {
+		throws IOException {
 		if (source.isDirectory()) {
 			copyDirectory(source, destination);
 		} else {
@@ -66,8 +68,7 @@ public class ResourceExtractingUtils {
 	/**
 	 * Extract a zip in sourceFolder into destFolder
 	 */
-	public static void extractZipToLocation(File zipFile, String sourceFolder,
-			String destFolder) {
+	public static void extractZipToLocation(File zipFile, String sourceFolder, String destFolder) {
 		try {
 			sourceFolder = sourceFolder.substring(1) + "/";
 			File destFile = new File(OpenCCSensors.proxy.getBase(), destFolder);
@@ -80,16 +81,16 @@ public class ResourceExtractingUtils {
 			while (zipentry != null) {
 				// for each entry to be extracted
 				String zipentryName = zipentry.getName();
-				
+
 				if (!zipentryName.startsWith(sourceFolder)) {
 					zipentry = zipinputstream.getNextEntry();
 					continue;
 				}
-				
+
 				String entryName = destinationName
-						+ zipentryName.substring(Math.min(
-								zipentryName.length(),
-								sourceFolder.length() - 1));
+					+ zipentryName.substring(Math.min(
+					zipentryName.length(),
+					sourceFolder.length() - 1));
 				entryName = entryName.replace('/', File.separatorChar);
 				entryName = entryName.replace('\\', File.separatorChar);
 				int n;

@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.filesystem.IMount;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -15,31 +21,27 @@ import openccsensors.OpenCCSensors;
 import openccsensors.api.IGaugeSensor;
 import openccsensors.api.IMethodCallback;
 import openccsensors.common.util.CallbackEventManager;
-import dan200.computercraft.api.ComputerCraftAPI;
-import dan200.computercraft.api.filesystem.IMount;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityGauge extends TileEntity implements IPeripheral {
-	
-	
+
+
 	private static ArrayList<IGaugeSensor> gaugeSensors = new ArrayList<IGaugeSensor>();
+
 	public static void addGaugeSensor(IGaugeSensor sensor) {
 		gaugeSensors.add(sensor);
 	}
+
 	public static ArrayList<IGaugeSensor> getGaugeSensors() {
 		return gaugeSensors;
 	}
-	
+
 	private HashMap tileProperties = new HashMap();
 	private CallbackEventManager eventManager = new CallbackEventManager();
 	private int percentage = 0;
 	private String updatePropertyName = "";
-	
+
 	private int lastBroadcast = 1;
-	
+
 	public TileEntityGauge() {
 		eventManager.registerCallback(new IMethodCallback() {
 
@@ -47,10 +49,10 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 			public String getMethodName() {
 				return "getPercentage";
 			}
-			
+
 			@Override
 			public Object execute(IComputerAccess computer, Object[] arguments)
-					throws Exception {
+				throws Exception {
 				return getPercentage();
 			}
 
@@ -62,11 +64,11 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 			public String getMethodName() {
 				return "setTrackedProperty";
 			}
-			
+
 			@Override
 			public Object execute(IComputerAccess computer, Object[] arguments)
-					throws Exception {
-				updatePropertyName = (String)arguments[0];
+				throws Exception {
+				updatePropertyName = (String) arguments[0];
 				return null;
 			}
 
@@ -79,6 +81,7 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 		writeToNBT(nbt);
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, nbt);
 	}
+
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());
@@ -101,7 +104,7 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 	public int getFacing() {
 		return (worldObj == null) ? 0 : this.getBlockMetadata();
 	}
-	
+
 	public int getPercentage() {
 		return percentage;
 	}
@@ -118,8 +121,8 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		return new Object[] {
-				eventManager.queueMethodCall(computer, method, arguments)
+		return new Object[]{
+			eventManager.queueMethodCall(computer, method, arguments)
 		};
 	}
 
@@ -138,7 +141,7 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 		for (Object obj : data.keySet()) {
 			Object value = data.get(obj);
 			if (value instanceof HashMap) {
-				properties.putAll(checkForKeys((HashMap)value, keys, prefix + obj.toString()));
+				properties.putAll(checkForKeys((HashMap) value, keys, prefix + obj.toString()));
 			} else if (obj instanceof String) {
 				for (String property : keys) {
 					if (property.equals(obj)) {
@@ -149,7 +152,7 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 		}
 		return properties;
 	}
-	
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
@@ -160,7 +163,7 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 			ForgeDirection behind = infront.getOpposite();
 			TileEntity behindTile = worldObj.getTileEntity(xCoord + behind.offsetX, yCoord, zCoord + behind.offsetZ);
 			if (behindTile != null) {
-				for (IGaugeSensor gaugeSensor : gaugeSensors)  {
+				for (IGaugeSensor gaugeSensor : gaugeSensors) {
 					if (gaugeSensor.isValidTarget(behindTile)) {
 						HashMap details = gaugeSensor.getDetails(worldObj, behindTile, new ChunkCoordinates(behindTile.xCoord, behindTile.yCoord, behindTile.zCoord), true);
 						tileProperties.putAll(checkForKeys(details, gaugeSensor.getGaugeProperties(), ""));
@@ -169,19 +172,19 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 			}
 			percentage = 0;
 			if (tileProperties.size() > 0) {
-				if (updatePropertyName == "" || !tileProperties.containsKey(updatePropertyName)) {
+				if (updatePropertyName.equals("") || !tileProperties.containsKey(updatePropertyName)) {
 					updatePropertyName = "";
-					for (String property : new String[] {
-							"HeatPercentage",
-							"Progress",
-							"StoredPercentage",
-							"InventoryPercentFull"
+					for (String property : new String[]{
+						"HeatPercentage",
+						"Progress",
+						"StoredPercentage",
+						"InventoryPercentFull"
 					}) {
-						if (updatePropertyName == "" && tileProperties.containsKey(property)) {
+						if (updatePropertyName.equals("") && tileProperties.containsKey(property)) {
 							updatePropertyName = property;
 						}
 					}
-					if (updatePropertyName == "") {
+					if (updatePropertyName.equals("")) {
 						Entry<String, Object> entry = (Entry<String, Object>) tileProperties.entrySet().iterator().next();
 						updatePropertyName = entry.getKey();
 					}
@@ -190,14 +193,15 @@ public class TileEntityGauge extends TileEntity implements IPeripheral {
 			}
 			if (lastBroadcast++ % 10 == 0) {
 				lastBroadcast = 1;
-				worldObj.markBlockForUpdate(xCoord,  yCoord,  zCoord);
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			}
 			eventManager.process();
 		}
 	}
+
 	@Override
 	public boolean equals(IPeripheral other) {
 		// TODO Auto-generated method stub
-		return false;
+		return this == other;
 	}
 }

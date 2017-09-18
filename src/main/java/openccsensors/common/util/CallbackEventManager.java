@@ -3,8 +3,8 @@ package openccsensors.common.util;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import openccsensors.api.IMethodCallback;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import openccsensors.api.IMethodCallback;
 
 public class CallbackEventManager {
 
@@ -30,7 +30,7 @@ public class CallbackEventManager {
 	/**
 	 * Register a new callback. This should only be called at the start when
 	 * your setting up the peripheral callbacks
-	 * 
+	 *
 	 * @TODO: add a thing to deny more callbacks
 	 */
 	public void registerCallback(IMethodCallback callback) {
@@ -43,8 +43,7 @@ public class CallbackEventManager {
 	 * assigns an id to the MethodCallId which lets us keep track of the event
 	 * as it passes through
 	 */
-	public int queueMethodCall(IComputerAccess computer, int method,
-			Object[] arguments) {
+	public int queueMethodCall(IComputerAccess computer, int method, Object[] arguments) {
 
 		callId++;
 		if (callId > 1000) {
@@ -69,18 +68,18 @@ public class CallbackEventManager {
 
 				IMethodCallback callback = callbacks.get(item.getMethodId());
 
-				Object[] response = new Object[] {
-						item.getCallId(),
-						callback.execute(item.getComputer(),
-								item.getArguments()) };
+				Object[] response = new Object[]{
+					item.getCallId(),
+					callback.execute(item.getComputer(),
+						item.getArguments())};
 
 				item.getComputer().queueEvent("ocs_success", response);
 
 			} catch (Exception e) {
 				try {
 					item.getComputer().queueEvent("ocs_error",
-							new Object[] { item.getCallId(), e.getMessage() });
-				}catch(Exception errorerror) {
+						new Object[]{item.getCallId(), e.getMessage()});
+				} catch (Exception errorerror) {
 					// the computer got destroyed?
 				}
 

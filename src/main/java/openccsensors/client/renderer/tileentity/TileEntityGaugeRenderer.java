@@ -6,18 +6,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import openccsensors.client.model.ModelGauge;
 import openccsensors.common.tileentity.TileEntityGauge;
-
 import org.lwjgl.opengl.GL11;
 
 public class TileEntityGaugeRenderer extends TileEntitySpecialRenderer {
-	
+
 	private ModelGauge modelGauge = new ModelGauge();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileentity, double x, double y,
-			double z, float partialTick) {
+	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float partialTick) {
 
-		int var16 = ((TileEntityGauge)tileentity).getFacing();
+		int var16 = ((TileEntityGauge) tileentity).getFacing();
 
 		GL11.glPushMatrix();
 		float var12;
@@ -50,10 +48,10 @@ public class TileEntityGaugeRenderer extends TileEntitySpecialRenderer {
 		GL11.glDepthMask(false);
 
 		if (fontRenderer != null) {
-			String stringPercentage = ((TileEntityGauge)tileentity).getPercentage() + "%";
+			String stringPercentage = ((TileEntityGauge) tileentity).getPercentage() + "%";
 			fontRenderer.drawString(stringPercentage,
-					-fontRenderer.getStringWidth(stringPercentage) / 2, 0,
-					16777215);
+				-fontRenderer.getStringWidth(stringPercentage) / 2, 0,
+				16777215);
 		}
 
 		GL11.glDepthMask(true);

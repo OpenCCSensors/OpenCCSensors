@@ -1,9 +1,9 @@
 package openccsensors.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 
 @SideOnly(Side.CLIENT)
 public class ModelSensor extends ModelBase {
@@ -13,12 +13,12 @@ public class ModelSensor extends ModelBase {
 	public ModelRenderer sensorDishCenter;
 	public ModelRenderer sensorDishLeft;
 	public ModelRenderer sensorDishRight;
-	
+
 	public ModelSensor() {
-		
+
 		this.sensorBase = new ModelRenderer(this, 0, 0).setTextureSize(64, 64);
 		this.sensorBase.addBox(-8.0F, -8.0F, -8.0F, 16, 4, 16, 0.0F);
-		
+
 		this.sensorAxel = new ModelRenderer(this, 0, 0).setTextureSize(64, 64);
 		this.sensorAxel.addBox(-0.5F, 0.0F, -0.5F, 1, 4, 1, 0.0F);
 		this.sensorAxel.setRotationPoint(0.0F, -4.0F, 0.0F);

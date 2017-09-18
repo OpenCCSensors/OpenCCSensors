@@ -14,12 +14,12 @@ import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 
 public class SignSensor extends TileSensor implements ISensor, IRequiresIconLoading {
-	
+
 	private IIcon icon;
 
 	@Override
 	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
-		
+
 		TileEntitySign sign = (TileEntitySign) obj;
 		HashMap response = super.getDetails(sign, sensorPos);
 		if (additional) {
@@ -27,16 +27,16 @@ public class SignSensor extends TileSensor implements ISensor, IRequiresIconLoad
 			String signText = "";
 			for (int i = 0; i < sign.signText.length; i++) {
 				signText = signText + sign.signText[i];
-				if (i < 3 && sign.signText[i] != "") {
+				if (i < 3 && !sign.signText[i].equals("")) {
 					signText = signText + " ";
 				}
 			}
 			response.put("Text", signText.trim());
 		}
-		
+
 		return response;
 	}
-	
+
 	@Override
 	public boolean isValidTarget(Object target) {
 		return target instanceof TileEntitySign;
@@ -48,8 +48,7 @@ public class SignSensor extends TileSensor implements ISensor, IRequiresIconLoad
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
@@ -65,12 +64,12 @@ public class SignSensor extends TileSensor implements ISensor, IRequiresIconLoad
 
 	@Override
 	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:sign");		
+		icon = iconRegistry.registerIcon("openccsensors:sign");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item)Item.itemRegistry.getObject("sign"));
+		return new ItemStack((Item) Item.itemRegistry.getObject("sign"));
 	}
 
 }

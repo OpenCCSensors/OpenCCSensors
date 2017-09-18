@@ -7,25 +7,24 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 
 public class WorldSensor implements ISensor, IRequiresIconLoading {
-	
+
 	private IIcon icon;
-	
+
 	@Override
 	public HashMap getDetails(World world, Object obj, ChunkCoordinates sensorLocation, boolean additional) {
-		
+
 		HashMap response = new HashMap();
-		
+
 		int x = (int) sensorLocation.posX;
 		int y = (int) sensorLocation.posY;
 		int z = (int) sensorLocation.posZ;
-		
+
 		response.put("Dimension", world.getWorldInfo().getVanillaDimension());
 		response.put("Biome", world.getBiomeGenForCoords(x, z).biomeName);
 		response.put("LightLevel", world.getBlockLightValue(x, y, z));
@@ -34,7 +33,7 @@ public class WorldSensor implements ISensor, IRequiresIconLoading {
 		response.put("Daytime", world.isDaytime());
 		response.put("MoonPhase", world.getCurrentMoonPhaseFactor());
 		response.put("CelestialAngle", world.getCelestialAngle(1.0F));
-		
+
 		return response;
 	}
 
@@ -51,8 +50,7 @@ public class WorldSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID,
-			Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
@@ -65,7 +63,7 @@ public class WorldSensor implements ISensor, IRequiresIconLoading {
 	public IIcon getIcon() {
 		return icon;
 	}
-	
+
 	@Override
 	public void loadIcon(IIconRegister iconRegistry) {
 		icon = iconRegistry.registerIcon("openccsensors:world");
@@ -73,7 +71,7 @@ public class WorldSensor implements ISensor, IRequiresIconLoading {
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item)Item.itemRegistry.getObject("ender_pearl"));
+		return new ItemStack((Item) Item.itemRegistry.getObject("ender_pearl"));
 	}
 
 }

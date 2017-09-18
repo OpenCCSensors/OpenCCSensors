@@ -12,25 +12,25 @@ import openccsensors.api.IItemMeta;
 import openccsensors.api.IRequiresIconLoading;
 
 public class ItemMetaRangeExtensionAntenna implements IItemMeta, IRequiresIconLoading {
-	
+
 	private int id;
 	private IIcon icon;
-	
+
 	public ItemMetaRangeExtensionAntenna(int id) {
 		this.id = id;
-		
+
 		OpenCCSensors.Items.genericItem.addMeta(this);
-		
+
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
 			newItemStack(1),
-			new Object[] {
+			new Object[]{
 				" t ",
 				"srs",
 				"sis",
-				Character.valueOf('t'), new ItemStack((Block)Block.blockRegistry.getObject("redstone_torch")),
-				Character.valueOf('s'), new ItemStack((Item)Item.itemRegistry.getObject("stone")),
-				Character.valueOf('r'), new ItemStack((Item)Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('i'), new ItemStack((Item)Item.itemRegistry.getObject("iron_ingot")),				
+				Character.valueOf('t'), new ItemStack((Block) Block.blockRegistry.getObject("redstone_torch")),
+				Character.valueOf('s'), new ItemStack((Item) Item.itemRegistry.getObject("stone")),
+				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				Character.valueOf('i'), new ItemStack((Item) Item.itemRegistry.getObject("iron_ingot")),
 			}
 		));
 	}
@@ -54,7 +54,7 @@ public class ItemMetaRangeExtensionAntenna implements IItemMeta, IRequiresIconLo
 	public void loadIcon(IIconRegister iconRegistry) {
 		icon = iconRegistry.registerIcon("openccsensors:rangeExtensionAntenna");
 	}
-	
+
 	@Override
 	public ItemStack newItemStack(int size) {
 		return new ItemStack(OpenCCSensors.Items.genericItem, size, getId());

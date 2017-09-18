@@ -3,18 +3,14 @@ package openccsensors.common.util;
 import java.util.HashMap;
 
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
 
 public class TankUtils {
 
 	public static HashMap fluidHandlerToMap(IFluidHandler container) {
-		
+
 		FluidTankInfo[] tanks = container.getTankInfo(ForgeDirection.UNKNOWN);
-		
+
 		HashMap allTanks = new HashMap();
 		int i = 0;
 		try {
@@ -25,9 +21,9 @@ public class TankUtils {
 						tankMap.put("Capacity", tank.capacity);
 						int fluidAmount = 0;
 						tankMap.put("Amount", 0);
-						
+
 						FluidStack stack = tank.fluid;
-	
+
 						if (stack != null) {
 							Fluid fluid = stack.getFluid();
 							tankMap.put("Name", FluidRegistry.getFluidName(stack));
@@ -39,13 +35,14 @@ public class TankUtils {
 							tankMap.put("IsGaseous", fluid.isGaseous());
 						}
 						tankMap.put("Amount", fluidAmount);
-						tankMap.put("PercentFull", ((double)fluidAmount) * 100d / (double) tank.capacity);
-						
+						tankMap.put("PercentFull", ((double) fluidAmount) * 100d / (double) tank.capacity);
+
 						allTanks.put(++i, tankMap);
 					}
 				}
 			}
-		}catch(Exception e) {}
+		} catch (Exception e) {
+		}
 		return allTanks;
 	}
 

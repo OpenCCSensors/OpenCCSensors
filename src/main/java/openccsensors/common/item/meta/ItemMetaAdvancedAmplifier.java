@@ -14,26 +14,26 @@ public class ItemMetaAdvancedAmplifier implements IItemMeta, IRequiresIconLoadin
 
 	private int id;
 	private IIcon icon;
-	
+
 	public ItemMetaAdvancedAmplifier(int id) {
 		this.id = id;
-		
+
 		OpenCCSensors.Items.genericItem.addMeta(this);
-		
+
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
 			newItemStack(1),
-			new Object[] {
+			new Object[]{
 				"igi",
 				"rdr",
 				"igi",
-				Character.valueOf('i'), new ItemStack((Item)Item.itemRegistry.getObject("iron_ingot")),
-				Character.valueOf('g'), new ItemStack((Item)Item.itemRegistry.getObject("gold_ingot")),
-				Character.valueOf('r'), new ItemStack((Item)Item.itemRegistry.getObject("redstone")),
-				Character.valueOf('d'), new ItemStack((Item)Item.itemRegistry.getObject("diamond")),			
+				Character.valueOf('i'), new ItemStack((Item) Item.itemRegistry.getObject("iron_ingot")),
+				Character.valueOf('g'), new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot")),
+				Character.valueOf('r'), new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				Character.valueOf('d'), new ItemStack((Item) Item.itemRegistry.getObject("diamond")),
 			}
 		));
 	}
-	
+
 	@Override
 	public int getId() {
 		return id;

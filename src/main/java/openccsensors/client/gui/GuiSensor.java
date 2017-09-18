@@ -6,7 +6,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import openccsensors.common.container.ContainerSensor;
-
 import org.lwjgl.opengl.GL11;
 
 public class GuiSensor extends GuiContainer {
@@ -16,8 +15,7 @@ public class GuiSensor extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2,
-			int var3) {
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.renderEngine.bindTexture(new ResourceLocation("openccsensors", "textures/gui/sensor.png"));
 		int var5 = (this.width - this.xSize) / 2;
@@ -26,22 +24,22 @@ public class GuiSensor extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 
 		String sensorGuiName = StatCollector.translateToLocal("gui.openccsensors.sensor");
 
 		mc.fontRenderer.drawString(
-				sensorGuiName,
-				this.xSize / 2
+			sensorGuiName,
+			this.xSize / 2
 				- (mc.fontRenderer.getStringWidth(sensorGuiName) / 2),
-				6,
-				4210752
+			6,
+			4210752
 		);
 		mc.fontRenderer.drawString(
-				StatCollector.translateToLocal("container.inventory"),
-				8,
-				this.ySize - 96 + 2,
-				4210752
+			StatCollector.translateToLocal("container.inventory"),
+			8,
+			this.ySize - 96 + 2,
+			4210752
 		);
 	}
 

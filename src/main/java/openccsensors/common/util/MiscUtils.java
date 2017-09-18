@@ -10,9 +10,9 @@ import net.minecraft.tileentity.TileEntity;
 
 public class MiscUtils {
 
-	
+
 	public static void dropInventoryItems(TileEntity tileEntity) {
-		
+
 		if (tileEntity != null && tileEntity instanceof IInventory) {
 			IInventory inventory = (IInventory) tileEntity;
 			Random rand = tileEntity.getWorldObj().rand;
@@ -31,11 +31,11 @@ public class MiscUtils {
 
 						itemStack.stackSize -= var13;
 						item = new EntityItem(tileEntity.getWorldObj(),
-								tileEntity.xCoord + var10,
-								tileEntity.yCoord + var11,
-								tileEntity.zCoord + j, new ItemStack(
-										itemStack.getItem(), var13,
-										itemStack.getItemDamage()));
+							tileEntity.xCoord + var10,
+							tileEntity.yCoord + var11,
+							tileEntity.zCoord + j, new ItemStack(
+							itemStack.getItem(), var13,
+							itemStack.getItemDamage()));
 						float var15 = 0.05F;
 						item.motionX = (float) rand.nextGaussian() * var15;
 						item.motionY = (float) rand.nextGaussian() * var15 + 0.2F;
@@ -43,7 +43,7 @@ public class MiscUtils {
 
 						if (itemStack.hasTagCompound()) {
 							item.getEntityItem().setTagCompound(
-									(NBTTagCompound) itemStack.getTagCompound().copy()
+								(NBTTagCompound) itemStack.getTagCompound().copy()
 							);
 						}
 					}
