@@ -1,14 +1,19 @@
 *.class
+*.iml
 build/
 download/
 .DS_Store
 .classpath
+.idea/
 .gradle/
 .project
 .settings/
 bin/
+classes/
+/run/
 eclipse/
-libs/
+libs*/
+/out/
 
 # Package Files #
 *.war
