@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Nonnull;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -12,7 +14,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.math.BlockPos;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.*;
 import openccsensors.common.item.ItemSensorCard;
@@ -52,7 +54,7 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 				SensorCard card = getSensorCard();
 				if (card != null) {
 
-					ChunkCoordinates location = env.getLocation();
+					BlockPos location = env.getLocation();
 
 					ISensor sensor = card.getSensor();
 
@@ -103,7 +105,7 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 					throw new Exception("Could not find a valid sensor card");
 				}
 
-				ChunkCoordinates location = env.getLocation();
+				BlockPos location = env.getLocation();
 				ISensor sensor = card.getSensor();
 				Map<String, ?> targets = sensor.getTargets(env.getWorld(), location, card.getTier());
 
@@ -224,12 +226,12 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {
+	public void attach(@Nonnull IComputerAccess computer) {
 		computer.mount("ocs", OpenCCSensors.mount);
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments) throws LuaException, InterruptedException {
 		int id = eventManager.queueMethodCall(computer, method, arguments);
 		while (true) {
 			Object[] params = context.pullEvent(null);
@@ -244,10 +246,11 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 	}
 
 	@Override
-	public void detach(IComputerAccess computer) {
+	public void detach(@Nonnull IComputerAccess computer) {
 
 	}
 
+	@Nonnull
 	@Override
 	public String[] getMethodNames() {
 		return eventManager.getMethodNames();
@@ -258,6 +261,7 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 		return env;
 	}
 
+	@Nonnull
 	@Override
 	public String getType() {
 		return "sensor";
@@ -306,8 +310,8 @@ public class PeripheralSensor implements IPeripheral, ISensorAccess {
 		}
 		if (other instanceof TileEntity) {
 			TileEntity tother = (TileEntity) other;
-			ChunkCoordinates location = env.getLocation();
-			return tother.getWorldObj().equals(env.getWorld()) && tother.xCoord == location.posX && tother.yCoord == location.posY && tother.zCoord == location.posZ;
+			BlockPos location = env.getLocation();
+			return tother.getWorld().equals(env.getWorld()) && tother.getPos().equals(location);
 		}
 		return false;
 	}

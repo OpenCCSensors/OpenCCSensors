@@ -1,36 +1,31 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.EntityUtils;
 import openccsensors.common.util.InventoryUtils;
 
-public class DroppedItemSensor implements ISensor, IRequiresIconLoading {
+import java.util.HashMap;
+import java.util.Map;
 
-	private IIcon icon;
-
+public class DroppedItemSensor implements ISensor {
 	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorLocation, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorLocation, boolean additional) {
 
 		EntityItem item = (EntityItem) obj;
 
 		HashMap<String, Object> response = new HashMap<String, Object>();
 		HashMap<String, Double> position = new HashMap<String, Double>();
 
-		position.put("X", item.posX - sensorLocation.posX);
-		position.put("Y", item.posY - sensorLocation.posY);
-		position.put("Z", item.posZ - sensorLocation.posZ);
+		position.put("X", item.posX - sensorLocation.getX());
+		position.put("Y", item.posY - sensorLocation.getY());
+		position.put("Z", item.posZ - sensorLocation.getZ());
 
 		response.put("Position", position);
 
@@ -50,7 +45,7 @@ public class DroppedItemSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Map<String, ?> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map<String, ?> getTargets(World world, BlockPos location, ISensorTier tier) {
 		double radius = tier.getMultiplier() * 4;
 		return EntityUtils.getEntities(world, location, radius, EntityItem.class);
 	}
@@ -61,28 +56,23 @@ public class DroppedItemSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "droppedItemCard";
+		return "dropped_item_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:droppedItem");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:dropped_item");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item) Item.itemRegistry.getObject("slime_ball"));
+		return new ItemStack(Items.WHEAT);
 	}
 
 }

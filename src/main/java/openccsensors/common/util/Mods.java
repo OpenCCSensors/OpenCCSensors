@@ -1,6 +1,6 @@
 package openccsensors.common.util;
 
-import cpw.mods.fml.common.Loader;
+import net.minecraftforge.fml.common.Loader;
 
 public class Mods {
 
@@ -18,16 +18,6 @@ public class Mods {
 	 * Thermal Expansion
 	 */
 	public static final boolean TE = Loader.isModLoaded("ThermalExpansion");
-
-	/***
-	 * RotaryCraft
-	 */
-	public static final boolean RC = Loader.isModLoaded("RotaryCraft");
-
-	/***
-	 * ThaumCraft
-	 */
-	public static final boolean TC = Loader.isModLoaded("ThaumCraft");
 
 	/***
 	 * Ars Magica

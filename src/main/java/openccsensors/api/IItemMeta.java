@@ -1,14 +1,14 @@
 package openccsensors.api;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 
 public interface IItemMeta {
 	int getId();
 
 	boolean displayInCreative();
 
-	IIcon getIcon();
+	ResourceLocation getIcon();
 
 	String getName();
 

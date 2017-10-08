@@ -1,47 +1,49 @@
 package openccsensors.common.tileentity.basic;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.IBasicSensor;
 import openccsensors.common.sensor.ProximitySensor;
 
-public class TileEntityBasicProximitySensor extends TileEntity implements IBasicSensor {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.UUID;
 
-	private Vec3 blockPos = null;
+public class TileEntityBasicProximitySensor extends TileEntity implements IBasicSensor, ITickable {
 
-	private double distance = Double.MIN_VALUE;
+	private Vec3d blockPos = null;
+
 	private int previousOutput = Integer.MIN_VALUE;
 	private int output = 0;
 
-	private String owner = "NO OWNER";
+	private UUID owner = null;
 
 	private boolean sentFirstChange = false;
 
 	private int entityMode = ProximitySensor.MODE_ALL;
 
 	@Override
-	public void updateEntity() {
-
-		super.updateEntity();
-
+	public void update() {
 		if (!worldObj.isRemote) {
 
 			boolean flag = false;
 
 			if (blockPos == null) {
-				blockPos = Vec3.createVectorHelper(xCoord, yCoord, zCoord);
+				blockPos = new Vec3d(pos);
 			}
 
-			distance = OpenCCSensors.Sensors.proximitySensor.getDistanceToNearestEntity(
+			double distance = OpenCCSensors.Sensors.proximitySensor.getDistanceToNearestEntity(
 				worldObj,
 				blockPos,
 				entityMode,
@@ -61,15 +63,8 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 
 				Block blockId = OpenCCSensors.Blocks.basicSensorBlock;
 
-				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, output, 3);
-				worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, blockId);
-				worldObj.notifyBlockOfNeighborChange(xCoord, yCoord - 1, zCoord, blockId);
-				worldObj.notifyBlockOfNeighborChange(xCoord, yCoord + 1, zCoord, blockId);
-				worldObj.notifyBlockOfNeighborChange(xCoord - 1, yCoord, zCoord, blockId);
-				worldObj.notifyBlockOfNeighborChange(xCoord + 1, yCoord, zCoord, blockId);
-				worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord - 1, blockId);
-				worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord + 1, blockId);
-
+				markBlockForUpdate();
+				worldObj.notifyNeighborsOfStateChange(pos, blockId);
 			}
 		}
 	}
@@ -79,7 +74,7 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 	}
 
 	public void onBlockClicked(EntityPlayer player) {
-		if (player.getCommandSenderName().equals(owner)) {
+		if (player.getUniqueID().equals(owner)) {
 			entityMode++;
 			if (entityMode > 2) {
 				entityMode = 0;
@@ -96,8 +91,8 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 					modeMsg = "Owner Only";
 					break;
 			}
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			player.addChatMessage(new ChatComponentText(String.format("Changing sensor mode to \"%s\"", modeMsg)));
+			markBlockForUpdate();
+			player.addChatMessage(new TextComponentString(String.format("Changing sensor mode to \"%s\"", modeMsg)));
 		}
 	}
 
@@ -106,34 +101,51 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 		return output;
 	}
 
-	@Override
-	public Packet getDescriptionPacket() {
-		NBTTagCompound nbt = new NBTTagCompound();
-		writeToNBT(nbt);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, nbt);
+	private void markBlockForUpdate() {
+		BlockPos pos = getPos();
+		IBlockState state = worldObj.getBlockState(pos);
+		worldObj.notifyBlockUpdate(getPos(), state, state, 3);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-		readFromNBT(pkt.func_148857_g());
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	public void handleUpdateTag(@Nonnull NBTTagCompound tag) {
+		readFromNBT(tag);
+		markBlockForUpdate();
+	}
+
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbttagcompound) {
-		this.entityMode = nbttagcompound.getInteger("entityMode");
-		this.owner = nbttagcompound.getString("owner");
-		super.readFromNBT(nbttagcompound);
+	@Nonnull
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
-		nbttagcompound.setInteger("entityMode", this.entityMode);
-		nbttagcompound.setString("owner", this.owner);
-		super.writeToNBT(nbttagcompound);
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
 	}
 
-	public void setOwner(String _owner) {
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		this.entityMode = tag.getInteger("entityMode");
+		this.owner = tag.hasKey("owner") ? UUID.fromString(tag.getString("owner")) : null;
+		super.readFromNBT(tag);
+	}
+
+	@Nonnull
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+		tag.setInteger("entityMode", this.entityMode);
+		if (this.owner != null) tag.setString("owner", this.owner.toString());
+		return super.writeToNBT(tag);
+	}
+
+	public void setOwner(UUID _owner) {
 		this.owner = _owner;
 	}
 }

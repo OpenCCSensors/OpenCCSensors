@@ -1,13 +1,13 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.InventoryUtils;
+
+import java.util.HashMap;
 
 public abstract class TileSensor {
 
@@ -16,13 +16,13 @@ public abstract class TileSensor {
 		return false;
 	}
 
-	public HashMap<String, Object> getDetails(TileEntity tile, ChunkCoordinates sensorPos) {
+	public HashMap<String, Object> getDetails(TileEntity tile, BlockPos sensorPos) {
 		HashMap<String, Object> response = new HashMap<String, Object>();
 		HashMap<String, Integer> position = new HashMap<String, Integer>();
 
-		position.put("X", tile.xCoord - sensorPos.posX);
-		position.put("Y", tile.yCoord - sensorPos.posY);
-		position.put("Z", tile.zCoord - sensorPos.posZ);
+		position.put("X", tile.getPos().getX() - sensorPos.getX());
+		position.put("Y", tile.getPos().getY() - sensorPos.getX());
+		position.put("Z", tile.getPos().getZ() - sensorPos.getZ());
 		response.put("Position", position);
 
 		ItemStack stack = new ItemStack(tile.getBlockType(), 1, tile.getBlockMetadata());
@@ -34,21 +34,15 @@ public abstract class TileSensor {
 		return response;
 	}
 
-	public HashMap<String, Object> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public HashMap<String, Object> getTargets(World world, BlockPos location, ISensorTier tier) {
 		HashMap<String, Object> targets = new HashMap<String, Object>();
 		int distance = (int) tier.getMultiplier();
 
 		for (int x = -distance; x <= distance; x++) {
 			for (int y = -distance; y <= distance; y++) {
 				for (int z = -distance; z <= distance; z++) {
-
-					int tileX = x + location.posX;
-					int tileY = y + location.posY;
-					int tileZ = z + location.posZ;
-
 					String name = String.format("%s,%s,%s", x, y, z);
-
-					TileEntity tile = world.getTileEntity(tileX, tileY, tileZ);
+					TileEntity tile = world.getTileEntity(location.add(x, y, z));
 
 					if (isValidTarget(tile)) {
 						targets.put(name, tile);

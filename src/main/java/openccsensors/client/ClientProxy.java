@@ -1,16 +1,14 @@
 package openccsensors.client;
 
-import java.io.File;
-
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.client.Minecraft;
-import openccsensors.OpenCCSensors;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import openccsensors.client.renderer.tileentity.TileEntityGaugeRenderer;
 import openccsensors.client.renderer.tileentity.TileEntitySensorRenderer;
 import openccsensors.common.CommonProxy;
 import openccsensors.common.tileentity.TileEntityGauge;
 import openccsensors.common.tileentity.TileEntitySensor;
+
+import java.io.File;
 
 public class ClientProxy extends CommonProxy {
 
@@ -21,10 +19,6 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerRenderInformation() {
-
-		OpenCCSensors.renderId = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(new RenderingHandler());
-
 		ClientRegistry.bindTileEntitySpecialRenderer(
 			TileEntitySensor.class,
 			new TileEntitySensorRenderer()

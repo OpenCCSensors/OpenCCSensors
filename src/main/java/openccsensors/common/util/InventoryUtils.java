@@ -61,15 +61,16 @@ public class InventoryUtils {
 		HashMap<Integer, Object> response = new HashMap<Integer, Object>();
 
 		ItemEnchantedBook book = (ItemEnchantedBook) stack.getItem();
-		NBTTagList nbttaglist = book.func_92110_g(stack);
+		NBTTagList nbttaglist = book.getEnchantments(stack);
 		int offset = 1;
 		if (nbttaglist != null) {
 			for (int i = 0; i < nbttaglist.tagCount(); ++i) {
 				short short1 = (nbttaglist.getCompoundTagAt(i)).getShort("id");
 				short short2 = (nbttaglist.getCompoundTagAt(i)).getShort("lvl");
 
-				if (Enchantment.enchantmentsList[short1] != null) {
-					response.put(offset, Enchantment.enchantmentsList[short1].getTranslatedName(short2));
+				Enchantment enchantment = Enchantment.getEnchantmentByID(short1);
+				if (enchantment != null) {
+					response.put(offset, enchantment.getTranslatedName(short2));
 					offset++;
 				}
 			}

@@ -3,14 +3,14 @@ package openccsensors.common.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 public class TankUtils {
 
 	public static Map<Integer, Object> fluidHandlerToMap(IFluidHandler container) {
 
-		FluidTankInfo[] tanks = container.getTankInfo(ForgeDirection.UNKNOWN);
+		FluidTankInfo[] tanks = container.getTankInfo(null);
 
 		Map<Integer, Object> allTanks = new HashMap<Integer, Object>();
 		int i = 0;

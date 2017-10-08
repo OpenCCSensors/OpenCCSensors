@@ -1,38 +1,35 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import openccsensors.api.IGaugeSensor;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.AppliedEnergisticsUtils;
 import openccsensors.common.util.InventoryUtils;
 import openccsensors.common.util.Mods;
 
-public class InventorySensor extends TileSensor implements ISensor, IRequiresIconLoading, IGaugeSensor {
+import java.util.HashMap;
+import java.util.Map;
 
-	private IIcon icon;
+public class InventorySensor extends TileSensor implements ISensor, IGaugeSensor {
 	private String[] gaugeProperties = new String[]{
 		"InventoryPercentFull"
 	};
 
 	@Override
 	public boolean isValidTarget(Object target) {
+		// TODO: Capabilities
 		return target instanceof IInventory || (Mods.AE && AppliedEnergisticsUtils.isValidTarget(target));
 	}
 
 	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
 
 		TileEntity tile = (TileEntity) obj;
 
@@ -62,7 +59,7 @@ public class InventorySensor extends TileSensor implements ISensor, IRequiresIco
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) throws Exception {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) throws Exception {
 
 		if (args.length != 2) {
 			throw new Exception("This method expects two parameters");
@@ -94,22 +91,17 @@ public class InventorySensor extends TileSensor implements ISensor, IRequiresIco
 
 	@Override
 	public String getName() {
-		return "inventoryCard";
+		return "inventory_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:inventory");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:inventory");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Block) Block.blockRegistry.getObject("chest"));
+		return new ItemStack(Blocks.CHEST);
 	}
 
 	@Override

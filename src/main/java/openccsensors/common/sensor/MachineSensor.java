@@ -1,27 +1,21 @@
 package openccsensors.common.sensor;
 
-import java.util.Map;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import openccsensors.api.IGaugeSensor;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.CoFHUtils;
 import openccsensors.common.util.Ic2Utils;
 import openccsensors.common.util.Mods;
-import openccsensors.common.util.RotaryCraftUtils;
 
-public class MachineSensor extends TileSensor implements ISensor, IRequiresIconLoading, IGaugeSensor {
+import java.util.Map;
 
-	private IIcon icon;
-
+public class MachineSensor extends TileSensor implements ISensor, IGaugeSensor {
 	private String[] gaugeProperties = new String[]{
 		"HeatPercentage",
 		"Progress"
@@ -35,17 +29,11 @@ public class MachineSensor extends TileSensor implements ISensor, IRequiresIconL
 	@Override
 	public boolean isValidTarget(Object target) {
 		return (Mods.IC2 && Ic2Utils.isValidMachineTarget(target)) ||
-			(Mods.TE && CoFHUtils.isValidMachineTarget(target)) ||
-			(Mods.RC && RotaryCraftUtils.isValidMachineTarget(target));
+			(Mods.TE && CoFHUtils.isValidMachineTarget(target));
 	}
 
 	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:machine");
-	}
-
-	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
 		TileEntity tile = (TileEntity) obj;
 		Map<String, Object> response = super.getDetails(tile, sensorPos);
 		if (Mods.IC2) {
@@ -53,9 +41,6 @@ public class MachineSensor extends TileSensor implements ISensor, IRequiresIconL
 		}
 		if (Mods.TE) {
 			response.putAll(CoFHUtils.getMachineDetails(world, obj, additional));
-		}
-		if (Mods.RC) {
-			response.putAll(RotaryCraftUtils.getMachineDetails(world, obj, additional));
 		}
 		return response;
 	}
@@ -66,23 +51,23 @@ public class MachineSensor extends TileSensor implements ISensor, IRequiresIconL
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) throws Exception {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) throws Exception {
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "machineCard";
+		return "machine_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:machine");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item) Item.itemRegistry.getObject("redstone"));
+		return new ItemStack(Items.REDSTONE);
 	}
 
 }

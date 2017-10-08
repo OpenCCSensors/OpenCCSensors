@@ -1,85 +1,70 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 
-public class SonicSensor implements ISensor, IRequiresIconLoading {
+import java.util.HashMap;
+import java.util.Map;
 
-	private IIcon icon;
+public class SonicSensor implements ISensor {
 	private static final int BASE_RANGE = 1;
 
 	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
-		Vec3 target = (Vec3) obj;
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
+		Vec3d target = (Vec3d) obj;
 		int x = (int) target.xCoord;
 		int y = (int) target.yCoord;
 		int z = (int) target.zCoord;
 
-		Block block = world.getBlock(x, y, z);
+		IBlockState block = world.getBlockState(new BlockPos(target));
 
 		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		String type = "UNKNOWN";
 
-		if (block != null && block.getMaterial() != null) {
-			if (block.getMaterial().isLiquid()) {
-				type = "LIQUID";
-			} else if (block.getMaterial().isSolid()) {
-				type = "SOLID";
-			}
+		if (block.getMaterial().isLiquid()) {
+			type = "LIQUID";
+		} else if (block.getMaterial().isSolid()) {
+			type = "SOLID";
 		}
 
 		response.put("Type", type);
 		HashMap<String, Integer> position = new HashMap<String, Integer>();
-		position.put("X", x - sensorPos.posX);
-		position.put("Y", y - sensorPos.posY);
-		position.put("Z", z - sensorPos.posZ);
+		position.put("X", x - sensorPos.getX());
+		position.put("Y", y - sensorPos.getY());
+		position.put("Z", z - sensorPos.getZ());
 		response.put("Position", position);
 
 		return response;
 	}
 
 	@Override
-	public Map getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map<String, Object> getTargets(World world, BlockPos location, ISensorTier tier) {
 
 		HashMap<String, Object> targets = new HashMap<String, Object>();
 
 		int range = (new Double(tier.getMultiplier())).intValue() + BASE_RANGE;
 
-		int sx = location.posX;
-		int sy = location.posY;
-		int sz = location.posZ;
+		int sx = location.getX();
+		int sy = location.getY();
+		int sz = location.getZ();
 
 		for (int x = -range; x <= range; x++) {
 			for (int y = -range; y <= range; y++) {
 				for (int z = -range; z <= range; z++) {
 
-					if (!(x == 0 && y == 0 && z == 0) && world.blockExists(sx + x, sy + y, sz + z)) {
-
-						int bX = sx + x;
-						int bY = sy + y;
-						int bZ = sz + z;
-
-						Block block = world.getBlock(bX, bY, bZ);
-
-						if (!(world.isAirBlock(bX, bY, bZ) || block == null)) {
-							Vec3 targetPos = Vec3.createVectorHelper(
-								bX,
-								bY,
-								bZ
-							);
-							if ((Vec3.createVectorHelper((double) location.posX, (double) location.posY, (double) location.posZ)).distanceTo(targetPos) <= range) {
+					BlockPos pos = new BlockPos(sx + x, sy + y, sz + z);
+					if (!(x == 0 && y == 0 && z == 0) && world.isBlockLoaded(pos)) {
+						if (!world.isAirBlock(pos)) {
+							Vec3d targetPos = new Vec3d(pos);
+							if ((new Vec3d(location).distanceTo(targetPos) <= range)) {
 								targets.put(String.format("%s,%s,%s", x, y, z), targetPos);
 							}
 
@@ -97,28 +82,23 @@ public class SonicSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "sonicCard";
+		return "sonic_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:sonic");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:sonic");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Block) Block.blockRegistry.getObject("jukebox"));
+		return new ItemStack(Blocks.JUKEBOX);
 	}
 
 }

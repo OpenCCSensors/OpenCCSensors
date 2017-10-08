@@ -4,8 +4,8 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import openccsensors.common.container.ContainerSensor;
+import openccsensors.common.util.TranslateUtils;
 import org.lwjgl.opengl.GL11;
 
 public class GuiSensor extends GuiContainer {
@@ -25,18 +25,17 @@ public class GuiSensor extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		String sensorGuiName = TranslateUtils.translateToLocal("gui.openccsensors.sensor");
 
-		String sensorGuiName = StatCollector.translateToLocal("gui.openccsensors.sensor");
-
-		mc.fontRenderer.drawString(
+		mc.fontRendererObj.drawString(
 			sensorGuiName,
 			this.xSize / 2
-				- (mc.fontRenderer.getStringWidth(sensorGuiName) / 2),
+				- (mc.fontRendererObj.getStringWidth(sensorGuiName) / 2),
 			6,
 			4210752
 		);
-		mc.fontRenderer.drawString(
-			StatCollector.translateToLocal("container.inventory"),
+		mc.fontRendererObj.drawString(
+			TranslateUtils.translateToLocal("container.inventory"),
 			8,
 			this.ySize - 96 + 2,
 			4210752

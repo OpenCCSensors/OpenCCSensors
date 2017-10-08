@@ -4,21 +4,27 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import openccsensors.api.ISensorEnvironment;
+import openccsensors.common.block.BlockSensor;
 import openccsensors.common.peripheral.PeripheralSensor;
 
-public class TileEntitySensor extends TileEntity implements ISensorEnvironment, IPeripheral, IInventory {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public class TileEntitySensor extends TileEntity implements ISensorEnvironment, IPeripheral, IInventory, ITickable {
 
 	private PeripheralSensor peripheral;
 
@@ -40,22 +46,31 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 	/* Tile entity overrides */
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
 		peripheral.update();
 		rotation = (rotation + rotationSpeed) % 360;
 	}
 
 	@Override
-	public Packet getDescriptionPacket() {
-		NBTTagCompound nbt = new NBTTagCompound();
-		writeToNBT(nbt);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, nbt);
+	public void handleUpdateTag(@Nonnull NBTTagCompound tag) {
+		readFromNBT(tag);
+	}
+
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-		readFromNBT(pkt.func_148857_g());
+	@Nonnull
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
 	}
 
 	@Override
@@ -65,15 +80,22 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 		inventory.setInventorySlotContents(0, ItemStack.loadItemStackFromNBT(item));
 	}
 
+	@Nonnull
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
-		super.writeToNBT(nbttagcompound);
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		NBTTagCompound item = new NBTTagCompound();
 		ItemStack sensorStack = inventory.getStackInSlot(0);
 		if (sensorStack != null) {
 			sensorStack.writeToNBT(item);
 		}
-		nbttagcompound.setTag("item", item);
+		tag.setTag("item", item);
+		return super.writeToNBT(tag);
+	}
+
+	private void markBlockForUpdate() {
+		BlockPos pos = getPos();
+		IBlockState state = worldObj.getBlockState(pos);
+		worldObj.notifyBlockUpdate(getPos(), state, state, 3);
 	}
 
 	/* Inventory proxy methods */
@@ -94,20 +116,20 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i) {
-		return inventory.getStackInSlotOnClosing(i);
-
-	}
-
-	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
 		inventory.setInventorySlotContents(i, itemstack);
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		markBlockForUpdate();
+	}
+
+	@Nonnull
+	@Override
+	public String getName() {
+		return inventory.getName();
 	}
 
 	@Override
-	public String getInventoryName() {
-		return inventory.getInventoryName();
+	public boolean hasCustomName() {
+		return inventory.hasCustomName();
 	}
 
 	@Override
@@ -116,54 +138,93 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUseableByPlayer(@Nonnull EntityPlayer entityplayer) {
 		return inventory.isUseableByPlayer(entityplayer);
 	}
 
 	@Override
-	public void openInventory() {
+	public boolean isItemValidForSlot(int i, @Nonnull ItemStack itemstack) {
+		return inventory.isItemValidForSlot(i, itemstack);
+	}
+
+	@Nullable
+	@Override
+	public ItemStack removeStackFromSlot(int index) {
+		ItemStack removed = inventory.removeStackFromSlot(index);
+		if (removed != null) markBlockForUpdate();
+		return removed;
 	}
 
 	@Override
-	public void closeInventory() {
+	public void openInventory(@Nonnull EntityPlayer player) {
+		inventory.openInventory(player);
 	}
 
+	@Override
+	public void closeInventory(@Nonnull EntityPlayer player) {
+		inventory.closeInventory(player);
+	}
 
+	@Override
+	public int getField(int id) {
+		return inventory.getField(id);
+	}
+
+	@Override
+	public void setField(int id, int value) {
+		inventory.setField(id, value);
+	}
+
+	@Override
+	public int getFieldCount() {
+		return inventory.getFieldCount();
+	}
+
+	@Override
+	public void clear() {
+		inventory.clear();
+		markBlockForUpdate();
+	}
+	
 	/* Peripheral proxy methods */
 
+	@Nonnull
 	@Override
 	public String getType() {
 		return peripheral.getType();
 	}
 
+	@Nonnull
 	@Override
 	public String[] getMethodNames() {
 		return peripheral.getMethodNames();
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments) throws LuaException, InterruptedException {
 		return peripheral.callMethod(computer, context, method, arguments);
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {
+	public void attach(@Nonnull IComputerAccess computer) {
 		peripheral.attach(computer);
 	}
 
 	@Override
-	public void detach(IComputerAccess computer) {
+	public void detach(@Nonnull IComputerAccess computer) {
 		peripheral.detach(computer);
 	}
 
 	@Override
-	public int getFacing() {
-		return (worldObj == null) ? 0 : this.getBlockMetadata();
+	public EnumFacing getFacing() {
+		if (worldObj == null || !worldObj.isBlockLoaded(pos)) return EnumFacing.NORTH;
+		IBlockState state = worldObj.getBlockState(pos);
+		return state.getBlock() instanceof BlockSensor ? state.getValue(BlockSensor.PROPERTY_FACING) : EnumFacing.NORTH;
 	}
 
 	@Override
-	public ChunkCoordinates getLocation() {
-		return new ChunkCoordinates(xCoord, yCoord, zCoord);
+	public BlockPos getLocation() {
+		return pos;
 	}
 
 	@Override
@@ -171,26 +232,14 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 		return getStackInSlot(0);
 	}
 
+	@Nonnull
 	@Override
 	public World getWorld() {
 		return worldObj;
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
 	public boolean equals(IPeripheral other) {
-		// TODO Auto-generated method stub
 		return this == other;
 	}
 }

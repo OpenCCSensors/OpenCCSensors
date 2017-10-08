@@ -1,22 +1,19 @@
 package openccsensors.common.item;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import openccsensors.OpenCCSensors;
+import openccsensors.api.IItemMeta;
+
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import openccsensors.OpenCCSensors;
-import openccsensors.api.IItemMeta;
-import openccsensors.api.IRequiresIconLoading;
-
 public class ItemGeneric extends Item {
-
 	private HashMap<Integer, IItemMeta> metaitems = new HashMap<Integer, IItemMeta>();
 
 	public ItemGeneric() {
@@ -29,7 +26,7 @@ public class ItemGeneric extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List subItems) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs tab, List<ItemStack> subItems) {
 		OpenCCSensors.turtleUpgradeSensor.addTurtlesToCreative(subItems);
 		for (Entry<Integer, IItemMeta> entry : metaitems.entrySet()) {
 			if (entry.getValue().displayInCreative()) {
@@ -50,24 +47,7 @@ public class ItemGeneric extends Item {
 		return metaitems.get(id);
 	}
 
-	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		for (Entry<Integer, IItemMeta> entry : metaitems.entrySet()) {
-			if (entry.getValue() instanceof IRequiresIconLoading) {
-				((IRequiresIconLoading) entry.getValue()).loadIcon(iconRegister);
-			}
-		}
-	}
-
-	@Override
-	public IIcon getIconFromDamage(int id) {
-		IItemMeta meta = metaitems.get(id);
-		if (meta == null) {
-			return null;
-		}
-		return meta.getIcon();
-	}
-
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack) {
 		IItemMeta meta = getMeta(itemStack);

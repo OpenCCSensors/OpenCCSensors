@@ -1,20 +1,16 @@
 package openccsensors.common;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 import openccsensors.api.EnumItemRarity;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensorTier;
 
-public class SensorTier implements ISensorTier, IRequiresIconLoading {
+public class SensorTier implements ISensorTier {
+	private final String name;
+	private final EnumItemRarity rarity;
+	private final int multiplier;
+	private final ResourceLocation iconName;
 
-	private String name;
-	private EnumItemRarity rarity;
-	private int multiplier;
-	private IIcon icon;
-	private String iconName;
-
-	public SensorTier(String name, EnumItemRarity rarity, int multiplier, String iconName) {
+	public SensorTier(String name, EnumItemRarity rarity, int multiplier, ResourceLocation iconName) {
 		this.name = name;
 		this.rarity = rarity;
 		this.multiplier = multiplier;
@@ -37,14 +33,7 @@ public class SensorTier implements ISensorTier, IRequiresIconLoading {
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
+	public ResourceLocation getIcon() {
+		return iconName;
 	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon(iconName);
-	}
-
-
 }

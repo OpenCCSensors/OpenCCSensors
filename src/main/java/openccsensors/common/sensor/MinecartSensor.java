@@ -1,46 +1,40 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import mods.railcraft.api.carts.IEnergyTransfer;
 import mods.railcraft.api.carts.IExplosiveCart;
 import mods.railcraft.api.carts.IRoutableCart;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.*;
 
-public class MinecartSensor implements ISensor, IRequiresIconLoading {
+import java.util.HashMap;
+import java.util.Map;
 
-	private IIcon icon;
-
-
+public class MinecartSensor implements ISensor {
 	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
 
 		EntityMinecart minecart = (EntityMinecart) obj;
 
 		HashMap<String, Object> response = new HashMap<String, Object>();
 		HashMap<String, Double> position = new HashMap<String, Double>();
 
-		position.put("X", minecart.posX - sensorPos.posX);
-		position.put("Y", minecart.posY - sensorPos.posY);
-		position.put("Z", minecart.posZ - sensorPos.posZ);
+		position.put("X", minecart.posX - sensorPos.getX());
+		position.put("Y", minecart.posY - sensorPos.getY());
+		position.put("Z", minecart.posZ - sensorPos.getZ());
 		response.put("Position", position);
 
-		response.put("Name", minecart.func_95999_t());
+		response.put("Name", minecart.getName());
 		response.put("RawName", EntityList.getEntityString(minecart));
 
 		if (minecart instanceof IInventory) {
@@ -51,8 +45,8 @@ public class MinecartSensor implements ISensor, IRequiresIconLoading {
 			response.put("Tanks", TankUtils.fluidHandlerToMap((IFluidHandler) minecart));
 		}
 
-		if (minecart.riddenByEntity != null && minecart.riddenByEntity instanceof EntityLivingBase) {
-			response.put("Riding", EntityUtils.livingToMap((EntityLivingBase) minecart.riddenByEntity, sensorPos, true));
+		if (minecart.getRidingEntity() != null && minecart.getRidingEntity() instanceof EntityLivingBase) {
+			response.put("Riding", EntityUtils.livingToMap((EntityLivingBase) minecart.getRidingEntity(), sensorPos, true));
 		}
 
 		if (Mods.RAIL) {
@@ -72,7 +66,7 @@ public class MinecartSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Map<String, ?> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map<String, ?> getTargets(World world, BlockPos location, ISensorTier tier) {
 		double radius = tier.getMultiplier() * 4;
 		return EntityUtils.getEntities(world, location, radius, EntityMinecart.class);
 	}
@@ -83,29 +77,23 @@ public class MinecartSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "minecartCard";
+		return "minecart_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:minecart");
-
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:minecart");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item) Item.itemRegistry.getObject("minecart"));
+		return new ItemStack(Items.MINECART);
 	}
 
 }

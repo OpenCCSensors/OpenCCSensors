@@ -1,6 +1,6 @@
 package openccsensors.api;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 
 public interface ISensorTier {
 	EnumItemRarity getRarity();
@@ -9,5 +9,5 @@ public interface ISensorTier {
 
 	String getName();
 
-	IIcon getIcon();
+	ResourceLocation getIcon();
 }

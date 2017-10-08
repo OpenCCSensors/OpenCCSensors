@@ -1,8 +1,5 @@
 package openccsensors.common.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import forestry.api.apiculture.IBee;
 import forestry.api.apiculture.IBeeGenome;
 import forestry.api.arboriculture.ITree;
@@ -11,6 +8,10 @@ import forestry.api.genetics.*;
 import forestry.api.lepidopterology.IButterfly;
 import forestry.api.lepidopterology.IButterflyGenome;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3i;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ForestryUtils {
 
@@ -40,8 +41,8 @@ public class ForestryUtils {
 		} else if (allele instanceof IAlleleTolerance) {
 			return ((IAlleleTolerance) allele).getValue();
 		} else if (allele instanceof IAlleleArea) {
-			int[] area = ((IAlleleArea) allele).getValue();
-			return area[0] + 'x' + area[1] + 'x' + area[2];
+			Vec3i area = ((IAlleleArea) allele).getValue();
+			return area.getX() + 'x' + area.getY() + 'x' + area.getZ();
 		} else if (allele instanceof IAlleleFlowers) {
 			return ((IAlleleFlowers) allele).getProvider().getDescription();
 		}
@@ -71,8 +72,8 @@ public class ForestryUtils {
 			response.put("Fertility", genome.getFertility());
 			response.put("TemperatureTolerance", genome.getToleranceTemp());
 			response.put("HumidityTolerance", genome.getToleranceHumid());
-			response.put("IsNocturnal", genome.getNocturnal());
-			response.put("IsTolerantFlyer", genome.getTolerantFlyer());
+			response.put("IsNocturnal", genome.getNeverSleeps());
+			response.put("IsTolerantFlyer", genome.getToleratesRain());
 			response.put("IsCaveDweller", genome.getCaveDwelling());
 		}
 

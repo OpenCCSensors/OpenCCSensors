@@ -7,7 +7,6 @@ import java.util.Map;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class CoFHUtils {
 
@@ -38,12 +37,12 @@ public class CoFHUtils {
 		if (obj instanceof IEnergyHandler || obj instanceof IEnergyProvider) {
 			if (obj instanceof IEnergyHandler) {
 				IEnergyHandler energyHandler = (IEnergyHandler) obj;
-				stored = energyHandler.getEnergyStored(ForgeDirection.UNKNOWN);
-				capacity = energyHandler.getMaxEnergyStored(ForgeDirection.UNKNOWN);
+				stored = energyHandler.getEnergyStored(null);
+				capacity = energyHandler.getMaxEnergyStored(null);
 			} else if (obj instanceof IEnergyProvider) {
 				IEnergyProvider energyProvider = (IEnergyProvider) obj;
-				stored = energyProvider.getEnergyStored(ForgeDirection.UNKNOWN);
-				capacity = energyProvider.getMaxEnergyStored(ForgeDirection.UNKNOWN);
+				stored = energyProvider.getEnergyStored(null);
+				capacity = energyProvider.getMaxEnergyStored(null);
 			} else {
 				return response;
 			}
@@ -72,12 +71,12 @@ public class CoFHUtils {
 		if (obj instanceof IEnergyHandler || obj instanceof IEnergyProvider) {
 			if (obj instanceof IEnergyHandler) {
 				IEnergyHandler energyHandler = (IEnergyHandler) obj;
-				stored = energyHandler.getEnergyStored(ForgeDirection.UNKNOWN);
-				capacity = energyHandler.getMaxEnergyStored(ForgeDirection.UNKNOWN);
+				stored = energyHandler.getEnergyStored(null);
+				capacity = energyHandler.getMaxEnergyStored(null);
 			} else if (obj instanceof IEnergyProvider) {
 				IEnergyProvider energyProvider = (IEnergyProvider) obj;
-				stored = energyProvider.getEnergyStored(ForgeDirection.UNKNOWN);
-				capacity = energyProvider.getMaxEnergyStored(ForgeDirection.UNKNOWN);
+				stored = energyProvider.getEnergyStored(null);
+				capacity = energyProvider.getMaxEnergyStored(null);
 			} else {
 				return response;
 			}

@@ -1,35 +1,30 @@
 package openccsensors.common.item.meta;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.IItemMeta;
-import openccsensors.api.IRequiresIconLoading;
 
-public class ItemMetaAdvancedAmplifier implements IItemMeta, IRequiresIconLoading {
-
+public class ItemMetaAdvancedAmplifier implements IItemMeta {
 	private int id;
-	private IIcon icon;
 
 	public ItemMetaAdvancedAmplifier(int id) {
 		this.id = id;
 
 		OpenCCSensors.Items.genericItem.addMeta(this);
 
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			newItemStack(1),
 			new Object[]{
 				"igi",
 				"rdr",
 				"igi",
-				'i', new ItemStack((Item) Item.itemRegistry.getObject("iron_ingot")),
-				'g', new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot")),
-				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				'd', new ItemStack((Item) Item.itemRegistry.getObject("diamond")),
+				'i', "ingotIron",
+				'g', "ingotGold",
+				'r', "dustRedstone",
+				'd', "gemDiamond",
 			}
 		));
 	}
@@ -45,13 +40,8 @@ public class ItemMetaAdvancedAmplifier implements IItemMeta, IRequiresIconLoadin
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:advancedAmplifier");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors", "advanced_amplifier");
 	}
 
 	@Override
@@ -61,6 +51,6 @@ public class ItemMetaAdvancedAmplifier implements IItemMeta, IRequiresIconLoadin
 
 	@Override
 	public String getName() {
-		return "advancedAmplifier";
+		return "advanced_amplifier";
 	}
 }

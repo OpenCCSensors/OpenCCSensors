@@ -1,58 +1,42 @@
 package openccsensors.common.sensor;
 
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import openccsensors.api.IGaugeSensor;
+import openccsensors.api.ISensor;
+import openccsensors.api.ISensorTier;
+import openccsensors.common.util.CoFHUtils;
+import openccsensors.common.util.Ic2Utils;
+import openccsensors.common.util.Mods;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
-import openccsensors.api.IGaugeSensor;
-import openccsensors.api.IRequiresIconLoading;
-import openccsensors.api.ISensor;
-import openccsensors.api.ISensorTier;
-import openccsensors.common.util.*;
+public class PowerSensor extends TileSensor implements ISensor, IGaugeSensor {
 
-public class PowerSensor extends TileSensor implements ISensor, IRequiresIconLoading, IGaugeSensor {
-
-	private IIcon icon;
 	private String[] gaugeProperties = new String[]{
 		"StoredPercentage"
 	};
-
-	Class UEApi = null;
-
-	public PowerSensor() {
-		try {
-			UEApi = Class.forName("universalelectricity.core.block.IElectrical");
-		} catch (ClassNotFoundException e) {
-		}
-	}
 
 	@Override
 	public boolean isValidTarget(Object target) {
 		if (!(target instanceof TileEntity)) {
 			return false;
 		}
-		if ("unknown".equals(InventoryUtils.getRawNameForStack(new ItemStack(((TileEntity) target).getBlockType(), 1, ((TileEntity) target).getBlockMetadata())))) {
-			return false;
-		}
-		return (UEApi != null && UniversalElectricityUtils.isValidTarget((TileEntity) target)) ||
-			(Mods.IC2 && Ic2Utils.isValidPowerTarget(target)) ||
+
+		// TODO: Forge energy, Tesla
+		return (Mods.IC2 && Ic2Utils.isValidPowerTarget(target)) ||
 			(Mods.COFH && CoFHUtils.isValidPowerTarget(target)) ||
-			(Mods.TE && CoFHUtils.isValidPowerTarget(target)) ||
-			(Mods.RC && RotaryCraftUtils.isValidPowerTarget(target));
+			(Mods.TE && CoFHUtils.isValidPowerTarget(target));
 	}
 
 	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
 		HashMap<String, Object> response = super.getDetails((TileEntity) obj, sensorPos);
-		if (UEApi != null) {
-			response.putAll(UniversalElectricityUtils.getDetails(world, obj, additional));
-		}
 		if (Mods.IC2) {
 			response.putAll(Ic2Utils.getPowerDetails(world, obj, additional));
 		}
@@ -61,9 +45,6 @@ public class PowerSensor extends TileSensor implements ISensor, IRequiresIconLoa
 		}
 		if (Mods.TE) {
 			response.putAll(CoFHUtils.getPowerDetails(world, obj, additional));
-		}
-		if (Mods.RC) {
-			response.putAll(RotaryCraftUtils.getPowerDetails(world, obj, additional));
 		}
 		return response;
 	}
@@ -74,23 +55,18 @@ public class PowerSensor extends TileSensor implements ISensor, IRequiresIconLoa
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "powerCard";
+		return "power_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:power");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:power");
 	}
 
 	@Override
@@ -100,6 +76,6 @@ public class PowerSensor extends TileSensor implements ISensor, IRequiresIconLoa
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item) Item.itemRegistry.getObject("coal"));
+		return new ItemStack(Items.COAL);
 	}
 }

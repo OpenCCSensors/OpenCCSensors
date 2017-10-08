@@ -1,8 +1,5 @@
 package openccsensors.common.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import appeng.api.AEApi;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridNode;
@@ -14,7 +11,9 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppliedEnergisticsUtils {
 
@@ -35,7 +34,7 @@ public class AppliedEnergisticsUtils {
 		response.put("Powered", false);
 
 		IGridBlock aeMachine = (IGridBlock) aeWirelessAPtileEntity;
-		IGridNode gi = aeMachine.getMachine().getGridNode(ForgeDirection.UNKNOWN);
+		IGridNode gi = aeMachine.getMachine().getGridNode(null);
 		if (aeMachine instanceof IEnergyGrid && ((IEnergyGrid) aeMachine).isNetworkPowered() && aeMachine instanceof IMEInventoryHandler) {
 
 			IMEInventoryHandler<?> imivh = (IMEInventoryHandler) aeMachine;

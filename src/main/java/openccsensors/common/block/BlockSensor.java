@@ -1,124 +1,113 @@
 package openccsensors.common.block;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import openccsensors.OpenCCSensors;
 import openccsensors.common.tileentity.TileEntitySensor;
 import openccsensors.common.util.MiscUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class BlockSensor extends BlockContainer implements IPeripheralProvider {
-
-	public IIcon turtleIcon;
-	private IIcon icon;
+	public static final IProperty<EnumFacing> PROPERTY_FACING = BlockDirectional.FACING;
 
 	public BlockSensor() {
-
-		super(Material.ground);
+		super(Material.GROUND);
 		setHardness(0.5F);
 		setCreativeTab(OpenCCSensors.tabOpenCCSensors);
-		GameRegistry.registerBlock(this, "sensor");
+		GameRegistry.register(setRegistryName("sensor"));
+		GameRegistry.register(new ItemBlock(this).setRegistryName(getRegistryName()));
 		GameRegistry.registerTileEntity(TileEntitySensor.class, "sensor");
-		setBlockName("openccsensors.sensor");
+		setUnlocalizedName("openccsensors.sensor");
 	}
 
-	public boolean canCollideCheck(int par1, boolean par2) {
-		return true;
-	}
-
+	@Nonnull
 	@Override
-	public TileEntity createNewTileEntity(World world, int metadata) {
+	public TileEntity createNewTileEntity(@Nonnull World world, int metadata) {
 		return new TileEntitySensor();
 	}
 
+	@Nonnull
 	@Override
-	public IIcon getIcon(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-		return icon;
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, PROPERTY_FACING);
+	}
+
+	@Nonnull
+	@Override
+	@Deprecated
+	public IBlockState getStateFromMeta(int meta) {
+		IBlockState state = super.getStateFromMeta(meta);
+		if (meta >= 0 && meta < EnumFacing.VALUES.length) {
+			state = state.withProperty(PROPERTY_FACING, EnumFacing.VALUES[meta]);
+		}
+		return state;
 	}
 
 	@Override
-	public IIcon getIcon(int i, int damage) {
-		return icon;
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(PROPERTY_FACING).ordinal();
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister iconRegister) {
-		turtleIcon = iconRegister.registerIcon("openccsensors:turtleSensor");
-		icon = iconRegister.registerIcon("openccsensors:sensor");
+	public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
+		MiscUtils.dropInventoryItems(world.getTileEntity(pos));
+		super.breakBlock(world, pos, state);
+	}
+
+	@Nonnull
+	@Override
+	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+		return super
+			.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer)
+			.withProperty(PROPERTY_FACING, facing.getOpposite());
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block par5, int par6) {
-		MiscUtils.dropInventoryItems(world.getTileEntity(x, y, z));
-		super.breakBlock(world, x, y, z, par5, par6);
-	}
-
-	@Override
-	public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
-		return 0;
-	}
-
-	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
-		super.onBlockPlacedBy(world, x, y, z, entity, itemStack);
-		int l = MathHelper.floor_double((double) (entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		world.setBlockMetadataWithNotify(x, y, z, ForgeDirection.getOrientation(l).getOpposite().ordinal(), 1);
-	}
-
-	@Override
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
-
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
-	}
-
-	@Override
-	public int getRenderType() {
-		return OpenCCSensors.renderId;
-	}
-
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
 			if (player.isSneaking()) {
 				return false;
 			}
-			player.openGui(OpenCCSensors.instance, 1987, world, x, y, z);
+			player.openGui(OpenCCSensors.instance, 1987, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		}
 		return true;
 	}
 
 	@Override
-	public boolean canBeReplacedByLeaves(IBlockAccess world, int x, int y, int z) {
+	@Deprecated
+	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
-		return false;
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-		TileEntity entity = world.getTileEntity(x, y, z);
+	public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side) {
+		TileEntity entity = world.getTileEntity(pos);
 		if (entity instanceof TileEntitySensor) {
 			return (IPeripheral) entity;
 		}

@@ -1,35 +1,31 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import openccsensors.api.IGaugeSensor;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.TankUtils;
 
-public class TankSensor extends TileSensor implements ISensor, IRequiresIconLoading, IGaugeSensor {
+import java.util.HashMap;
+import java.util.Map;
 
-	private IIcon icon;
+public class TankSensor extends TileSensor implements ISensor, IGaugeSensor {
 	private String[] gaugeProperties = new String[]{
 		"PercentFull"
 	};
 
 	@Override
 	public boolean isValidTarget(Object tile) {
+		// TODO: Capabilities
 		if (tile instanceof IFluidHandler) {
-			FluidTankInfo[] tanks = ((IFluidHandler) tile).getTankInfo(ForgeDirection.UNKNOWN);
+			FluidTankInfo[] tanks = ((IFluidHandler) tile).getTankInfo(null);
 			if (tanks != null) {
 				return tanks.length > 0;
 			}
@@ -38,7 +34,7 @@ public class TankSensor extends TileSensor implements ISensor, IRequiresIconLoad
 	}
 
 	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
 		TileEntity tile = (TileEntity) obj;
 		HashMap<String, Object> response = super.getDetails(tile, sensorPos);
 		response.put("Tanks", TankUtils.fluidHandlerToMap((IFluidHandler) tile));
@@ -51,28 +47,23 @@ public class TankSensor extends TileSensor implements ISensor, IRequiresIconLoad
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "tankCard";
+		return "tank_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:tank");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:tank");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item) Item.itemRegistry.getObject("bucket"));
+		return new ItemStack(Items.BUCKET);
 	}
 
 	@Override

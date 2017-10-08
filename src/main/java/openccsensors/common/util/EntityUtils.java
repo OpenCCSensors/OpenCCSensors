@@ -2,8 +2,6 @@ package openccsensors.common.util;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,43 +9,38 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 
 public class EntityUtils {
 
 
-	public static HashMap<String, Entity> getEntities(World world, ChunkCoordinates location, double radius, Class filter) {
+	public static HashMap<String, Entity> getEntities(World world, BlockPos location, double radius, Class<? extends Entity> filter) {
 		HashMap<String, Entity> map = new HashMap<String, Entity>();
+		int x = location.getX();
+		int y = location.getY();
+		int z = location.getZ();
 
-		int dChunk = (int) Math.ceil(radius / 16.0F);
-
-		int x = location.posX;
-		int y = location.posY;
-		int z = location.posZ;
-
-		for (int dx = -dChunk; dx <= dChunk; dx++) {
-			for (int dz = -dChunk; dz <= dChunk; dz++) {
-				Chunk chunk = world.getChunkFromBlockCoords(x + 16 * dx, z + 16 * dz);
-				for (List<Entity> subchunk : chunk.entityLists) {
-					for (Entity entity : subchunk) {
-						Vec3 livingPos = Vec3.createVectorHelper(
-							entity.posX + 0.5,
-							entity.posY + 0.5,
-							entity.posZ + 0.5
-						);
-						if ((Vec3.createVectorHelper((double) location.posX, (double) location.posY, (double) location.posZ)).distanceTo(livingPos) <= radius && filter.isAssignableFrom(entity.getClass())) {
-							String targetName = (entity instanceof EntityPlayer) ? entity
-								.getCommandSenderName() : entity
-								.getCommandSenderName() + entity.getEntityId();
-							targetName = targetName.replaceAll("\\s", "");
-							map.put(targetName, entity);
-						}
-					}
-				}
+		for (Entity entity : world.getEntitiesWithinAABB(filter, new AxisAlignedBB(
+			x - radius, y - radius, z - radius,
+			x + radius, y + radius, z + radius
+		))) {
+			Vec3d livingPos = new Vec3d(
+				entity.posX + 0.5,
+				entity.posY + 0.5,
+				entity.posZ + 0.5
+			);
+			if ((new Vec3d((double) location.getX(), (double) location.getY(), (double) location.getZ())).distanceTo(livingPos) <= radius && filter.isAssignableFrom(entity.getClass())) {
+				String targetName = (entity instanceof EntityPlayer) ? entity
+					.getName() : entity
+					.getName() + entity.getEntityId();
+				targetName = targetName.replaceAll("\\s", "");
+				map.put(targetName, entity);
 			}
 		}
 
@@ -55,28 +48,29 @@ public class EntityUtils {
 	}
 
 
-	public static Map<String, Object> livingToMap(EntityLivingBase living, ChunkCoordinates sensorPos, boolean additional) {
+	public static HashMap<String, Object> livingToMap(EntityLivingBase living, BlockPos sensorPos, boolean additional) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		HashMap<String, Double> position = new HashMap<String, Double>();
-		position.put("X", living.posX - sensorPos.posX);
-		position.put("Y", living.posY - sensorPos.posY);
-		position.put("Z", living.posZ - sensorPos.posZ);
+		position.put("X", living.posX - sensorPos.getX());
+		position.put("Y", living.posY - sensorPos.getY());
+		position.put("Z", living.posZ - sensorPos.getZ());
 		map.put("Position", position);
 
-		map.put("Name", (living instanceof EntityPlayerMP) ? "Player" : living.getCommandSenderName());
+		map.put("Name", (living instanceof EntityPlayerMP) ? "Player" : living.getName());
 		map.put("RawName", living.getClass().getName());
 		map.put("IsPlayer", living instanceof EntityPlayerMP);
 
 		if (additional) {
 
-			map.put("HeldItem", InventoryUtils.itemstackToMap(living.getHeldItem()));
+			map.put("HeldItem", InventoryUtils.itemstackToMap(living.getHeldItem(EnumHand.MAIN_HAND)));
+			map.put("OffHandItem", InventoryUtils.itemstackToMap(living.getHeldItem(EnumHand.OFF_HAND)));
 
 			HashMap<String, Object> armour = new HashMap<String, Object>();
-			armour.put("Boots", InventoryUtils.itemstackToMap(living.getEquipmentInSlot(1)));
-			armour.put("Leggings", InventoryUtils.itemstackToMap(living.getEquipmentInSlot(2)));
-			armour.put("Chestplate", InventoryUtils.itemstackToMap(living.getEquipmentInSlot(3)));
-			armour.put("Helmet", InventoryUtils.itemstackToMap(living.getEquipmentInSlot(4)));
+			armour.put("Boots", InventoryUtils.itemstackToMap(living.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
+			armour.put("Leggings", InventoryUtils.itemstackToMap(living.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
+			armour.put("Chestplate", InventoryUtils.itemstackToMap(living.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
+			armour.put("Helmet", InventoryUtils.itemstackToMap(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD)));
 
 			map.put("Armour", armour);
 			map.put("Health", living.getHealth());
@@ -95,7 +89,7 @@ public class EntityUtils {
 			map.put("Pitch", living.rotationPitch);
 			map.put("YawHead", living.rotationYawHead);
 
-			HashMap<Integer, Object> potionEffects = new HashMap<Integer, Object>();
+			HashMap<Integer, String> potionEffects = new HashMap<Integer, String>();
 			Collection<PotionEffect> effects = living.getActivePotionEffects();
 			int count = 1;
 			for (PotionEffect effect : effects) {
@@ -107,8 +101,7 @@ public class EntityUtils {
 
 		if (living instanceof EntityPlayerMP) {
 			EntityPlayerMP player = (EntityPlayerMP) living;
-			map.put("Username", player.getCommandSenderName());
-			map.put("IsBlocking", player.isBlocking());
+			map.put("Username", player.getName());
 			map.put("ExperienceTotal", player.experienceTotal);
 			map.put("ExperienceLevel", player.experienceLevel);
 			map.put("Experience", player.experience);
@@ -126,7 +119,7 @@ public class EntityUtils {
 			map.put("IsSitting", tameable.isSitting());
 			map.put("IsTamed", tameable.isTamed());
 			if (tameable.isTamed()) {
-				map.put("OwnerName", tameable.getOwner().getCommandSenderName());
+				map.put("OwnerName", tameable.getOwner().getName());
 			}
 			if (tameable instanceof EntityWolf) {
 				EntityWolf wolf = (EntityWolf) tameable;

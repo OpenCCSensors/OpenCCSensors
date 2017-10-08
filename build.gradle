@@ -11,23 +11,39 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.7.5"
 group= "openccsensors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "openccsensors"
 
 minecraft {
-    version = "1.7.10-10.13.4.1614-1.7.10"
+    version = "1.10.2-12.18.3.2422"
     runDir = "run"
+    mappings = "snapshot_20161111"
+}
+
+repositories {
+    mavenCentral ()
+
+    maven { url "http://dvs1.progwml6.com/files/maven" } // JEI (for CoFH)
+    maven { url "http://maven.ic2.player.to" } // IC2
+    maven { url "https://cc.crzd.me/maven/" } // ComputerCraft
+    maven { url "http://maven.covers1624.net/" } // CoFH
 }
 
 dependencies {
-    compile fileTree(dir: 'libs-1.7.10', include: '*.jar')
+    compile fileTree(dir: 'libs-1.10.2', include: '*.jar')
+    compile "dan200.computercraft:ComputerCraft:1.80pr0-build12"
+    deobfCompile "net.industrial-craft:industrialcraft-2:2.6.252-ex110"
+    compile("cofh:CoFHCore:1.10.2-4.1.9.13:deobf") {
+        exclude group: 'mezz.jei'
+    }
+    deobfCompile "net.sengir.forestry:forestry_1.10.2:5.2.17.388"
 }
 
 processResources

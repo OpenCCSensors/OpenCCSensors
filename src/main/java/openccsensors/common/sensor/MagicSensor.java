@@ -1,38 +1,29 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.MagicUtils;
 import openccsensors.common.util.Mods;
 
-public class MagicSensor extends TileSensor implements ISensor, IRequiresIconLoading {
+import java.util.HashMap;
+import java.util.Map;
 
-	private IIcon icon;
-
+public class MagicSensor extends TileSensor implements ISensor {
 	@Override
 	public boolean isValidTarget(Object tile) {
-		return (Mods.TC && MagicUtils.isValidAspectTarget(tile)) ||
-			(Mods.AM && MagicUtils.isValidAspectTarget(tile));
+		return (Mods.AM && MagicUtils.isValidEssenceTarget(tile));
 	}
 
 	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorPos, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
 		TileEntity tile = (TileEntity) obj;
 		HashMap<String, Object> response = super.getDetails(tile, sensorPos);
-		if (Mods.TC) {
-			response.put("Aspects", MagicUtils.getMapOfAspects(world, obj, additional));
-		}
 		if (Mods.AM) {
 			response.putAll(MagicUtils.getMapOfArsMagicaPower(world, obj, additional));
 		}
@@ -45,28 +36,23 @@ public class MagicSensor extends TileSensor implements ISensor, IRequiresIconLoa
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "magicCard";
+		return "magic_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:magic");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:magic");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot"));
+		return new ItemStack(Items.GOLD_INGOT);
 	}
 
 }

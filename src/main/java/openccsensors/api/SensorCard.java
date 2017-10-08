@@ -1,6 +1,6 @@
 package openccsensors.api;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 
 public class SensorCard {
 	private ISensor sensor;
@@ -19,7 +19,7 @@ public class SensorCard {
 		return sensor;
 	}
 
-	public IIcon getIconForRenderPass(int pass) {
+	public ResourceLocation getIconForRenderPass(int pass) {
 		if (pass == 0) {
 			return getSensor().getIcon();
 		}

@@ -1,34 +1,26 @@
 package openccsensors.common.sensor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import openccsensors.api.IRequiresIconLoading;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 
-public class WorldSensor implements ISensor, IRequiresIconLoading {
+import java.util.HashMap;
+import java.util.Map;
 
-	private IIcon icon;
+public class WorldSensor implements ISensor {
 
 	@Override
-	public Map<String, Object> getDetails(World world, Object obj, ChunkCoordinates sensorLocation, boolean additional) {
+	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorLocation, boolean additional) {
 
 		HashMap<String, Object> response = new HashMap<String, Object>();
 
-		int x = sensorLocation.posX;
-		int y = sensorLocation.posY;
-		int z = sensorLocation.posZ;
-
-		response.put("Dimension", world.getWorldInfo().getVanillaDimension());
-		response.put("Biome", world.getBiomeGenForCoords(x, z).biomeName);
-		response.put("LightLevel", world.getBlockLightValue(x, y, z));
+		response.put("Dimension", world.provider.getDimension());
+		response.put("Biome", world.getBiome(sensorLocation).getBiomeName());
+		response.put("LightLevel", world.getLight(sensorLocation));
 		response.put("Raining", world.isRaining());
 		response.put("Thundering", world.isThundering());
 		response.put("Daytime", world.isDaytime());
@@ -39,7 +31,7 @@ public class WorldSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Map<String, Object> getTargets(World world, ChunkCoordinates location, ISensorTier tier) {
+	public Map<String, Object> getTargets(World world, BlockPos location, ISensorTier tier) {
 		HashMap<String, Object> targets = new HashMap<String, Object>();
 		targets.put("CURRENT", location);
 		return targets;
@@ -51,28 +43,23 @@ public class WorldSensor implements ISensor, IRequiresIconLoading {
 	}
 
 	@Override
-	public Object callCustomMethod(World world, ChunkCoordinates location, int methodID, Object[] args, ISensorTier tier) {
+	public Object callCustomMethod(World world, BlockPos location, int methodID, Object[] args, ISensorTier tier) {
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "worldCard";
+		return "world_card";
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:world");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors:world");
 	}
 
 	@Override
 	public ItemStack getUniqueRecipeItem() {
-		return new ItemStack((Item) Item.itemRegistry.getObject("ender_pearl"));
+		return new ItemStack(Items.ENDER_PEARL);
 	}
 
 }

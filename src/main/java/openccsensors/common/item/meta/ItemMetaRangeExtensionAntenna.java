@@ -1,36 +1,31 @@
 package openccsensors.common.item.meta;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.IItemMeta;
-import openccsensors.api.IRequiresIconLoading;
 
-public class ItemMetaRangeExtensionAntenna implements IItemMeta, IRequiresIconLoading {
-
+public class ItemMetaRangeExtensionAntenna implements IItemMeta {
 	private int id;
-	private IIcon icon;
 
 	public ItemMetaRangeExtensionAntenna(int id) {
 		this.id = id;
 
 		OpenCCSensors.Items.genericItem.addMeta(this);
 
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			newItemStack(1),
 			new Object[]{
 				" t ",
 				"srs",
 				"sis",
-				't', new ItemStack((Block) Block.blockRegistry.getObject("redstone_torch")),
-				's', new ItemStack((Item) Item.itemRegistry.getObject("stone")),
-				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				'i', new ItemStack((Item) Item.itemRegistry.getObject("iron_ingot")),
+				't', new ItemStack(Blocks.REDSTONE_TORCH),
+				's', "stone",
+				'r', "dustRedstone",
+				'i', "ingotIron",
 			}
 		));
 	}
@@ -46,13 +41,8 @@ public class ItemMetaRangeExtensionAntenna implements IItemMeta, IRequiresIconLo
 	}
 
 	@Override
-	public IIcon getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:rangeExtensionAntenna");
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors", "range_extension_antenna");
 	}
 
 	@Override
@@ -62,6 +52,6 @@ public class ItemMetaRangeExtensionAntenna implements IItemMeta, IRequiresIconLo
 
 	@Override
 	public String getName() {
-		return "rangeExtensionAntenna";
+		return "range_extension_antenna";
 	}
 }

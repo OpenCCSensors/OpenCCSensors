@@ -1,17 +1,17 @@
 package openccsensors;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import openccsensors.api.IItemMeta;
 import openccsensors.common.CommonProxy;
 import openccsensors.common.SensorTier;
@@ -25,7 +25,9 @@ import openccsensors.common.sensor.*;
 import openccsensors.common.turtle.TurtleUpgradeSensor;
 import openccsensors.common.util.OCSLog;
 
-@Mod(modid = "OCS", name = "OpenCCSensors", version = "1.7.5", dependencies = "required-after:ComputerCraft;after:CCTurtle;after:BuildCraft|Core;after:IC2;after:Thaumcraft;after:AppliedEnergistics;after:RailCraft;after:ArsMagica;after:UniversalElectricity;after:ThermalExpansion;after:RotaryCraft")
+import javax.annotation.Nonnull;
+
+@Mod(modid = "ocs", name = "OpenCCSensors", version = "1.7.5", dependencies = "required-after:ComputerCraft;after:CCTurtle;after:BuildCraft|Core;after:IC2;after:Thaumcraft;after:AppliedEnergistics;after:RailCraft;after:ArsMagica;after:UniversalElectricity;after:ThermalExpansion;after:RotaryCraft")
 public class OpenCCSensors {
 
 	public static class Blocks {
@@ -63,8 +65,6 @@ public class OpenCCSensors {
 		public static IItemMeta advancedAmplifier;
 	}
 
-	public static int renderId;
-
 	public static class Sensors {
 
 		public static ProximitySensor proximitySensor;
@@ -87,17 +87,19 @@ public class OpenCCSensors {
 	public static LuaMount mount = new LuaMount();
 
 	public static CreativeTabs tabOpenCCSensors = new CreativeTabs("tabOpenCCSensors") {
+		@Override
 		public ItemStack getIconItemStack() {
 			return new ItemStack(Blocks.sensorBlock, 1, 0);
 		}
 
+		@Nonnull
 		@Override
 		public Item getTabIconItem() {
 			return Items.sensorCard;
 		}
 	};
 
-	@Instance(value = "OCS")
+	@Instance(value = "ocs")
 	public static OpenCCSensors instance;
 
 	@SidedProxy(clientSide = "openccsensors.client.ClientProxy", serverSide = "openccsensors.common.CommonProxy")
@@ -123,7 +125,7 @@ public class OpenCCSensors {
 		Configuration configFile = new Configuration(evt.getSuggestedConfigurationFile());
 
 		Property prop = configFile.get("general", "turtlePeripheralEnabled", true);
-		prop.comment = "Turtle Peripheral Enabled";
+		prop.setComment("Turtle Peripheral Enabled");
 		Config.turtlePeripheralEnabled = prop.getBoolean(true);
 
 

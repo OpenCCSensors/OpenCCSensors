@@ -1,35 +1,30 @@
 package openccsensors.common.item.meta;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.IItemMeta;
-import openccsensors.api.IRequiresIconLoading;
 
-public class ItemMetaSignalAmplifier implements IItemMeta, IRequiresIconLoading {
+public class ItemMetaSignalAmplifier implements IItemMeta {
 
 	private int id;
-	private IIcon icon;
 
 	public ItemMetaSignalAmplifier(int id) {
 		this.id = id;
 
 		OpenCCSensors.Items.genericItem.addMeta(this);
 
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			newItemStack(1),
 			new Object[]{
 				"sgs",
 				"rrr",
 				"sgs",
-				's', new ItemStack((Block) Block.blockRegistry.getObject("stone")),
-				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				'g', new ItemStack((Item) Item.itemRegistry.getObject("gold_ingot")),
+				's', "stone",
+				'r', "dustRedstone",
+				'g', "ingotGold"
 			}
 		));
 	}
@@ -45,13 +40,8 @@ public class ItemMetaSignalAmplifier implements IItemMeta, IRequiresIconLoading 
 	}
 
 	@Override
-	public void loadIcon(IIconRegister iconRegistry) {
-		icon = iconRegistry.registerIcon("openccsensors:signalAmplifier");
-	}
-
-	@Override
-	public IIcon getIcon() {
-		return icon;
+	public ResourceLocation getIcon() {
+		return new ResourceLocation("openccsensors", "signal_amplifier");
 	}
 
 	@Override
@@ -61,6 +51,6 @@ public class ItemMetaSignalAmplifier implements IItemMeta, IRequiresIconLoading 
 
 	@Override
 	public String getName() {
-		return "signalAmplifier";
+		return "signal_amplifier";
 	}
 }

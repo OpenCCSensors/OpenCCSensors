@@ -3,13 +3,13 @@ package openccsensors.common;
 import java.io.File;
 import java.io.IOException;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.FMLLaunchHandler;
 import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import openccsensors.OpenCCSensors;
 import openccsensors.common.block.BlockBasicSensor;
 import openccsensors.common.block.BlockGauge;
@@ -87,8 +87,8 @@ public class CommonProxy {
 		OpenCCSensors.Items.sensorCard = new ItemSensorCard();
 		OpenCCSensors.Items.sensorCard.registerSensors();
 
-		GameRegistry.registerItem(OpenCCSensors.Items.genericItem, "genericItem", "ocs");
-		GameRegistry.registerItem(OpenCCSensors.Items.sensorCard, "sensorCard", "ocs");
+		GameRegistry.register(OpenCCSensors.Items.genericItem.setRegistryName("genericItem"));
+		GameRegistry.register(OpenCCSensors.Items.sensorCard.setRegistryName("sensorCard"));
 
 	}
 

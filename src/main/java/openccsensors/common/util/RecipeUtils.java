@@ -1,28 +1,28 @@
 package openccsensors.common.util;
 
-import java.lang.reflect.Field;
-import java.util.Map.Entry;
-
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.SensorCard;
 
+import java.lang.reflect.Field;
+import java.util.Map.Entry;
+
 public class RecipeUtils {
 
 	public static void addTier1Recipe(ItemStack input, ItemStack output) {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			output,
 			new Object[]{
 				"rpr",
 				"rrr",
 				"aaa",
-				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				'a', new ItemStack((Item) Item.itemRegistry.getObject("paper")),
+				'r', "dustRedstone",
+				'a', "paper",
 				'p', input
 			}
 		));
@@ -30,7 +30,7 @@ public class RecipeUtils {
 	}
 
 	public static void addTier2Recipe(ItemStack input, ItemStack output) {
-		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(
+		GameRegistry.addRecipe(new ShapelessOreRecipe(
 			output,
 			input,
 			OpenCCSensors.Items.rangeExtensionAntenna.newItemStack(1)
@@ -38,7 +38,7 @@ public class RecipeUtils {
 	}
 
 	public static void addTier3Recipe(ItemStack input, ItemStack output) {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			output,
 			new Object[]{
 				"aca",
@@ -51,7 +51,7 @@ public class RecipeUtils {
 	}
 
 	public static void addTier4Recipe(ItemStack input, ItemStack output) {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			output,
 			new Object[]{
 				" a ",
@@ -66,26 +66,26 @@ public class RecipeUtils {
 	}
 
 	public static void addSensorRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			new ItemStack(OpenCCSensors.Blocks.sensorBlock),
 			new Object[]{
 				"ooo",
 				"ror",
 				"sss",
-				'o', new ItemStack((Block) Block.blockRegistry.getObject("obsidian")),
-				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				's', new ItemStack((Block) Block.blockRegistry.getObject("stone"))
+				'o', "obsidian",
+				'r', "dustRedstone",
+				's', "stone",
 			}
 		));
 	}
 
 	public static void addGaugeRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			new ItemStack(OpenCCSensors.Blocks.gaugeBlock),
 			new Object[]{
 				"grm",
-				'g', new ItemStack((Block) Block.blockRegistry.getObject("glass_pane")),
-				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
+				'g', "paneGlass",
+				'r', "dustRedstone",
 				'm', new ItemStack(getMonitor(), 1, 2)
 			}
 		));
@@ -115,16 +115,16 @@ public class RecipeUtils {
 		);
 		ItemStack proxCard = new ItemStack(OpenCCSensors.Items.sensorCard, 1, entry.getKey());
 
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+		GameRegistry.addRecipe(new ShapedOreRecipe(
 			new ItemStack(OpenCCSensors.Blocks.basicSensorBlock),
 			new Object[]{
 				"   ",
 				"cpc",
 				"rir",
-				'c', new ItemStack((Item) Item.itemRegistry.getObject("comparator")),
+				'c', Items.COMPARATOR,
 				'p', proxCard,
-				'r', new ItemStack((Item) Item.itemRegistry.getObject("redstone")),
-				'i', new ItemStack((Block) Block.blockRegistry.getObject("iron_block")),
+				'r', "dustRedstone",
+				'i', "blockIron",
 			}
 		));
 	}

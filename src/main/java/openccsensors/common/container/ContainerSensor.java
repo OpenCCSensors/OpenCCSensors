@@ -1,5 +1,7 @@
 package openccsensors.common.container;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -35,7 +37,7 @@ public class ContainerSensor extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player) {
+	public boolean canInteractWith(@Nonnull EntityPlayer player) {
 		return sensor.isUseableByPlayer(player);
 	}
 

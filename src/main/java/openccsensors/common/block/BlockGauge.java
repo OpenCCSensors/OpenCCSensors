@@ -1,173 +1,148 @@
 package openccsensors.common.block;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import openccsensors.OpenCCSensors;
 import openccsensors.common.tileentity.TileEntityGauge;
 
-import static net.minecraftforge.common.util.ForgeDirection.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class BlockGauge extends BlockContainer {
+	public static final IProperty<EnumFacing> PROPERTY_FACING = BlockHorizontal.FACING;
 
-	private IIcon icon;
+	private static final float WIDTH = 0.125F;
 
 	public BlockGauge() {
-		super(Material.ground);
+		super(Material.GROUND);
 		setHardness(0.5F);
 		setCreativeTab(OpenCCSensors.tabOpenCCSensors);
-		GameRegistry.registerBlock(this, "gauge");
+		GameRegistry.register(setRegistryName("gauge"));
+		GameRegistry.register(new ItemBlock(this).setRegistryName(getRegistryName()));
 		GameRegistry.registerTileEntity(TileEntityGauge.class, "gauge");
-		setBlockName("openccsensors.gauge");
+		setUnlocalizedName("openccsensors.gauge");
 	}
 
+	@Nonnull
 	@Override
-	public IIcon getIcon(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-		return icon;
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, PROPERTY_FACING);
 	}
 
+	@Nonnull
 	@Override
-	public IIcon getIcon(int i, int damage) {
-		return icon;
-	}
-
-	@Override
-	public TileEntity createNewTileEntity(World world, int metadata) {
+	public TileEntity createNewTileEntity(@Nonnull World world, int metadata) {
 		return new TileEntityGauge();
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister iconRegister) {
-		icon = iconRegister.registerIcon("openccsensors:gauge");
+	public boolean canPlaceBlockOnSide(@Nonnull World world, @Nonnull BlockPos pos, EnumFacing dir) {
+		return dir.getAxis().isHorizontal() && canPlaceOn(world, pos, dir);
 	}
 
 	@Override
-	public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side) {
-		ForgeDirection dir = ForgeDirection.getOrientation(side);
-		return (dir == NORTH && (world.isSideSolid(x, y, z + 1, NORTH) || world.getTileEntity(x, y, z + 1) != null)) ||
-			(dir == SOUTH && (world.isSideSolid(x, y, z - 1, SOUTH) || world.getTileEntity(x, y, z - 1) != null)) ||
-			(dir == WEST && (world.isSideSolid(x + 1, y, z, WEST) || world.getTileEntity(x - 1, y, z) != null)) ||
-			(dir == EAST && (world.isSideSolid(x - 1, y, z, EAST) || world.getTileEntity(x - 1, y, z) != null));
-	}
-
-	@Override
-	public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-		return (world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) || world.getTileEntity(x - 1, y, z) != null)
-			|| (world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) || world.getTileEntity(x - 1, y, z) != null)
-			|| (world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH) || world.getTileEntity(x, y, z - 1) != null)
-			|| (world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) || world.getTileEntity(x, y, z + 1) != null);
-	}
-
-	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-		this.setBlockBoundsBasedOnState(world, x, y, z);
-		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
-	}
-
-	@Override
-	public int getRenderType() {
-		return OpenCCSensors.renderId;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-		this.setBlockBoundsBasedOnState(world, x, y, z);
-		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
-	}
-
-	@Override
-	public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-		int dir = metadata;
-
-		if ((dir == 0 || side == 2) && world.blockExists(x, y, z + 1)) {
-			dir = 2;
+	public boolean canPlaceBlockAt(World world, @Nonnull BlockPos pos) {
+		for (EnumFacing dir : EnumFacing.HORIZONTALS) {
+			if (canPlaceOn(world, pos, dir)) return true;
 		}
-
-		if ((dir == 0 || side == 3) && world.blockExists(x, y, z - 1)) {
-			dir = 3;
-		}
-
-		if ((dir == 0 || side == 4) && world.blockExists(x + 1, y, z)) {
-			dir = 4;
-		}
-
-		if ((dir == 0 || side == 5) && world.blockExists(x - 1, y, z)) {
-			dir = 5;
-		}
-		return dir;
-	}
-
-
-	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z) {
-		this.updateGaugeBounds(blockAccess.getBlockMetadata(x, y, z));
-	}
-
-	public void updateGaugeBounds(int par1) {
-		float var3 = 0.125F;
-
-		if (par1 == 2) {
-			this.setBlockBounds(0.0F, 0.0F, 1.0F - var3, 1.0F, 1.0F, 1.0F);
-		}
-
-		if (par1 == 3) {
-			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var3);
-		}
-
-		if (par1 == 4) {
-			this.setBlockBounds(1.0F - var3, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-		}
-
-		if (par1 == 5) {
-			this.setBlockBounds(0.0F, 0.0F, 0.0F, var3, 1.0F, 1.0F);
-		}
-	}
-
-	@Override
-	public boolean isOpaqueCube() {
 		return false;
 	}
 
-	@Override
-	public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
-		return 0;
+	private static boolean canPlaceOn(World world, BlockPos pos, EnumFacing side) {
+		return world.isSideSolid(pos.offset(side), side.getOpposite()) || world.getTileEntity(pos.offset(side)) != null;
 	}
 
 	@Override
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		switch (state.getValue(PROPERTY_FACING)) {
+			default:
+			case NORTH:
+				return new AxisAlignedBB(0.0F, 0.0F, 1.0F - WIDTH, 1.0F, 1.0F, 1.0F);
 
-	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block par5) {
-		int metadata = world.getBlockMetadata(x, y, z);
-		ForgeDirection infront = ForgeDirection.getOrientation(metadata);
-		ForgeDirection behind = infront.getOpposite();
-		if (world.isAirBlock(x + behind.offsetX, y, z + behind.offsetZ)) {
-			this.dropBlockAsItem(world, x, y, z, metadata, 0);
-			world.setBlockToAir(x, y, z);
+			case SOUTH:
+				return new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, WIDTH);
+
+			case EAST:
+				return new AxisAlignedBB(1.0F - WIDTH, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+
+			case WEST:
+				return new AxisAlignedBB(0.0F, 0.0F, 0.0F, WIDTH, 1.0F, 1.0F);
+
 		}
-		super.onNeighborBlockChange(world, x, y, z, par5);
+	}
+
+	@Nullable
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+		return super.getCollisionBoundingBox(blockState, worldIn, pos);
+	}
+
+	@Nonnull
+	@Override
+	@Deprecated
+	public IBlockState getStateFromMeta(int meta) {
+		IBlockState state = super.getStateFromMeta(meta);
+		if (meta >= 0 && meta < EnumFacing.HORIZONTALS.length) {
+			state = state.withProperty(PROPERTY_FACING, EnumFacing.HORIZONTALS[meta]);
+		}
+		return state;
 	}
 
 	@Override
-	public boolean canBeReplacedByLeaves(IBlockAccess world, int x, int y, int z) {
-		return false;
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(PROPERTY_FACING).ordinal() - 2;
+	}
+
+	@Nonnull
+	@Override
+	@Deprecated
+	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+		IBlockState state = super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+
+		if (!world.isAirBlock(pos.offset(facing.getOpposite()))) {
+			state = state.withProperty(PROPERTY_FACING, facing);
+		}
+
+		return state;
 	}
 
 	@Override
-	public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+	@Deprecated
+	public boolean isFullCube(IBlockState state) {
 		return false;
+	}
+
+	@Nonnull
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+		return EnumBlockRenderType.MODEL;
+	}
+
+	@Override
+	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
+		IBlockState state = world.getBlockState(pos);
+		EnumFacing infront = state.getValue(PROPERTY_FACING).getOpposite();
+		if (world.isAirBlock(pos.offset(infront))) {
+			if (world instanceof World) {
+				dropBlockAsItem((World) world, pos, state, 0);
+				((World) world).setBlockToAir(pos);
+			}
+		}
+
+		super.onNeighborChange(world, pos, neighbor);
 	}
 }
