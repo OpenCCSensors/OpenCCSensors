@@ -8,7 +8,7 @@ public interface IItemMeta {
 
 	boolean displayInCreative();
 
-	ResourceLocation getIcon();
+	ResourceLocation getModelName();
 
 	String getName();
 

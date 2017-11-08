@@ -106,7 +106,7 @@ public class CropSensor implements ISensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:crop");
+		return new ResourceLocation("openccsensors:items/crop");
 	}
 
 	@Override

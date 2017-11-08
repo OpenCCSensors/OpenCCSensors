@@ -7,18 +7,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelSensor extends ModelBase {
-
-	public ModelRenderer sensorBase;
-	public ModelRenderer sensorAxel;
-	public ModelRenderer sensorDishCenter;
-	public ModelRenderer sensorDishLeft;
-	public ModelRenderer sensorDishRight;
+	private final ModelRenderer sensorAxel;
+	private final ModelRenderer sensorDishCenter;
+	private final ModelRenderer sensorDishLeft;
+	private final ModelRenderer sensorDishRight;
 
 	public ModelSensor() {
-
-		this.sensorBase = new ModelRenderer(this, 0, 0).setTextureSize(64, 64);
-		this.sensorBase.addBox(-8.0F, -8.0F, -8.0F, 16, 4, 16, 0.0F);
-
 		this.sensorAxel = new ModelRenderer(this, 0, 0).setTextureSize(64, 64);
 		this.sensorAxel.addBox(-0.5F, 0.0F, -0.5F, 1, 4, 1, 0.0F);
 		this.sensorAxel.setRotationPoint(0.0F, -4.0F, 0.0F);
@@ -40,14 +34,12 @@ public class ModelSensor extends ModelBase {
 		this.sensorAxel.addChild(sensorDishCenter);
 		this.sensorDishCenter.addChild(sensorDishLeft);
 		this.sensorDishCenter.addChild(sensorDishRight);
-
 	}
 
 	/**
 	 * Renders the sign model through TileEntitySignRenderer
 	 */
 	public void renderSensor(float degrees) {
-		this.sensorBase.render(0.0625F);
 		this.sensorAxel.rotateAngleY = (degrees * (float) Math.PI / 180F) % 360;
 		this.sensorAxel.render(0.0625F);
 	}

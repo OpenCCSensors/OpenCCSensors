@@ -96,7 +96,7 @@ public class InventorySensor extends TileSensor implements ISensor, IGaugeSensor
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:inventory");
+		return new ResourceLocation("openccsensors:items/inventory");
 	}
 
 	@Override

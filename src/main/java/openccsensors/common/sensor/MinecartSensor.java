@@ -88,7 +88,7 @@ public class MinecartSensor implements ISensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:minecart");
+		return new ResourceLocation("openccsensors:items/minecart");
 	}
 
 	@Override

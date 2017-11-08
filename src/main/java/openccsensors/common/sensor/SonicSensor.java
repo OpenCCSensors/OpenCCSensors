@@ -93,7 +93,7 @@ public class SonicSensor implements ISensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:sonic");
+		return new ResourceLocation("openccsensors:items/sonic");
 	}
 
 	@Override

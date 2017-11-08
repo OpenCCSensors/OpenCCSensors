@@ -22,7 +22,7 @@ public class TileEntitySensorRenderer extends TileEntitySpecialRenderer<TileEnti
 		GL11.glPushMatrix();
 		this.modelSensor.renderSensor(rotation);
 		ItemStack sensorCardStack = sensor.getSensorCardStack();
-		int placing = (sensor.getFacing().ordinal() + 1) * 90;
+		float placing = sensor.getFacing().getHorizontalAngle();
 		GL11.glPopMatrix();
 		GL11.glRotatef(placing, 0, 1, 0);
 		if (sensorCardStack != null && sensorCardStack.getItem() instanceof ItemSensorCard) {

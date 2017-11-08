@@ -66,7 +66,7 @@ public class PowerSensor extends TileSensor implements ISensor, IGaugeSensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:power");
+		return new ResourceLocation("openccsensors:items/power");
 	}
 
 	@Override

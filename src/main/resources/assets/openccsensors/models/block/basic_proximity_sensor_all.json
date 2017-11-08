@@ -1,0 +1,6 @@
+{
+	"parent": "openccsensors:block/basic_proximity_sensor",
+	"textures": {
+		"side": "openccsensors:blocks/prox_side_all"
+	}
+}

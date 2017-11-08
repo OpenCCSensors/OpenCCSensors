@@ -41,7 +41,7 @@ public class ItemMetaRangeExtensionAntenna implements IItemMeta {
 	}
 
 	@Override
-	public ResourceLocation getIcon() {
+	public ResourceLocation getModelName() {
 		return new ResourceLocation("openccsensors", "range_extension_antenna");
 	}
 

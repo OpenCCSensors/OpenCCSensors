@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"mode=all": { "model": "openccsensors:basic_proximity_sensor_all" },
+		"mode=players": { "model": "openccsensors:basic_proximity_sensor_owner" },
+		"mode=owner": { "model": "openccsensors:basic_proximity_sensor_players" }
+	}
+}

@@ -3,7 +3,7 @@ package openccsensors.common.block;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockDirectional;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BlockSensor extends BlockContainer implements IPeripheralProvider {
-	public static final IProperty<EnumFacing> PROPERTY_FACING = BlockDirectional.FACING;
+	public static final IProperty<EnumFacing> PROPERTY_FACING = BlockHorizontal.FACING;
 
 	public BlockSensor() {
 		super(Material.GROUND);
@@ -56,15 +56,15 @@ public class BlockSensor extends BlockContainer implements IPeripheralProvider {
 	@Deprecated
 	public IBlockState getStateFromMeta(int meta) {
 		IBlockState state = super.getStateFromMeta(meta);
-		if (meta >= 0 && meta < EnumFacing.VALUES.length) {
-			state = state.withProperty(PROPERTY_FACING, EnumFacing.VALUES[meta]);
+		if (meta >= 0 && meta < EnumFacing.HORIZONTALS.length) {
+			state = state.withProperty(PROPERTY_FACING, EnumFacing.HORIZONTALS[meta ]);
 		}
 		return state;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return state.getValue(PROPERTY_FACING).ordinal();
+		return state.getValue(PROPERTY_FACING).getHorizontalIndex();
 	}
 
 	@Override
@@ -75,10 +75,11 @@ public class BlockSensor extends BlockContainer implements IPeripheralProvider {
 
 	@Nonnull
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+	@Deprecated
+	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase entity) {
 		return super
-			.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer)
-			.withProperty(PROPERTY_FACING, facing.getOpposite());
+			.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, entity)
+			.withProperty(PROPERTY_FACING, EnumFacing.fromAngle(entity.rotationYaw));
 	}
 
 	@Override
@@ -96,6 +97,11 @@ public class BlockSensor extends BlockContainer implements IPeripheralProvider {
 	@Override
 	@Deprecated
 	public boolean isFullCube(IBlockState state) {
+		return false;
+	}
+
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 

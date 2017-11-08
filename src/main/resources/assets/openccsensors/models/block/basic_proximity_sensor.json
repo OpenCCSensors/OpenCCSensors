@@ -1,0 +1,8 @@
+{
+	"parent": "block/cube_bottom_top",
+	"textures": {
+		"side": "openccsensors:blocks/prox_side_all",
+		"top": "openccsensors:blocks/prox_top",
+		"bottom": "openccsensors:blocks/prox_bottom"
+	}
+}

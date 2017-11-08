@@ -55,7 +55,7 @@ public class SignSensor extends TileSensor implements ISensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:sign");
+		return new ResourceLocation("openccsensors:items/sign");
 	}
 
 	@Override

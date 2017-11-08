@@ -1,9 +1,11 @@
 package openccsensors.common.sensor;
 
+import com.google.common.collect.Maps;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -13,15 +15,40 @@ import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.EntityUtils;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class ProximitySensor implements ISensor {
+	public enum Mode implements IStringSerializable {
+		ALL("all"),
+		PLAYERS("players"),
+		OWNER("owner");
 
-	public static final int MODE_ALL = 0;
-	public static final int MODE_PLAYERS = 1;
-	public static final int MODE_OWNER = 2;
+		public static final Mode[] VALUES = values();
+		private static final Map<String, Mode> nameLookup = Maps.newHashMap();
+
+		private final String lowerName;
+
+		Mode(String lowerName) {
+			this.lowerName = lowerName;
+		}
+
+		static {
+			for (Mode mode : VALUES) nameLookup.put(mode.getName(), mode);
+		}
+
+		@Override
+		@Nonnull
+		public String getName() {
+			return lowerName;
+		}
+
+		public static Mode byName(String name) {
+			return name == null ? null : nameLookup.get(name);
+		}
+	}
 
 	@Override
 	public Map<String, ?> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
@@ -51,13 +78,13 @@ public class ProximitySensor implements ISensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:proximity");
+		return new ResourceLocation("openccsensors:items/proximity");
 	}
 
-	public double getDistanceToNearestEntity(World world, Vec3d location, int mode, UUID owner) {
+	public double getDistanceToNearestEntity(World world, Vec3d location, Mode mode, UUID owner) {
 		Class<? extends EntityLivingBase> klazz = EntityLivingBase.class;
 
-		if (mode == MODE_PLAYERS || mode == MODE_OWNER) {
+		if (mode == Mode.PLAYERS || mode == Mode.OWNER) {
 			klazz = EntityPlayer.class;
 		}
 
@@ -72,7 +99,7 @@ public class ProximitySensor implements ISensor {
 
 		double closestDistance = Double.MAX_VALUE;
 		for (EntityLivingBase current : list) {
-			if (mode == MODE_OWNER && !current.getUniqueID().equals(owner)) {
+			if (mode == Mode.OWNER && !current.getUniqueID().equals(owner)) {
 				continue;
 			}
 			Vec3d livingPos = new Vec3d(

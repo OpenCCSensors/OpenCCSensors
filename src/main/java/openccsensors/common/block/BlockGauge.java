@@ -20,7 +20,6 @@ import openccsensors.OpenCCSensors;
 import openccsensors.common.tileentity.TileEntityGauge;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class BlockGauge extends BlockContainer {
 	public static final IProperty<EnumFacing> PROPERTY_FACING = BlockHorizontal.FACING;
@@ -50,8 +49,8 @@ public class BlockGauge extends BlockContainer {
 	}
 
 	@Override
-	public boolean canPlaceBlockOnSide(@Nonnull World world, @Nonnull BlockPos pos, EnumFacing dir) {
-		return dir.getAxis().isHorizontal() && canPlaceOn(world, pos, dir);
+	public boolean canPlaceBlockOnSide(@Nonnull World world, @Nonnull BlockPos pos, EnumFacing side) {
+		return side.getAxis().isHorizontal() && canPlaceOn(world, pos, side);
 	}
 
 	@Override
@@ -63,32 +62,24 @@ public class BlockGauge extends BlockContainer {
 	}
 
 	private static boolean canPlaceOn(World world, BlockPos pos, EnumFacing side) {
-		return world.isSideSolid(pos.offset(side), side.getOpposite()) || world.getTileEntity(pos.offset(side)) != null;
+		return world.isSideSolid(pos.offset(side.getOpposite()), side) || world.getTileEntity(pos.offset(side.getOpposite())) != null;
 	}
 
+	@Nonnull
 	@Override
+	@Deprecated
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		switch (state.getValue(PROPERTY_FACING)) {
 			default:
 			case NORTH:
-				return new AxisAlignedBB(0.0F, 0.0F, 1.0F - WIDTH, 1.0F, 1.0F, 1.0F);
-
-			case SOUTH:
 				return new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, WIDTH);
-
+			case SOUTH:
+				return new AxisAlignedBB(0.0F, 0.0F, 1.0F - WIDTH, 1.0F, 1.0F, 1.0F);
 			case EAST:
 				return new AxisAlignedBB(1.0F - WIDTH, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-
 			case WEST:
 				return new AxisAlignedBB(0.0F, 0.0F, 0.0F, WIDTH, 1.0F, 1.0F);
-
 		}
-	}
-
-	@Nullable
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
-		return super.getCollisionBoundingBox(blockState, worldIn, pos);
 	}
 
 	@Nonnull
@@ -104,17 +95,17 @@ public class BlockGauge extends BlockContainer {
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return state.getValue(PROPERTY_FACING).ordinal() - 2;
+		return state.getValue(PROPERTY_FACING).getHorizontalIndex();
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		IBlockState state = super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+		IBlockState state = super.onBlockPlaced(world, pos, side, hitX, hitY, hitZ, meta, placer);
 
-		if (!world.isAirBlock(pos.offset(facing.getOpposite()))) {
-			state = state.withProperty(PROPERTY_FACING, facing);
+		if (side.getAxis().isHorizontal() && canPlaceOn(world, pos, side)) {
+			state = state.withProperty(PROPERTY_FACING, side.getOpposite());
 		}
 
 		return state;
@@ -123,6 +114,11 @@ public class BlockGauge extends BlockContainer {
 	@Override
 	@Deprecated
 	public boolean isFullCube(IBlockState state) {
+		return false;
+	}
+
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 

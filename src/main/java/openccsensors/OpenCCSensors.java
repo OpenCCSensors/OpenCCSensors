@@ -27,7 +27,7 @@ import openccsensors.common.util.OCSLog;
 
 import javax.annotation.Nonnull;
 
-@Mod(modid = "ocs", name = "OpenCCSensors", version = "1.7.5", dependencies = "required-after:ComputerCraft;after:CCTurtle;after:BuildCraft|Core;after:IC2;after:Thaumcraft;after:AppliedEnergistics;after:RailCraft;after:ArsMagica;after:UniversalElectricity;after:ThermalExpansion;after:RotaryCraft")
+@Mod(modid = "openccsensors", name = "OpenCCSensors", version = "1.7.5", dependencies = "required-after:ComputerCraft;after:CCTurtle;after:BuildCraft|Core;after:IC2;after:Thaumcraft;after:AppliedEnergistics;after:RailCraft;after:ArsMagica;after:UniversalElectricity;after:ThermalExpansion;after:RotaryCraft")
 public class OpenCCSensors {
 
 	public static class Blocks {
@@ -99,7 +99,7 @@ public class OpenCCSensors {
 		}
 	};
 
-	@Instance(value = "ocs")
+	@Instance(value = "openccsensors")
 	public static OpenCCSensors instance;
 
 	@SidedProxy(clientSide = "openccsensors.client.ClientProxy", serverSide = "openccsensors.common.CommonProxy")
@@ -107,13 +107,7 @@ public class OpenCCSensors {
 
 	@EventHandler
 	public void init(FMLInitializationEvent evt) {
-		OCSLog.init();
-
-		OCSLog.info("OpenCCSensors version %s starting", FMLCommonHandler.instance().findContainerFor(instance).getVersion());
-
 		proxy.init();
-
-		proxy.registerRenderInformation();
 	}
 
 	@EventHandler
@@ -128,8 +122,11 @@ public class OpenCCSensors {
 		prop.setComment("Turtle Peripheral Enabled");
 		Config.turtlePeripheralEnabled = prop.getBoolean(true);
 
-
 		configFile.save();
 
+		OCSLog.init();
+		OCSLog.info("OpenCCSensors version %s starting", FMLCommonHandler.instance().findContainerFor(instance).getVersion());
+
+		proxy.preInit();
 	}
 }

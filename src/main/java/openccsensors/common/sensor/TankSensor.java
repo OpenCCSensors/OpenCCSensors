@@ -58,7 +58,7 @@ public class TankSensor extends TileSensor implements ISensor, IGaugeSensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:tank");
+		return new ResourceLocation("openccsensors:items/tank");
 	}
 
 	@Override

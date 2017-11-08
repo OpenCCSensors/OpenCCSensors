@@ -67,7 +67,7 @@ public class DroppedItemSensor implements ISensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:dropped_item");
+		return new ResourceLocation("openccsensors:items/dropped_item");
 	}
 
 	@Override

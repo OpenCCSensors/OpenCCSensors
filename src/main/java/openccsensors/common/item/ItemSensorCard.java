@@ -15,6 +15,8 @@ import openccsensors.common.util.OCSLog;
 import openccsensors.common.util.RecipeUtils;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -40,10 +42,10 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 	}
 
 	public void registerSensors() {
-		SensorTier tier1 = new SensorTier("Mk. I", EnumItemRarity.COMMON, 2, new ResourceLocation("openccsensors", "tier1"));
-		SensorTier tier2 = new SensorTier("Mk. II", EnumItemRarity.UNCOMMON, 4, new ResourceLocation("openccsensors", "tier2"));
-		SensorTier tier3 = new SensorTier("Mk. III", EnumItemRarity.RARE, 6, new ResourceLocation("openccsensors", "tier3"));
-		SensorTier tier4 = new SensorTier("Mk. IV", EnumItemRarity.EPIC, 8, new ResourceLocation("openccsensors", "tier4"));
+		SensorTier tier1 = new SensorTier("Mk. I", EnumItemRarity.COMMON, 2, new ResourceLocation("openccsensors:items/tier1"));
+		SensorTier tier2 = new SensorTier("Mk. II", EnumItemRarity.UNCOMMON, 4, new ResourceLocation("openccsensors:items/tier2"));
+		SensorTier tier3 = new SensorTier("Mk. III", EnumItemRarity.RARE, 6, new ResourceLocation("openccsensors:items/tier3"));
+		SensorTier tier4 = new SensorTier("Mk. IV", EnumItemRarity.EPIC, 8, new ResourceLocation("openccsensors:items/tier4"));
 
 		OpenCCSensors.Tiers.tier1 = tier1;
 		OpenCCSensors.Tiers.tier2 = tier2;
@@ -172,6 +174,10 @@ public class ItemSensorCard extends Item implements ISensorCardRegistry {
 			}
 		}
 		return null;
+	}
+
+	public Collection<SensorCard> getSensorCards() {
+		return Collections.unmodifiableCollection(cards.values());
 	}
 
 	@Override

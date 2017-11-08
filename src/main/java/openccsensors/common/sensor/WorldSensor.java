@@ -54,7 +54,7 @@ public class WorldSensor implements ISensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:world");
+		return new ResourceLocation("openccsensors:items/world");
 	}
 
 	@Override

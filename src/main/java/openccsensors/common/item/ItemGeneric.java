@@ -9,6 +9,8 @@ import openccsensors.OpenCCSensors;
 import openccsensors.api.IItemMeta;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -46,6 +48,10 @@ public class ItemGeneric extends Item {
 	public IItemMeta getMeta(int id) {
 		return metaitems.get(id);
 	}
+	
+	public Collection<IItemMeta> getMetas() {
+		return Collections.unmodifiableCollection(metaitems.values());
+	} 
 
 	@Nonnull
 	@Override

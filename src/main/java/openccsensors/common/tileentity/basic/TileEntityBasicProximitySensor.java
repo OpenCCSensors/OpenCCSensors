@@ -31,7 +31,7 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 
 	private boolean sentFirstChange = false;
 
-	private int entityMode = ProximitySensor.MODE_ALL;
+	private ProximitySensor.Mode entityMode = ProximitySensor.Mode.ALL;
 
 	@Override
 	public void update() {
@@ -69,25 +69,22 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 		}
 	}
 
-	public int getEntityMode() {
+	public ProximitySensor.Mode getEntityMode() {
 		return entityMode;
 	}
 
 	public void onBlockClicked(EntityPlayer player) {
 		if (player.getUniqueID().equals(owner)) {
-			entityMode++;
-			if (entityMode > 2) {
-				entityMode = 0;
-			}
+			entityMode = ProximitySensor.Mode.VALUES[(entityMode.ordinal() + 1) % ProximitySensor.Mode.VALUES.length];
 			String modeMsg = "";
 			switch (entityMode) {
-				case ProximitySensor.MODE_ALL:
+				case ALL:
 					modeMsg = "Any Living Entity";
 					break;
-				case ProximitySensor.MODE_PLAYERS:
+				case PLAYERS:
 					modeMsg = "Any Player";
 					break;
-				case ProximitySensor.MODE_OWNER:
+				case OWNER:
 					modeMsg = "Owner Only";
 					break;
 			}
@@ -128,11 +125,15 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.getNbtCompound());
+		markBlockForUpdate();
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
-		this.entityMode = tag.getInteger("entityMode");
+		int mode = tag.getInteger("entityMode");
+		this.entityMode = mode >= 0 && mode < ProximitySensor.Mode.VALUES.length
+			? ProximitySensor.Mode.VALUES[mode]
+			: ProximitySensor.Mode.ALL;
 		this.owner = tag.hasKey("owner") ? UUID.fromString(tag.getString("owner")) : null;
 		super.readFromNBT(tag);
 	}
@@ -140,7 +141,7 @@ public class TileEntityBasicProximitySensor extends TileEntity implements IBasic
 	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		tag.setInteger("entityMode", this.entityMode);
+		tag.setInteger("entityMode", this.entityMode.ordinal());
 		if (this.owner != null) tag.setString("owner", this.owner.toString());
 		return super.writeToNBT(tag);
 	}

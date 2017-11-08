@@ -40,7 +40,7 @@ public class ItemMetaSignalAmplifier implements IItemMeta {
 	}
 
 	@Override
-	public ResourceLocation getIcon() {
+	public ResourceLocation getModelName() {
 		return new ResourceLocation("openccsensors", "signal_amplifier");
 	}
 

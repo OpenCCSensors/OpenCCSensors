@@ -62,7 +62,7 @@ public class MachineSensor extends TileSensor implements ISensor, IGaugeSensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:machine");
+		return new ResourceLocation("openccsensors:items/machine");
 	}
 
 	@Override

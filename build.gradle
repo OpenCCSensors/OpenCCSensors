@@ -37,13 +37,14 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs-1.10.2', include: '*.jar')
     compile "dan200.computercraft:ComputerCraft:1.80pr0-build12"
-    deobfCompile "net.industrial-craft:industrialcraft-2:2.6.252-ex110"
-    compile("cofh:CoFHCore:1.10.2-4.1.9.13:deobf") {
+
+    provided fileTree(dir: 'libs-1.10.2', include: '*.jar')
+    deobfProvided "net.industrial-craft:industrialcraft-2:2.6.252-ex110"
+    provided("cofh:CoFHCore:1.10.2-4.1.9.13:deobf") {
         exclude group: 'mezz.jei'
     }
-    deobfCompile "net.sengir.forestry:forestry_1.10.2:5.2.17.388"
+    deobfProvided "net.sengir.forestry:forestry_1.10.2:5.2.17.388"
 }
 
 processResources
@@ -68,7 +69,3 @@ processResources
 
 runClient.outputs.upToDateWhen { false }
 runServer.outputs.upToDateWhen { false }
-
-task showClasspath << {
-    buildscript.configurations.classpath.each { println it }
-}

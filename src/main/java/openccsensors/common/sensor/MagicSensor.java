@@ -47,7 +47,7 @@ public class MagicSensor extends TileSensor implements ISensor {
 
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation("openccsensors:magic");
+		return new ResourceLocation("openccsensors:items/magic");
 	}
 
 	@Override

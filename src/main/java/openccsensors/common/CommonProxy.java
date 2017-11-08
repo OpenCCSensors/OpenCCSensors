@@ -1,8 +1,5 @@
 package openccsensors.common;
 
-import java.io.File;
-import java.io.IOException;
-
 import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -25,14 +22,17 @@ import openccsensors.common.turtle.TurtleUpgradeSensor;
 import openccsensors.common.util.RecipeUtils;
 import openccsensors.common.util.ResourceExtractingUtils;
 
+import java.io.File;
+import java.io.IOException;
+
 public class CommonProxy {
-
-	public void init() {
-
+	public void preInit() {
 		initSensors();
 		initBlocks();
 		initItems();
+	}
 
+	public void init() {
 		OpenCCSensors.turtleUpgradeSensor = new TurtleUpgradeSensor();
 
 		if (OpenCCSensors.Config.turtlePeripheralEnabled) {
@@ -87,14 +87,8 @@ public class CommonProxy {
 		OpenCCSensors.Items.sensorCard = new ItemSensorCard();
 		OpenCCSensors.Items.sensorCard.registerSensors();
 
-		GameRegistry.register(OpenCCSensors.Items.genericItem.setRegistryName("genericItem"));
-		GameRegistry.register(OpenCCSensors.Items.sensorCard.setRegistryName("sensorCard"));
-
-	}
-
-
-	public void registerRenderInformation() {
-
+		GameRegistry.register(OpenCCSensors.Items.genericItem.setRegistryName("generic_item"));
+		GameRegistry.register(OpenCCSensors.Items.sensorCard.setRegistryName("sensor_card"));
 	}
 
 	public File getBase() {

@@ -1,0 +1,19 @@
+{
+	"parent": "block/block",
+	"elements": [
+		{   "from": [ 0, 0, 0 ],
+			"to": [ 16, 4, 16 ],
+			"faces": {
+				"down":  { "texture": "#all", "cullface": "all" },
+				"up":    { "texture": "#all" },
+				"north": { "texture": "#all", "cullface": "all" },
+				"south": { "texture": "#all", "cullface": "all" },
+				"west":  { "texture": "#all", "cullface": "all" },
+				"east":  { "texture": "#all", "cullface": "all" }
+			}
+		}
+	],
+	"textures": {
+		"all": "openccsensors:blocks/sensor"
+	}
+}
