@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class TileEntityGauge extends TileEntity implements IPeripheral, ITickable {
-
-
 	private static ArrayList<IGaugeSensor> gaugeSensors = new ArrayList<IGaugeSensor>();
 
 	public static void addGaugeSensor(IGaugeSensor sensor) {
@@ -184,8 +182,7 @@ public class TileEntityGauge extends TileEntity implements IPeripheral, ITickabl
 		tileProperties.clear();
 		if (this.worldObj != null && !worldObj.isRemote) {
 
-			EnumFacing infront = getFacing();
-			EnumFacing behind = infront.getOpposite();
+			EnumFacing behind = getFacing();
 			TileEntity behindTile = worldObj.getTileEntity(pos.offset(behind));
 			if (behindTile != null) {
 				for (IGaugeSensor gaugeSensor : gaugeSensors) {

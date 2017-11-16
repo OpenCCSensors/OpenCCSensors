@@ -1,5 +1,6 @@
 package openccsensors.common.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
@@ -118,6 +119,7 @@ public class BlockGauge extends BlockContainer {
 	}
 
 	@Override
+	@Deprecated
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
@@ -129,16 +131,14 @@ public class BlockGauge extends BlockContainer {
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
-		IBlockState state = world.getBlockState(pos);
-		EnumFacing infront = state.getValue(PROPERTY_FACING).getOpposite();
+	@Deprecated
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
+		EnumFacing infront = state.getValue(PROPERTY_FACING);
 		if (world.isAirBlock(pos.offset(infront))) {
-			if (world instanceof World) {
-				dropBlockAsItem((World) world, pos, state, 0);
-				((World) world).setBlockToAir(pos);
-			}
+			dropBlockAsItem(world, pos, state, 0);
+			world.setBlockToAir(pos);
 		}
 
-		super.onNeighborChange(world, pos, neighbor);
+		super.neighborChanged(state, world, pos, blockIn);
 	}
 }

@@ -14,6 +14,7 @@
 		}
 	],
 	"textures": {
-		"all": "openccsensors:blocks/gauge"
+		"all": "openccsensors:blocks/gauge",
+		"particle": "openccsensors:blocks/gauge"
 	}
 }

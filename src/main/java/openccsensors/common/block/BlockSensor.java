@@ -101,6 +101,7 @@ public class BlockSensor extends BlockContainer implements IPeripheralProvider {
 	}
 
 	@Override
+	@Deprecated
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}

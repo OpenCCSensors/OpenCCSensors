@@ -16,7 +16,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import openccsensors.api.ISensorEnvironment;
 import openccsensors.common.block.BlockSensor;
 import openccsensors.common.peripheral.PeripheralSensor;
@@ -230,12 +229,6 @@ public class TileEntitySensor extends TileEntity implements ISensorEnvironment, 
 	@Override
 	public ItemStack getSensorCardStack() {
 		return getStackInSlot(0);
-	}
-
-	@Nonnull
-	@Override
-	public World getWorld() {
-		return worldObj;
 	}
 
 	@Override

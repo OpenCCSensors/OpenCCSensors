@@ -18,7 +18,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.7.5"
-group= "openccsensors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "openccsensors"
 archivesBaseName = "openccsensors"
 
 minecraft {
@@ -28,27 +28,30 @@ minecraft {
 }
 
 repositories {
-    mavenCentral ()
+    mavenCentral()
 
-    maven { url "http://dvs1.progwml6.com/files/maven" } // JEI (for CoFH)
-    maven { url "http://maven.ic2.player.to" } // IC2
+    maven { url "http://dvs1.progwml6.com/files/maven" } // JEI
+    maven { url "http://maven.ic2.player.to" } // IC2, Forestry
     maven { url "https://cc.crzd.me/maven/" } // ComputerCraft
     maven { url "http://maven.covers1624.net/" } // CoFH
+    flatDir { dirs 'libs-1.10.2' }
 }
 
 dependencies {
-    compile "dan200.computercraft:ComputerCraft:1.80pr0-build12"
+    implementation "dan200.computercraft:ComputerCraft:1.80pr0-build12"
 
-    provided fileTree(dir: 'libs-1.10.2', include: '*.jar')
-    deobfProvided "net.industrial-craft:industrialcraft-2:2.6.252-ex110"
-    provided("cofh:CoFHCore:1.10.2-4.1.9.13:deobf") {
+    // provided fileTree(dir: 'libs-1.10.2', include: '*.jar')
+    compileOnly name: "appliedenergistics2-rv4-stable-1"
+    compileOnly name: "ArsMagica2-1.10.2-1.5.0-18"
+    compileOnly name: "Railcraft_1.10.2-10.2.0"
+    compileOnly "net.industrial-craft:industrialcraft-2:2.6.252-ex110:dev"
+    compileOnly("cofh:CoFHCore:1.10.2-4.1.9.13:deobf") {
         exclude group: 'mezz.jei'
     }
-    deobfProvided "net.sengir.forestry:forestry_1.10.2:5.2.17.388"
+    compileOnly "net.sengir.forestry:forestry_1.10.2:5.2.17.388"
 }
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -56,11 +59,11 @@ processResources
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
-        
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'

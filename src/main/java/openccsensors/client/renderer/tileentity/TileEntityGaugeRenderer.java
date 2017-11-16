@@ -1,54 +1,33 @@
 package openccsensors.client.renderer.tileentity;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.ResourceLocation;
 import openccsensors.common.tileentity.TileEntityGauge;
-import org.lwjgl.opengl.GL11;
 
 public class TileEntityGaugeRenderer extends TileEntitySpecialRenderer<TileEntityGauge> {
 	@Override
 	public void renderTileEntityAt(TileEntityGauge gauge, double x, double y, double z, float partialTick, int destroyStage) {
-		GL11.glPushMatrix();
-		float facing;
-		switch (gauge.getFacing()) {
-			default:
-			case NORTH:
-				facing = 90.0f;
-				break;
-			case SOUTH:
-				facing = 180.0f;
-				break;
-			case WEST:
-				facing = 270.0f;
-				break;
-			case EAST:
-				facing = 90.0f;
-				break;
-		}
+		GlStateManager.pushMatrix();
+		float facing = gauge.getFacing().getOpposite().getHorizontalAngle();
+		GlStateManager.translate((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
+		GlStateManager.rotate(-facing, 0.0F, 1.0F, 0.0F);
 
-		GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
-		GL11.glRotatef(-facing, 0.0F, 1.0F, 0.0F);
-		this.bindTexture(new ResourceLocation("openccsensors", "textures/models/gauge.png"));
+		GlStateManager.translate(0.0F, 0.1F, -0.37F); // -0.5 + 2/16 and rounded a little to prevent z fighting. 
+		GlStateManager.scale(0.02F, 0.02F, 0.02F);
+		GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+		GlStateManager.depthMask(false);
 
-		FontRenderer fontRenderer = this.getFontRenderer();
-		GL11.glTranslatef(0.0F, 0.1F, -0.43F);
-		GL11.glScalef(0.02F, 0.02F, 0.02F);
-		GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-		GL11.glDepthMask(false);
-
+		FontRenderer fontRenderer = getFontRenderer();
 		if (fontRenderer != null) {
 			String stringPercentage = gauge.getPercentage() + "%";
-			fontRenderer.drawString(stringPercentage,
-				-fontRenderer.getStringWidth(stringPercentage) / 2, 0,
-				16777215);
+			fontRenderer.drawString(stringPercentage, -fontRenderer.getStringWidth(stringPercentage) / 2, 0, 0xFFFFFF);
 		}
 
-		GL11.glDepthMask(true);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.depthMask(true);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 }
