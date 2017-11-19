@@ -3,8 +3,7 @@
 	"textures": {
 		"axel": "openccsensors:blocks/sensor_axel",
 		"dish": "openccsensors:blocks/sensor_dish",
-		"base": "openccsensors:blocks/sensor_base",
-		"particle": "#base"
+		"particle": "openccsensors:blocks/sensor_dish"
 	},
 	"elements": [
 		{
@@ -68,18 +67,6 @@
 				"origin": [8, 0, 8],
 				"axis": "y",
 				"angle": -22.5
-			}
-		},
-		{
-			"from": [ 0, 0, 0 ],
-			"to": [ 16, 4, 16 ],
-			"faces": {
-				"down":  { "texture": "#base", "cullface": "all" },
-				"up":    { "texture": "#base" },
-				"north": { "texture": "#base", "cullface": "all" },
-				"south": { "texture": "#base", "cullface": "all" },
-				"west":  { "texture": "#base", "cullface": "all" },
-				"east":  { "texture": "#base", "cullface": "all" }
 			}
 		}
 	]
