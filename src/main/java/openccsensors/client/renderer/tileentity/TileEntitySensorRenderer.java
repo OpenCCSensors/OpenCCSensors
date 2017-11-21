@@ -4,7 +4,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -15,17 +14,6 @@ import openccsensors.common.tileentity.TileEntitySensor;
 import org.lwjgl.opengl.GL11;
 
 public class TileEntitySensorRenderer extends TileEntitySpecialRenderer<TileEntitySensor> {
-	private ModelManager manager;
-
-	public ModelManager getManager() {
-		ModelManager manager = this.manager;
-		if (manager == null) {
-			manager = this.manager = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager();
-		}
-
-		return manager;
-	}
-
 	@Override
 	public void renderTileEntityAt(TileEntitySensor sensor, double x, double y, double z, float partialTick, int destroyStage) {
 		GlStateManager.pushMatrix();
@@ -39,7 +27,8 @@ public class TileEntitySensorRenderer extends TileEntitySpecialRenderer<TileEnti
 			GlStateManager.translate(-0.5f, -0.5f, -0.5f);
 			GlStateManager.translate(-sensor.getPos().getX(), -sensor.getPos().getY(), -sensor.getPos().getZ());
 
-			IBakedModel model = getManager().getModel(ClientProxy.SENSOR_DISH_MODEL);
+			BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+			IBakedModel model = dispatcher.getBlockModelShapes().getModelManager().getModel(ClientProxy.SENSOR_DISH_MODEL);
 
 			RenderHelper.disableStandardItemLighting();
 			bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -49,7 +38,6 @@ public class TileEntitySensorRenderer extends TileEntitySpecialRenderer<TileEnti
 			VertexBuffer buffer = tessellator.getBuffer();
 			buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 
-			BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 			IBlockState state = sensor.getWorld().getBlockState(sensor.getPos());
 			dispatcher.getBlockModelRenderer().renderModel(sensor.getWorld(), model, state, sensor.getPos(), buffer, true);
 			tessellator.draw();
@@ -59,20 +47,36 @@ public class TileEntitySensorRenderer extends TileEntitySpecialRenderer<TileEnti
 		}
 
 		{
-			ItemStack sensorCardStack = sensor.getSensorCardStack();
-			float placing = sensor.getFacing().getHorizontalAngle();
+			ItemStack stack = sensor.getSensorCardStack();
 
-			GlStateManager.rotate(placing, 0, 1, 0);
-			if (sensorCardStack != null && sensorCardStack.getItem() instanceof ItemSensorCard) {
+			if (stack != null && stack.getItem() instanceof ItemSensorCard) {
+				GlStateManager.enableRescaleNormal();
+				GlStateManager.alphaFunc(516, 0.1F);
+				GlStateManager.enableBlend();
+				RenderHelper.enableStandardItemLighting();
+				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-				GlStateManager.scale(0.02f, 0.02f, 0.02f);
-				GlStateManager.rotate(90.0F, 1, 0, 0);
-				GlStateManager.translate(-8.0f, 4.0f, 12.0f);
-				Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(sensorCardStack, 0, 0);
+				float placing = sensor.getFacing().getHorizontalAngle();
+				GlStateManager.rotate(placing, 0, 1, 0);
+				GlStateManager.translate(
+					0.0f,
+					// Translate to bottom, up 4 pixels and then half a item pixel
+					-0.5f + (4 / 16.0f) + (0.2f * 0.5f / 16.0f),
+					// Translate to edge, back 2 pixels and then 7.5 item pixels
+					-0.5f + (2 / 16.0f) + (0.2f * 7.5f / 16.0f)
+				);
+				GlStateManager.scale(0.2f, 0.2f, 0.2f);
+				GlStateManager.rotate(90.0f, 1, 0, 0);
+
+				RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+				IBakedModel model = renderItem.getItemModelWithOverrides(stack, getWorld(), null);
+				renderItem.renderItem(stack, model);
+
+				GlStateManager.disableRescaleNormal();
+				GlStateManager.disableBlend();
 			}
 		}
 
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.popMatrix();
 	}
 }

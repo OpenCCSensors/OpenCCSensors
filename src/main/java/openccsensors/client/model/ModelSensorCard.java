@@ -3,8 +3,10 @@ package openccsensors.client.model;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.*;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverride;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -14,6 +16,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.model.TRSRTransformation;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.SensorCard;
 
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SmartItemModelSensorCard implements IBakedModel, IResourceManagerReloadListener {
+public class ModelSensorCard extends DerivedBakedModel implements IResourceManagerReloadListener {
 	private final Map<SensorCard, IBakedModel> cache = Maps.newHashMap();
 	private final ItemOverrideList overrideList = new ItemOverrideList(new ArrayList<ItemOverride>()) {
 		@Nonnull
@@ -34,7 +37,8 @@ public class SmartItemModelSensorCard implements IBakedModel, IResourceManagerRe
 	};
 
 	@Nonnull
-	private IBakedModel getDefaultModel() {
+	@Override
+	protected IBakedModel getBase() {
 		return getModel(OpenCCSensors.Items.sensorCard.getSensorCard(1));
 	}
 
@@ -50,7 +54,7 @@ public class SmartItemModelSensorCard implements IBakedModel, IResourceManagerRe
 			card.getSensor().getIcon(),
 			card.getTier().getIcon()
 		))
-			.bake(ModelRotation.X0_Y0, DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+			.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
 	}
 
 	@Nonnull
@@ -67,34 +71,6 @@ public class SmartItemModelSensorCard implements IBakedModel, IResourceManagerRe
 	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-		return getDefaultModel().getQuads(state, side, rand);
-	}
-
-	@Override
-	public boolean isAmbientOcclusion() {
-		return getDefaultModel().isAmbientOcclusion();
-	}
-
-	@Override
-	public boolean isGui3d() {
-		return getDefaultModel().isGui3d();
-	}
-
-	@Override
-	public boolean isBuiltInRenderer() {
-		return getDefaultModel().isBuiltInRenderer();
-	}
-
-	@Nonnull
-	@Override
-	public TextureAtlasSprite getParticleTexture() {
-		return getDefaultModel().getParticleTexture();
-	}
-
-	@Nonnull
-	@Override
-	@Deprecated
-	public ItemCameraTransforms getItemCameraTransforms() {
-		return getDefaultModel().getItemCameraTransforms();
+		return getBase().getQuads(state, side, rand);
 	}
 }

@@ -1,12 +1,11 @@
 package openccsensors.client;
 
-import com.google.common.base.Function;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
@@ -17,7 +16,6 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -25,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.IItemMeta;
 import openccsensors.api.SensorCard;
-import openccsensors.client.model.SmartItemModelSensorCard;
+import openccsensors.client.model.ModelSensorCard;
 import openccsensors.client.renderer.tileentity.TileEntityGaugeRenderer;
 import openccsensors.client.renderer.tileentity.TileEntitySensorRenderer;
 import openccsensors.common.CommonProxy;
@@ -36,12 +34,13 @@ import javax.annotation.Nonnull;
 import java.io.File;
 
 public class ClientProxy extends CommonProxy {
-	public static final ResourceLocation SENSOR_DISH_RESOURCE = new ResourceLocation("openccsensors", "block/sensor_dish");
+	private static final ResourceLocation SENSOR_DISH_RESOURCE = new ResourceLocation("openccsensors", "block/sensor_dish");
 	public static final ModelResourceLocation SENSOR_DISH_MODEL = new ModelResourceLocation(new ResourceLocation("openccsensors", "sensor_dish"), "inventory");
 
-	private final SmartItemModelSensorCard sensorModel = new SmartItemModelSensorCard();
-	private final ResourceLocation sensorName = new ResourceLocation("openccsensors:sensor_card");
-	private final ModelResourceLocation sensorModelName = new ModelResourceLocation(sensorName, "inventory");
+	private static final ResourceLocation SENSOR_CARD_RESOURCE = new ResourceLocation("openccsensors", "sensor_card");
+	private static final ModelResourceLocation SENSOR_CARD_MODEL = new ModelResourceLocation(SENSOR_CARD_RESOURCE, "inventory");
+
+	private final ModelSensorCard sensorCardModel = new ModelSensorCard();
 
 	@Override
 	public File getBase() {
@@ -52,11 +51,10 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		super.preInit();
 		MinecraftForge.EVENT_BUS.register(this);
-		OBJLoader.INSTANCE.addDomain("openccsensors");
 
 		IResourceManager manager = Minecraft.getMinecraft().getResourceManager();
 		if (manager instanceof SimpleReloadableResourceManager) {
-			((SimpleReloadableResourceManager) manager).registerReloadListener(sensorModel);
+			((SimpleReloadableResourceManager) manager).registerReloadListener(sensorCardModel);
 		}
 
 		onModelRegister();
@@ -86,18 +84,14 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent
 	public void onModelBakeEvent(ModelBakeEvent event) {
-		event.getModelRegistry().putObject(sensorModelName, sensorModel);
-		event.getModelRegistry().putObject(
-			SENSOR_DISH_MODEL,
-			ModelLoaderRegistry
-				.getModelOrMissing(SENSOR_DISH_RESOURCE)
-				.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, new Function<ResourceLocation, TextureAtlasSprite>() {
-					@Override
-					public TextureAtlasSprite apply(ResourceLocation input) {
-						return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(input.toString());
-					}
-				})
-		);
+		event.getModelRegistry().putObject(SENSOR_CARD_MODEL, sensorCardModel);
+		event.getModelRegistry().putObject(SENSOR_DISH_MODEL, bakeModel(SENSOR_DISH_RESOURCE));
+	}
+
+	private IBakedModel bakeModel(ResourceLocation location) {
+		return ModelLoaderRegistry
+			.getModelOrMissing(location)
+			.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
 	}
 
 	private void onModelRegister() {
@@ -105,12 +99,12 @@ public class ClientProxy extends CommonProxy {
 		registerItemModel(OpenCCSensors.Blocks.gaugeBlock, 0);
 		registerItemModel(OpenCCSensors.Blocks.sensorBlock, 0);
 
-		ModelBakery.registerItemVariants(OpenCCSensors.Items.sensorCard, sensorName);
+		ModelBakery.registerItemVariants(OpenCCSensors.Items.sensorCard, SENSOR_CARD_RESOURCE);
 		ModelLoader.setCustomMeshDefinition(OpenCCSensors.Items.sensorCard, new ItemMeshDefinition() {
 			@Nonnull
 			@Override
 			public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
-				return sensorModelName;
+				return SENSOR_CARD_MODEL;
 			}
 		});
 

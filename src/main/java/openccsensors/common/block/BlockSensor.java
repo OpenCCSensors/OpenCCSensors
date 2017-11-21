@@ -57,7 +57,7 @@ public class BlockSensor extends BlockContainer implements IPeripheralProvider {
 	public IBlockState getStateFromMeta(int meta) {
 		IBlockState state = super.getStateFromMeta(meta);
 		if (meta >= 0 && meta < EnumFacing.HORIZONTALS.length) {
-			state = state.withProperty(PROPERTY_FACING, EnumFacing.HORIZONTALS[meta ]);
+			state = state.withProperty(PROPERTY_FACING, EnumFacing.HORIZONTALS[meta]);
 		}
 		return state;
 	}
