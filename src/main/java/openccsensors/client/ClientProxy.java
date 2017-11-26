@@ -7,13 +7,10 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,7 +19,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import openccsensors.OpenCCSensors;
 import openccsensors.api.IItemMeta;
-import openccsensors.api.SensorCard;
 import openccsensors.client.model.ModelSensorCard;
 import openccsensors.client.renderer.tileentity.TileEntityGaugeRenderer;
 import openccsensors.client.renderer.tileentity.TileEntitySensorRenderer;
@@ -37,11 +33,6 @@ public class ClientProxy extends CommonProxy {
 	private static final ResourceLocation SENSOR_DISH_RESOURCE = new ResourceLocation("openccsensors", "block/sensor_dish");
 	public static final ModelResourceLocation SENSOR_DISH_MODEL = new ModelResourceLocation(new ResourceLocation("openccsensors", "sensor_dish"), "inventory");
 
-	private static final ResourceLocation SENSOR_CARD_RESOURCE = new ResourceLocation("openccsensors", "sensor_card");
-	private static final ModelResourceLocation SENSOR_CARD_MODEL = new ModelResourceLocation(SENSOR_CARD_RESOURCE, "inventory");
-
-	private final ModelSensorCard sensorCardModel = new ModelSensorCard();
-
 	@Override
 	public File getBase() {
 		return Minecraft.getMinecraft().mcDataDir;
@@ -51,11 +42,6 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		super.preInit();
 		MinecraftForge.EVENT_BUS.register(this);
-
-		IResourceManager manager = Minecraft.getMinecraft().getResourceManager();
-		if (manager instanceof SimpleReloadableResourceManager) {
-			((SimpleReloadableResourceManager) manager).registerReloadListener(sensorCardModel);
-		}
 
 		onModelRegister();
 	}
@@ -75,16 +61,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@SubscribeEvent
-	public void onTextureStitchEvent(TextureStitchEvent.Pre event) {
-		for (SensorCard card : OpenCCSensors.Items.sensorCard.getSensorCards()) {
-			event.getMap().registerSprite(card.getSensor().getIcon());
-			event.getMap().registerSprite(card.getTier().getIcon());
-		}
-	}
-
-	@SubscribeEvent
 	public void onModelBakeEvent(ModelBakeEvent event) {
-		event.getModelRegistry().putObject(SENSOR_CARD_MODEL, sensorCardModel);
 		event.getModelRegistry().putObject(SENSOR_DISH_MODEL, bakeModel(SENSOR_DISH_RESOURCE));
 	}
 
@@ -99,12 +76,13 @@ public class ClientProxy extends CommonProxy {
 		registerItemModel(OpenCCSensors.Blocks.gaugeBlock, 0);
 		registerItemModel(OpenCCSensors.Blocks.sensorBlock, 0);
 
-		ModelBakery.registerItemVariants(OpenCCSensors.Items.sensorCard, SENSOR_CARD_RESOURCE);
+		ModelLoaderRegistry.registerLoader(ModelSensorCard.INSTANCE);
+		ModelBakery.registerItemVariants(OpenCCSensors.Items.sensorCard, ModelSensorCard.MODEL_LOCATION);
 		ModelLoader.setCustomMeshDefinition(OpenCCSensors.Items.sensorCard, new ItemMeshDefinition() {
 			@Nonnull
 			@Override
 			public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
-				return SENSOR_CARD_MODEL;
+				return ModelSensorCard.MODEL_LOCATION;
 			}
 		});
 

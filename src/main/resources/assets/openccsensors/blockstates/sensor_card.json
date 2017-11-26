@@ -1,0 +1,9 @@
+{
+	"forge_marker": 1,
+	"variants": {
+		"inventory": {
+			"model": "openccsensors:sensor_card_dynamic",
+			"transform": "forge:default-item"
+		}
+	}
+}

@@ -57,7 +57,7 @@ public class TileEntitySensorRenderer extends TileEntitySpecialRenderer<TileEnti
 				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
 				float placing = sensor.getFacing().getHorizontalAngle();
-				GlStateManager.rotate(placing, 0, 1, 0);
+				GlStateManager.rotate(-placing, 0, 1, 0);
 				GlStateManager.translate(
 					0.0f,
 					// Translate to bottom, up 4 pixels and then half a item pixel
