@@ -7,6 +7,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import openccsensors.api.IGaugeSensor;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
@@ -24,8 +27,9 @@ public class InventorySensor extends TileSensor implements ISensor, IGaugeSensor
 
 	@Override
 	public boolean isValidTarget(Object target) {
-		// TODO: Capabilities
-		return target instanceof IInventory || (Mods.AE && AppliedEnergisticsUtils.isValidTarget(target));
+		return target instanceof IInventory
+			|| target instanceof ICapabilityProvider && ((ICapabilityProvider) target).hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+			|| (Mods.AE && AppliedEnergisticsUtils.isValidTarget(target));
 	}
 
 	@Override
@@ -38,9 +42,10 @@ public class InventorySensor extends TileSensor implements ISensor, IGaugeSensor
 		if (Mods.AE && AppliedEnergisticsUtils.isValidTarget(obj)) {
 			response.putAll(AppliedEnergisticsUtils.getTileDetails(obj, additional));
 		} else {
-			response.putAll(InventoryUtils.getInventorySizeCalculations((IInventory) tile));
+			IItemHandler handler = InventoryUtils.getHandler(tile);
+			response.putAll(InventoryUtils.getInventorySizeCalculations(handler));
 			if (additional) {
-				response.put("Slots", InventoryUtils.invToMap((IInventory) tile));
+				response.put("Slots", InventoryUtils.invToMap(handler));
 			}
 		}
 

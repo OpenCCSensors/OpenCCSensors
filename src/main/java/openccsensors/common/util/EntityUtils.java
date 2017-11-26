@@ -1,8 +1,5 @@
 package openccsensors.common.util;
 
-import java.util.Collection;
-import java.util.HashMap;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
@@ -16,6 +13,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
+
+import java.util.Collection;
+import java.util.HashMap;
 
 public class EntityUtils {
 
@@ -108,7 +109,7 @@ public class EntityUtils {
 			if (additional) {
 				map.put("FoodLevel", player.getFoodStats().getFoodLevel());
 				map.put("Gamemode", player.capabilities.isCreativeMode);
-				map.put("Inventory", InventoryUtils.invToMap(player.inventory));
+				map.put("Inventory", InventoryUtils.invToMap(new PlayerMainInvWrapper(player.inventory)));
 			}
 
 			map.put("Experience", player.experience);

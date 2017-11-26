@@ -1,12 +1,12 @@
 package openccsensors.common.util;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
 import net.minecraft.world.World;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CoFHUtils {
 
@@ -25,7 +25,7 @@ public class CoFHUtils {
 	}
 
 	public static Map<String, Object> getPowerDetails(World world, Object obj, boolean additional) {
-		if (obj == null || !(obj instanceof IEnergyHandler || obj instanceof IEnergyProvider) || !additional) {
+		if (obj == null || !(obj instanceof IEnergyHandler) || !additional) {
 			return Collections.emptyMap();
 		}
 
@@ -34,26 +34,16 @@ public class CoFHUtils {
 		int stored;
 		int capacity;
 
-		if (obj instanceof IEnergyHandler || obj instanceof IEnergyProvider) {
-			if (obj instanceof IEnergyHandler) {
-				IEnergyHandler energyHandler = (IEnergyHandler) obj;
-				stored = energyHandler.getEnergyStored(null);
-				capacity = energyHandler.getMaxEnergyStored(null);
-			} else if (obj instanceof IEnergyProvider) {
-				IEnergyProvider energyProvider = (IEnergyProvider) obj;
-				stored = energyProvider.getEnergyStored(null);
-				capacity = energyProvider.getMaxEnergyStored(null);
-			} else {
-				return response;
-			}
+		IEnergyHandler energyHandler = (IEnergyHandler) obj;
+		stored = energyHandler.getEnergyStored(null);
+		capacity = energyHandler.getMaxEnergyStored(null);
 
-			response.put("Stored", stored);
-			response.put("Capacity", capacity);
-			response.put("StoredPercentage", 0);
+		response.put("Stored", stored);
+		response.put("Capacity", capacity);
+		response.put("StoredPercentage", 0);
 
-			if (capacity > 0) {
-				response.put("StoredPercentage", Math.max(Math.min(100, ((100.0 * stored) / capacity)), 0));
-			}
+		if (capacity > 0) {
+			response.put("StoredPercentage", Math.max(Math.min(100, ((100.0 * stored) / capacity)), 0));
 		}
 		return response;
 	}
@@ -61,33 +51,23 @@ public class CoFHUtils {
 	public static Map<String, Object> getMachineDetails(World world, Object obj, boolean additional) {
 		HashMap<String, Object> response = new HashMap<String, Object>();
 
-		if (obj == null || !(obj instanceof IEnergyHandler || obj instanceof IEnergyProvider) || !additional) {
+		if (obj == null || !(obj instanceof IEnergyHandler) || !additional) {
 			return response;
 		}
 
 		int stored;
 		int capacity;
 
-		if (obj instanceof IEnergyHandler || obj instanceof IEnergyProvider) {
-			if (obj instanceof IEnergyHandler) {
-				IEnergyHandler energyHandler = (IEnergyHandler) obj;
-				stored = energyHandler.getEnergyStored(null);
-				capacity = energyHandler.getMaxEnergyStored(null);
-			} else if (obj instanceof IEnergyProvider) {
-				IEnergyProvider energyProvider = (IEnergyProvider) obj;
-				stored = energyProvider.getEnergyStored(null);
-				capacity = energyProvider.getMaxEnergyStored(null);
-			} else {
-				return response;
-			}
+		IEnergyHandler energyHandler = (IEnergyHandler) obj;
+		stored = energyHandler.getEnergyStored(null);
+		capacity = energyHandler.getMaxEnergyStored(null);
 
-			response.put("Stored", stored);
-			response.put("Capacity", capacity);
-			response.put("StoredPercentage", 0);
+		response.put("Stored", stored);
+		response.put("Capacity", capacity);
+		response.put("StoredPercentage", 0);
 
-			if (capacity > 0) {
-				response.put("StoredPercentage", Math.max(Math.min(100, ((100.0 * stored) / capacity)), 0));
-			}
+		if (capacity > 0) {
+			response.put("StoredPercentage", Math.max(Math.min(100, ((100.0 * stored) / capacity)), 0));
 		}
 		return response;
 	}

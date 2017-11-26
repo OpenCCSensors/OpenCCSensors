@@ -6,8 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import openccsensors.api.IGaugeSensor;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
@@ -23,21 +22,16 @@ public class TankSensor extends TileSensor implements ISensor, IGaugeSensor {
 
 	@Override
 	public boolean isValidTarget(Object tile) {
-		// TODO: Capabilities
-		if (tile instanceof IFluidHandler) {
-			FluidTankInfo[] tanks = ((IFluidHandler) tile).getTankInfo(null);
-			if (tanks != null) {
-				return tanks.length > 0;
-			}
-		}
-		return false;
+		IFluidHandler handler = TankUtils.getHandler(tile);
+		return handler != null && handler.getTankProperties().length != 0;
 	}
 
 	@Override
 	public Map<String, Object> getDetails(World world, Object obj, BlockPos sensorPos, boolean additional) {
 		TileEntity tile = (TileEntity) obj;
 		HashMap<String, Object> response = super.getDetails(tile, sensorPos);
-		response.put("Tanks", TankUtils.fluidHandlerToMap((IFluidHandler) tile));
+		IFluidHandler handler = TankUtils.getHandler(tile);
+		response.put("Tanks", TankUtils.fluidHandlerToMap(handler));
 		return response;
 	}
 

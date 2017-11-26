@@ -1,30 +1,47 @@
 package openccsensors.common.util;
 
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.*;
-
 public class TankUtils {
 
-	public static Map<Integer, Object> fluidHandlerToMap(IFluidHandler container) {
+	@SuppressWarnings("deprecation")
+	public static IFluidHandler getHandler(Object target) {
+		if (target instanceof ICapabilityProvider) {
+			IFluidHandler handler = ((ICapabilityProvider) target).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+			if (handler != null) return handler;
+		}
 
-		FluidTankInfo[] tanks = container.getTankInfo(null);
+		if (target instanceof IFluidHandler) {
+			return new net.minecraftforge.fluids.capability.wrappers.FluidHandlerWrapper((net.minecraftforge.fluids.IFluidHandler) target, null);
+		}
+
+		return null;
+	}
+
+	public static Map<Integer, Object> fluidHandlerToMap(IFluidHandler container) {
+		IFluidTankProperties[] tanks = container.getTankProperties();
 
 		Map<Integer, Object> allTanks = new HashMap<Integer, Object>();
 		int i = 0;
 		try {
 			if (tanks != null) {
-				for (FluidTankInfo tank : tanks) {
+				for (IFluidTankProperties tank : tanks) {
 					if (tank != null) {
 						HashMap<String, Object> tankMap = new HashMap<String, Object>();
-						tankMap.put("Capacity", tank.capacity);
+						tankMap.put("Capacity", tank.getCapacity());
 						int fluidAmount = 0;
 						tankMap.put("Amount", 0);
 
-						FluidStack stack = tank.fluid;
-
+						FluidStack stack = tank.getContents();
 						if (stack != null) {
 							Fluid fluid = stack.getFluid();
 							tankMap.put("Name", FluidRegistry.getFluidName(stack));
@@ -36,7 +53,7 @@ public class TankUtils {
 							tankMap.put("IsGaseous", fluid.isGaseous());
 						}
 						tankMap.put("Amount", fluidAmount);
-						tankMap.put("PercentFull", ((double) fluidAmount) * 100d / (double) tank.capacity);
+						tankMap.put("PercentFull", ((double) fluidAmount) * 100d / (double) tank.getCapacity());
 
 						allTanks.put(++i, tankMap);
 					}

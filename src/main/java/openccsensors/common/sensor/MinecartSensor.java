@@ -7,12 +7,12 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.*;
@@ -37,12 +37,14 @@ public class MinecartSensor implements ISensor {
 		response.put("Name", minecart.getName());
 		response.put("RawName", EntityList.getEntityString(minecart));
 
-		if (minecart instanceof IInventory) {
-			response.put("Slots", InventoryUtils.invToMap((IInventory) minecart));
+		IItemHandler itemHandler = InventoryUtils.getHandler(minecart);
+		if (itemHandler != null) {
+			response.put("Slots", InventoryUtils.invToMap(itemHandler));
 		}
 
-		if (minecart instanceof IFluidHandler) {
-			response.put("Tanks", TankUtils.fluidHandlerToMap((IFluidHandler) minecart));
+		IFluidHandler fluidHandler = TankUtils.getHandler(minecart);
+		if (fluidHandler != null) {
+			response.put("Tanks", TankUtils.fluidHandlerToMap(fluidHandler));
 		}
 
 		if (minecart.getRidingEntity() != null && minecart.getRidingEntity() instanceof EntityLivingBase) {

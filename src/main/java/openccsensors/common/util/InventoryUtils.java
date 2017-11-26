@@ -1,24 +1,24 @@
 package openccsensors.common.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class InventoryUtils {
-
-	public static final String FACTORIZATION_BARREL_CLASS = "factorization.common.TileEntityBarrel";
-	public static int[] mapColors = new int[]{
+	private static final int[] MAP_COLOURS = new int[]{
 		32768, // black
 		32,    // lime
 		16,    // yellow
@@ -46,15 +46,12 @@ public class InventoryUtils {
 			map.put("DamageValue", itemstack.getItemDamage());
 			map.put("MaxStack", itemstack.getMaxStackSize());
 			Item item = itemstack.getItem();
-			if (item != null) {
-				if (item instanceof ItemEnchantedBook) {
-					map.put("Enchantments", getBookEnchantments(itemstack));
-				}
+			if (item instanceof ItemEnchantedBook) {
+				map.put("Enchantments", getBookEnchantments(itemstack));
 			}
 
 			return map;
 		}
-
 	}
 
 	protected static Map<Integer, Object> getBookEnchantments(ItemStack stack) {
@@ -78,34 +75,32 @@ public class InventoryUtils {
 		return response;
 	}
 
-	public static Map<Integer, Object> invToMap(IInventory inventory) {
-		HashMap<Integer, Object> map = new HashMap<Integer, Object>();
-		if (inventory.getClass().getName().equals(FACTORIZATION_BARREL_CLASS)) {
-			Map<String, Object> details = itemstackToMap(inventory.getStackInSlot(0));
-			try {
-				TileEntity barrel = (TileEntity) inventory;
-				NBTTagCompound compound = new NBTTagCompound();
-				barrel.writeToNBT(compound);
-				details.put("Size", compound.getInteger("item_count"));
-				details.put("MaxStack",
-					compound.getInteger("upgrade") == 1 ? 65536 : 4096);
+	public static IItemHandler getHandler(Object object) {
+		if (object instanceof ICapabilityProvider) {
+			IItemHandler handler = ((ICapabilityProvider) object).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			if (handler != null) return handler;
+		}
 
-			} catch (Exception e) {
-			}
-			map.put(1, details);
-		} else {
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
-				map.put(i + 1, itemstackToMap(inventory.getStackInSlot(i)));
-			}
+		if (object instanceof IInventory) {
+			return new InvWrapper((IInventory) object);
+		}
+
+		return null;
+	}
+
+	public static Map<Integer, Object> invToMap(IItemHandler inventory) {
+		HashMap<Integer, Object> map = new HashMap<Integer, Object>();
+		for (int i = 0; i < inventory.getSlots(); i++) {
+			map.put(i + 1, itemstackToMap(inventory.getStackInSlot(i)));
 		}
 		return map;
 	}
 
-	public static Map<String, Object> getInventorySizeCalculations(IInventory inventory) {
+	public static Map<String, Object> getInventorySizeCalculations(IItemHandler inventory) {
 		ItemStack stack;
 		int totalSpace = 0;
 		int itemCount = 0;
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+		for (int i = 0; i < inventory.getSlots(); i++) {
 			stack = inventory.getStackInSlot(i);
 			if (stack == null) {
 				totalSpace += 64;
@@ -161,25 +156,20 @@ public class InventoryUtils {
 		return rawName.trim();
 	}
 
-	public static ItemStack getStackInSlot(World world, HashMap targets, String targetName, int slot) {
+	public static ItemStack getStackInSlot(HashMap<?, ?> targets, String targetName, int slot) {
 		if (targets.containsKey(targetName)) {
-			Object target = targets.get(targetName);
-			if (target instanceof IInventory) {
-				IInventory inventory = (IInventory) target;
-				if (slot < inventory.getSizeInventory()) {
-					return inventory.getStackInSlot(slot);
-				}
-			}
+			IItemHandler handler = getHandler(targets.get(targetName));
+			if (handler != null && slot < handler.getSlots()) return handler.getStackInSlot(slot);
 		}
 		return null;
 	}
 
 	public static Map<String, Object> getMapData(World world, HashMap targets, String targetName, int slot) {
-		ItemStack stack = getStackInSlot(world, targets, targetName, slot);
+		ItemStack stack = getStackInSlot(targets, targetName, slot);
 
 		if (stack != null) {
 			Item item = stack.getItem();
-			if (item != null && item instanceof ItemMap) {
+			if (item instanceof ItemMap) {
 				// Create a new map
 				MapData data = ((ItemMap) item).getMapData(stack, world);
 
@@ -192,7 +182,7 @@ public class InventoryUtils {
 				HashMap<Integer, Integer> colors = new HashMap<Integer, Integer>();
 				// put all the colours in
 				for (int b = 0; b < data.colors.length; b++) {
-					colors.put(b + 1, mapColors[data.colors[b] / 4]);
+					colors.put(b + 1, MAP_COLOURS[data.colors[b] / 4]);
 				}
 				ret.put("Colors", colors);
 				return ret;

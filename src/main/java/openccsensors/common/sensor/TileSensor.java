@@ -4,14 +4,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import openccsensors.api.ISensor;
 import openccsensors.api.ISensorTier;
 import openccsensors.common.util.InventoryUtils;
 
 import java.util.HashMap;
 
-public abstract class TileSensor {
-
-
+public abstract class TileSensor implements ISensor {
 	public boolean isValidTarget(Object target) {
 		return false;
 	}
@@ -53,6 +52,5 @@ public abstract class TileSensor {
 		}
 
 		return targets;
-
 	}
 }
