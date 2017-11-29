@@ -2,6 +2,7 @@ package openccsensors.common.turtle;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -9,7 +10,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import openccsensors.OpenCCSensors;
+import openccsensors.client.ClientProxy;
 import openccsensors.common.peripheral.PeripheralSensor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -68,9 +72,24 @@ public class TurtleUpgradeSensor implements ITurtleUpgrade {
 
 	@Nonnull
 	@Override
-	public Pair<IBakedModel, Matrix4f> getModel(@Nullable ITurtleAccess iTurtleAccess, @Nonnull TurtleSide turtleSide) {
-		// TODO: Implement this
-		return null;
+	@SideOnly(Side.CLIENT)
+	public Pair<IBakedModel, Matrix4f> getModel(@Nullable ITurtleAccess iTurtleAccess, @Nonnull TurtleSide side) {
+		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher()
+			.getBlockModelShapes().getModelManager().getModel(ClientProxy.SENSOR_DISH_MODEL);
+
+		// Translate [-0.5, -0.5, -0.5]
+		// Scale [0.6]
+		// Left:  RotateZ  [PI/2], Translate [0.1, 0.5, 0.5]
+		// Right: RotateZ [-PI/2], Translate [0.9, 0.5, 0.5]
+		float delta = side == TurtleSide.Left ? -1 : 1;
+		Matrix4f m = new Matrix4f(
+			0.0f, delta * 0.6f, 0.0f, 0.5f + +delta * 0.1f,
+			delta * -0.6f, 0.0f, 0.0f, 0.5f + delta * 0.3f,
+			0.0f, 0.0f, 0.6f, 0.2f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		);
+
+		return Pair.of(model, m);
 	}
 
 	public void addTurtlesToCreative(List<ItemStack> subItems) {
