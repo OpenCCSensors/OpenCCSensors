@@ -146,10 +146,7 @@ public class Ic2Utils {
 		response.put("Position", position);
 
 		ItemStack stack = new ItemStack(tile.getBlockType(), 1, tile.getBlockMetadata());
-
-		response.put("Name", InventoryUtils.getNameForItemStack(stack));
-		response.put("RawName", InventoryUtils.getRawNameForStack(stack));
-		response.put("DamageValue", stack.getItemDamage());
+		response.putAll(InventoryUtils.itemstackToBasicMap(stack));
 
 		if (obj instanceof ICropTile && additional) {
 			ICropTile crop = (ICropTile) obj;

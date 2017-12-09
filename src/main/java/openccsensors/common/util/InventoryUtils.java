@@ -35,15 +35,22 @@ public class InventoryUtils {
 		4096   // brown
 	};
 
+	public static Map<String, Object> itemstackToBasicMap(ItemStack stack) {
+		Map<String, Object> response = new HashMap<String, Object>();
+		response.put("Name", getNameForItemStack(stack));
+		response.put("DisplayName", getDisplayNameForItemStack(stack));
+		response.put("RawName", getRawNameForStack(stack));
+		response.put("DamageValue", stack.getItemDamage());
+		return response;
+	}
+
 	public static Map<String, Object> itemstackToMap(ItemStack itemstack) {
 		if (itemstack == null) {
 			return null;
 		} else {
 			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("Name", getNameForItemStack(itemstack));
-			map.put("RawName", getRawNameForStack(itemstack));
+			map.putAll(itemstackToBasicMap(itemstack));
 			map.put("Size", itemstack.stackSize);
-			map.put("DamageValue", itemstack.getItemDamage());
 			map.put("MaxStack", itemstack.getMaxStackSize());
 			Item item = itemstack.getItem();
 			if (item instanceof ItemEnchantedBook) {
@@ -123,6 +130,12 @@ public class InventoryUtils {
 	}
 
 	public static String getNameForItemStack(ItemStack is) {
+		return is == null || is.getItem() == null
+			? "minecraft:air"
+			: is.getItem().getRegistryName().toString();
+	}
+
+	public static String getDisplayNameForItemStack(ItemStack is) {
 		String name = "Unknown";
 		try {
 			name = is.getDisplayName();

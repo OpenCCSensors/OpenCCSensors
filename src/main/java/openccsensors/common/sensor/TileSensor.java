@@ -25,10 +25,9 @@ public abstract class TileSensor implements ISensor {
 		response.put("Position", position);
 
 		ItemStack stack = new ItemStack(tile.getBlockType(), 1, tile.getBlockMetadata());
-
-		response.put("Name", InventoryUtils.getNameForItemStack(stack));
+		response.put("Name", tile.getBlockType().getRegistryName());
+		response.put("DisplayName", InventoryUtils.getDisplayNameForItemStack(stack));
 		response.put("RawName", InventoryUtils.getRawNameForStack(stack));
-		response.put("DamageValue", stack.getItemDamage());
 
 		return response;
 	}

@@ -28,17 +28,12 @@ public class DroppedItemSensor implements ISensor {
 		position.put("Z", item.posZ - sensorLocation.getZ());
 
 		response.put("Position", position);
-
 		ItemStack stack = item.getEntityItem();
-
-		response.put("Name", InventoryUtils.getNameForItemStack(stack));
-		response.put("RawName", InventoryUtils.getRawNameForStack(stack));
-
 		if (additional) {
-
 			response.putAll(InventoryUtils.itemstackToMap(stack));
 			response.put("IsBurning", item.isBurning());
-
+		} else {
+			response.putAll(InventoryUtils.itemstackToBasicMap(stack));
 		}
 
 		return response;
